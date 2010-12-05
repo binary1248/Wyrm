@@ -1,0 +1,134 @@
+# depslib dependency file v1.0
+1283569290 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/backdrop.cpp
+	<SFML/Graphics.hpp>
+	"backdrop.h"
+
+1283569198 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/backdrop.h
+	<SFML/Graphics.hpp>
+
+1283899636 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/events.cpp
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"network.h"
+	"gui.h"
+	"events.h"
+
+1285978982 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/network.h
+	<SFML/Network.hpp>
+
+1285960970 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/gui.h
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+
+1283546422 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/events.h
+	<SFML/Graphics.hpp>
+
+1286012680 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/main.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"player.h"
+	"events.h"
+	"network.h"
+	"gui.h"
+	"objects/objects.h"
+	"objectmanager.h"
+	"backdrop.h"
+	"particle/particles.h"
+
+1283812682 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/player.h
+	<SFML/System.hpp>
+
+1283813560 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objects/objects.h
+	"ship.h"
+
+1283814254 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objects/ship.h
+	"object.h"
+
+1283814160 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objects/object.h
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+
+1283812430 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objectmanager.h
+	<vector>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"objects/object.h"
+
+1283784620 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/particles.h
+	"ParticleSystem.h"
+
+1283653196 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/ParticleSystem.h
+	"EmitterBase.h"
+	"AffectorBase.h"
+
+1218282262 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/EmitterBase.h
+	<vector>
+	"SFML/Graphics.hpp"
+	"Particle.h"
+	"AffectorBase.h"
+
+1218281900 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/Particle.h
+	"SFML/System.hpp"
+
+1218280552 /media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/AffectorBase.h
+
+1285979150 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/network.cpp
+	<iostream>
+	<SFML/Network.hpp>
+	"network.h"
+	"player.h"
+	"objectmanager.h"
+
+1283821322 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objectmanager.cpp
+	<iostream>
+	<SFML/System.hpp>
+	<SFML/Network.hpp>
+	"network.h"
+	"player.h"
+	"objects/objects.h"
+	"objectmanager.h"
+
+1283814234 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objects/object.cpp
+	"object.h"
+
+1283821294 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/objects/ship.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	"objects/objects.h"
+	"network.h"
+	"backdrop.h"
+	"ship.h"
+
+1283634060 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/EmitterBase.cpp
+	<SFML/Graphics.hpp>
+	"EmitterBase.h"
+	<GL/gl.h>
+
+1283653198 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/ParticleSystem.cpp
+	"ParticleSystem.h"
+
+1283784634 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/particle/particles.cpp
+	<SFML/Graphics.hpp>
+	"ParticleSystem.h"
+	"particles.h"
+
+1283820148 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/player.cpp
+	<iostream>
+	<cmath>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"objects/objects.h"
+	"objectmanager.h"
+	"player.h"
+
+1285961074 source:/media/storage/Programming/Projects/C++/CodeBlocks/Wyrm/gui.cpp
+	<map>
+	<boost/shared_ptr.hpp>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+	<SFGUI/Button.hpp>
+	<SFGUI/Editbox.hpp>
+	"gui.h"
+	"network.h"
+
