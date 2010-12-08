@@ -225,3 +225,112 @@
 	"network.h"
 	"playermanager.h"
 
+1283879958 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\auth.cpp
+	<SFML/Network.hpp>
+	"auth.h"
+
+1283879828 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\auth.h
+	<SFML/Network.hpp>
+
+1283817510 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.cpp
+	"object.h"
+
+1283817530 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+
+1291769727 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\game.cpp
+	<iostream>
+	"game.h"
+
+1291769282 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\game.h
+	"objectmanager.h"
+	"playermanager.h"
+	"networkmanager.h"
+
+1291769641 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.h
+	<vector>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"playermanager.h"
+	"objects/object.h"
+
+1291768869 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.h
+	<vector>
+	<SFML/Network.hpp>
+	"player.h"
+
+1283819686 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.h
+	<vector>
+	<SFML/Network.hpp>
+
+1291769397 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
+	<vector>
+	<SFML/Network.hpp>
+	"playermanager.h"
+
+1291769647 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\ship.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	"objects/objects.h"
+	"networkmanager.h"
+	"ship.h"
+
+1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\objects.h
+	"ship.h"
+
+1285546126 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\ship.h
+	"object.h"
+
+1283817530 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+
+1291769397 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
+	<vector>
+	<SFML/Network.hpp>
+	"playermanager.h"
+
+1291768869 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\playermanager.h
+	<vector>
+	<SFML/Network.hpp>
+	"player.h"
+
+1283819686 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\player.h
+	<vector>
+	<SFML/Network.hpp>
+
+1285546126 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\ship.h
+	"object.h"
+
+1291769692 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.cpp
+	<iostream>
+	<SFML/Network.hpp>
+	"auth.h"
+	"player.h"
+	"networkmanager.h"
+
+1291769691 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
+	<iostream>
+	<SFML/System.hpp>
+	<SFML/Network.hpp>
+	"player.h"
+	"objects/objects.h"
+	"networkmanager.h"
+	"playermanager.h"
+	"objectmanager.h"
+
+1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\objects.h
+	"ship.h"
+
+1291769697 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.cpp
+	<iostream>
+	<cmath>
+	<SFML/Network.hpp>
+	"player.h"
+	"networkmanager.h"
+
+1291769711 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\main.cpp
+	<iostream>
+	"game.h"
+

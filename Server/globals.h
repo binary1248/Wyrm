@@ -2,9 +2,9 @@
 #define GLOBALS_H_INCLUDED
 
 #include "playermanager.h"
-#include "network.h"
+#include "networkmanager.h"
 
-extern PlayerManager playermanager;
-extern Listener listener;
+//extern PlayerManager playermanager;
+//extern Listener listener;
 
 #endif // GLOBALS_H_INCLUDED

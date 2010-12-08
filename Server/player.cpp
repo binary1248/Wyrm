@@ -3,8 +3,7 @@
 #include <SFML/Network.hpp>
 
 #include "player.h"
-#include "network.h"
-#include "globals.h"
+#include "networkmanager.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
 

@@ -4,12 +4,10 @@
 #include "objects/objects.h"
 #include "objectmanager.h"
 #include "player.h"
-#include "network.h"
+#include "networkmanager.h"
 #include "playermanager.h"
 
 sf::Mutex mutex;
-
-PlayerManager playermanager;
 
 PlayerManager::PlayerManager() {
   lastId = 0;

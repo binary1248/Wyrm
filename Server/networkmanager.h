@@ -2,8 +2,8 @@
 #define NETWORK_H_INCLUDED
 
 #include <vector>
-
 #include <SFML/Network.hpp>
+#include "playermanager.h"
 
 struct sock_id_pair {
   sf::TcpSocket* s;
@@ -11,10 +11,10 @@ struct sock_id_pair {
   bool half_open;
 };
 
-class Listener : private sf::Thread {
+class NetworkManager : private sf::Thread {
   public:
-    Listener();
-    ~Listener();
+    NetworkManager(PlayerManager* pm);
+    ~NetworkManager();
 
     //void RemoveClient(sf::Uint16 id);
 
@@ -25,13 +25,13 @@ class Listener : private sf::Thread {
     void AcceptSocket();
     void HandleSockets();
 
+    PlayerManager* playermanager;
+
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
     std::vector<sock_id_pair> clients;
     std::vector<sock_id_pair>::iterator iter;
 };
-
-extern Listener listener;
 
 enum server_packet_t0{
   OBJECT = 0

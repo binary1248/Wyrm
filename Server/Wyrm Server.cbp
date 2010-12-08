@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Wyrm Server" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="bin\Debug\Wyrm Server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -16,8 +16,8 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Wyrm Server" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="bin\Release\Wyrm Server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -39,18 +39,18 @@
 		</Linker>
 		<Unit filename="auth.cpp" />
 		<Unit filename="auth.h" />
-		<Unit filename="globals.cpp" />
-		<Unit filename="globals.h" />
+		<Unit filename="game.cpp" />
+		<Unit filename="game.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="network.cpp" />
-		<Unit filename="network.h" />
+		<Unit filename="networkmanager.cpp" />
+		<Unit filename="networkmanager.h" />
 		<Unit filename="objectmanager.cpp" />
 		<Unit filename="objectmanager.h" />
-		<Unit filename="objects/object.cpp" />
-		<Unit filename="objects/object.h" />
-		<Unit filename="objects/objects.h" />
-		<Unit filename="objects/ship.cpp" />
-		<Unit filename="objects/ship.h" />
+		<Unit filename="objects\object.cpp" />
+		<Unit filename="objects\object.h" />
+		<Unit filename="objects\objects.h" />
+		<Unit filename="objects\ship.cpp" />
+		<Unit filename="objects\ship.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="playermanager.cpp" />

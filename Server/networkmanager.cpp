@@ -3,10 +3,7 @@
 
 #include "auth.h"
 #include "player.h"
-#include "globals.h"
-#include "network.h"
-
-Listener listener;
+#include "networkmanager.h"
 
 std::string ErrCode(sf::Socket::Status s) {
   switch(s) {
@@ -23,9 +20,12 @@ std::string ErrCode(sf::Socket::Status s) {
   }
 }
 
-Listener::Listener() {
+NetworkManager::NetworkManager(PlayerManager* pm) {
   selector.Clear();
   //running = false;
+
+  playermanager = pm;
+
   if (sock_listener.Listen(1337) != sf::Socket::Done)
   {
     // Error...
@@ -36,11 +36,11 @@ Listener::Listener() {
   Launch();
 }
 
-Listener::~Listener() {
+NetworkManager::~NetworkManager() {
 
 }
 /*
-void Listener::RemoveClient(sf::Uint16 id) {
+void NetworkManager::RemoveClient(sf::Uint16 id) {
   std::cout << "Removed client with id " << id << " from clients list." << std::endl;
   for( iter = clients.begin(); iter != clients.end(); iter++) {
     if(id == (*iter).id) {
@@ -52,7 +52,7 @@ void Listener::RemoveClient(sf::Uint16 id) {
   std::cout << "This is not good." << std::endl;
 }*/
 
-void Listener::Run() {
+void NetworkManager::Run() {
   while( running ) {
     if( selector.Wait() ) {
       if(selector.IsReady(sock_listener)) {
@@ -68,19 +68,19 @@ void Listener::Run() {
   }
 }
 
-void Listener::HandlePacket(sf::Packet p, sf::Uint16 id) {
+void NetworkManager::HandlePacket(sf::Packet p, sf::Uint16 id) {
   sf::Uint16 type0;
   p >> type0;
 
   if( type0 < 1 )
-    playermanager.DispatchPacket(p, id);
+    playermanager->DispatchPacket(p, id);
 }
 
-void Listener::AcceptSocket() {
+void NetworkManager::AcceptSocket() {
   sf::TcpSocket* Client = new sf::TcpSocket;
 
   if (sock_listener.Accept(*Client) != sf::Socket::Done) {
-    std::cout << "Listener error..." << std::endl;
+    std::cout << "NetworkManager error..." << std::endl;
     delete Client;
   }
   else {
@@ -105,7 +105,7 @@ void Listener::AcceptSocket() {
   }
 }
 
-void Listener::HandleSockets() {
+void NetworkManager::HandleSockets() {
   for (iter = clients.begin(); iter != clients.end();) {
     if(!((*iter).s)) {
       std::cerr << "Invalid socket..." << std::endl;
@@ -120,7 +120,7 @@ void Listener::HandleSockets() {
       if ( status == sf::Socket::Disconnected) {
         std::cout << "Client " << client.GetRemoteAddress().ToString() << " disconnected.." << std::endl;
         selector.Remove(client);
-        playermanager.RemovePlayer((*iter).id);
+        playermanager->RemovePlayer((*iter).id);
         iter = clients.erase(iter);
         continue;
       }
@@ -141,7 +141,7 @@ void Listener::HandleSockets() {
             if(status != sf::TcpSocket::Done)
               std::cerr << "Failed sending data: " << ErrCode(status) << std::endl;
             std::cout << s.ToAnsiString() << std::endl;
-            (*iter).id = playermanager.CreatePlayer((*iter).s->GetRemoteAddress().ToString(), (*iter).s);
+            (*iter).id = playermanager->CreatePlayer((*iter).s->GetRemoteAddress().ToString(), (*iter).s);
             (*iter).half_open = false;
           }
           else {

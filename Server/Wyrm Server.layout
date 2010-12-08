@@ -4,52 +4,55 @@
 	<File name="auth.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="52" topLine="0" />
 	</File>
-	<File name="globals.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="72" topLine="0" />
+	<File name="auth.h" open="0" top="0" tabpos="0">
+		<Cursor position="143" topLine="0" />
 	</File>
-	<File name="globals.h" open="0" top="0" tabpos="0">
-		<Cursor position="107" topLine="0" />
+	<File name="game.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="346" topLine="0" />
 	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="344" topLine="3" />
+	<File name="game.h" open="0" top="0" tabpos="0">
+		<Cursor position="189" topLine="0" />
 	</File>
-	<File name="network.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="2600" topLine="102" />
+	<File name="main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="108" topLine="0" />
 	</File>
-	<File name="network.h" open="0" top="0" tabpos="3">
-		<Cursor position="325" topLine="0" />
+	<File name="networkmanager.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="4098" topLine="100" />
+	</File>
+	<File name="networkmanager.h" open="0" top="0" tabpos="0">
+		<Cursor position="583" topLine="0" />
 	</File>
 	<File name="objectmanager.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="410" topLine="0" />
+		<Cursor position="4256" topLine="97" />
 	</File>
 	<File name="objectmanager.h" open="0" top="0" tabpos="0">
-		<Cursor position="723" topLine="0" />
+		<Cursor position="174" topLine="0" />
 	</File>
-	<File name="objects/object.cpp" open="0" top="0" tabpos="0">
+	<File name="objects\object.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="310" topLine="0" />
 	</File>
-	<File name="objects/object.h" open="0" top="0" tabpos="0">
+	<File name="objects\object.h" open="0" top="0" tabpos="0">
 		<Cursor position="339" topLine="0" />
 	</File>
-	<File name="objects/objects.h" open="0" top="0" tabpos="0">
+	<File name="objects\objects.h" open="0" top="0" tabpos="0">
 		<Cursor position="95" topLine="0" />
 	</File>
-	<File name="objects/ship.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="372" topLine="1" />
+	<File name="objects\ship.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="107" topLine="0" />
 	</File>
-	<File name="objects/ship.h" open="0" top="0" tabpos="2">
+	<File name="objects\ship.h" open="0" top="0" tabpos="2">
 		<Cursor position="409" topLine="0" />
 	</File>
 	<File name="player.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="307" topLine="7" />
+		<Cursor position="115" topLine="0" />
 	</File>
 	<File name="player.h" open="0" top="0" tabpos="2">
 		<Cursor position="339" topLine="0" />
 	</File>
-	<File name="playermanager.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="400" topLine="6" />
+	<File name="playermanager.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="633" topLine="0" />
 	</File>
-	<File name="playermanager.h" open="0" top="0" tabpos="4">
-		<Cursor position="596" topLine="0" />
+	<File name="playermanager.h" open="1" top="0" tabpos="2">
+		<Cursor position="620" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

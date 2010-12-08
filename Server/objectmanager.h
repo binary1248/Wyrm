@@ -4,12 +4,12 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
-
+#include "playermanager.h"
 #include "objects/object.h"
 
 class ObjectManager {
   public:
-    ObjectManager();
+    ObjectManager(PlayerManager* pm);
     ~ObjectManager();
 
     void AddObject(Object* o);
@@ -26,10 +26,10 @@ class ObjectManager {
     void SendPartialUpdate();
     void SendStateToPlayerById(sf::Uint16 id);
   private:
+    PlayerManager* playermanager;
+
     std::vector<Object*> objects;
     sf::Uint16 lastId;
 };
-
-extern ObjectManager objectmanager;
 
 #endif // OBJECTMANAGER_H_INCLUDED

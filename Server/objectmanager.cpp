@@ -1,17 +1,15 @@
 #include <iostream>
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
-
-#include "network.h"
 #include "player.h"
 #include "objects/objects.h"
+#include "networkmanager.h"
 #include "playermanager.h"
 #include "objectmanager.h"
 
-ObjectManager objectmanager;
-
-ObjectManager::ObjectManager() {
+ObjectManager::ObjectManager(PlayerManager* pm) {
   lastId = 0;
+  playermanager = pm;
 }
 
 ObjectManager::~ObjectManager() {
@@ -29,7 +27,7 @@ void ObjectManager::RemoveObjectById(sf::Uint16 id) {
       sf::Packet packet;
       packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
              << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
-      playermanager.Broadcast(packet);
+      playermanager->Broadcast(packet);
       delete (*i);
       objects.erase(i);
       break;
@@ -68,7 +66,7 @@ Object* ObjectManager::CreateObject(sf::Uint16 type) {
            << object->position.x     << object->position.y
            << object->velocity.x     << object->velocity.y
            << object->rotation       << object->rotational_velocity;
-    playermanager.Broadcast(packet);
+    playermanager->Broadcast(packet);
   }
 
   std::cout << "Created object of type " << type << std::endl;
@@ -108,7 +106,7 @@ void ObjectManager::SendFullUpdate() {
     sf::Packet packet;
     packet << (sf::Uint16)OBJECT << (*i)->id << (sf::Uint16)POSITION_UPDATE
            << (*i)->position.x << (*i)->position.y << (*i)->rotation;
-    playermanager.Broadcast(packet);
+    playermanager->Broadcast(packet);
   }
 }
 
@@ -125,7 +123,7 @@ void ObjectManager::SendPartialUpdate() {
         std::cout << "Couldn't determine what extra attributes to send." << std::endl;
         break;
     }
-    playermanager.Broadcast(packet);
+    playermanager->Broadcast(packet);
   }
 }
 
@@ -138,6 +136,6 @@ void ObjectManager::SendStateToPlayerById(sf::Uint16 id) {
            << (*i)->position.x       << (*i)->position.y
            << (*i)->velocity.x       << (*i)->velocity.y
            << (*i)->rotation         << (*i)->rotational_velocity;
-    playermanager.SendToPlayerById(id, packet);
+    playermanager->SendToPlayerById(id, packet);
   }
 }

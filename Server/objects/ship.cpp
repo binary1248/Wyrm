@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "objects/objects.h"
-#include "network.h"
+#include "networkmanager.h"
 #include "ship.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)

@@ -26,6 +26,4 @@ class PlayerManager {
     sf::Uint16 lastId;
 };
 
-extern PlayerManager playermanager;
-
 #endif // PLAYERMANAGER_H_INCLUDED
