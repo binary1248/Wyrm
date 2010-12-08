@@ -2,15 +2,13 @@
 #include <SFML/Network.hpp>
 
 #include "objects/objects.h"
-#include "objectmanager.h"
 #include "player.h"
-#include "networkmanager.h"
+#include "game.h"
 #include "playermanager.h"
 
-sf::Mutex mutex;
-
-PlayerManager::PlayerManager() {
+PlayerManager::PlayerManager(Game* g) {
   lastId = 0;
+  game = g;
 }
 
 PlayerManager::~PlayerManager() {
@@ -18,15 +16,16 @@ PlayerManager::~PlayerManager() {
   std::cout << "Player manager cleanup done." << std::endl;
 }
 
-sf::Uint16 PlayerManager::CreatePlayer(sf::String name, sf::TcpSocket* sock) {
+void PlayerManager::Tick(float time) {
 
+}
+
+sf::Uint16 PlayerManager::CreatePlayer(sf::String name, sf::TcpSocket* sock) {
   Player* player = new Player(lastId++, name, sock);
 
-  mutex.Lock();
   players.push_back(player);
-  mutex.Unlock();
 
-  Object* o = objectmanager.CreateObject(SHIP);
+  Object* o = game->GetObjectManager()->CreateObject(SHIP);
 
   player->SetShip(o->id);
 
@@ -37,21 +36,18 @@ sf::Uint16 PlayerManager::CreatePlayer(sf::String name, sf::TcpSocket* sock) {
          << (sf::Uint16)SET_ID     << o->id;
   player->SendPacket(packet);
 
-  objectmanager.SendStateToPlayerById(player->id);
+  game->GetObjectManager()->SendStateToPlayerById(player->id);
 
   return player->id;
 }
 
 void PlayerManager::RemovePlayer(sf::Uint16 id) {
-
   for( iter = players.begin(); iter != players.end(); iter++) {
     if( (*iter) && (*iter)->id == id) {
       sf::Uint16 shipId = (*iter)->shipId;
-      mutex.Lock();
       delete (*iter);
       iter = players.erase(iter);
-      mutex.Unlock();
-      objectmanager.RemoveObjectById( shipId );
+      game->GetObjectManager()->RemoveObjectById( shipId );
       std::cout << "Removed player with id " << (*iter)->id << " and ship id " << (*iter)->shipId << std::endl;
       return;
     }
@@ -59,8 +55,6 @@ void PlayerManager::RemovePlayer(sf::Uint16 id) {
 }
 
 void PlayerManager::ClearPlayers() {
-
-  sf::Lock Lock(mutex);
   for(iter = players.begin(); iter != players.end(); ) {
     if(*iter) {
       (*iter)->Disconnect();
@@ -72,20 +66,16 @@ void PlayerManager::ClearPlayers() {
 }
 
 void PlayerManager::DispatchPacket(sf::Packet p, sf::Uint16 id) {
-
-  sf::Lock Lock(mutex);
   for( iter = players.begin(); iter != players.end(); iter++) {
     if( (*iter) && (*iter)->id == id ) {
       // Get controlled object id and dispatch packet.
       sf::Uint16 object_id = (*iter)->shipId;
-      objectmanager.SendPacketToObjectById(object_id, p);
+      game->GetObjectManager()->SendPacketToObjectById(object_id, p);
     }
   }
 }
 
 void PlayerManager::SendToPlayerById(sf::Uint16 id, sf::Packet p) {
-
-  sf::Lock Lock(mutex);
   for( iter = players.begin(); iter != players.end(); iter++) {
     if((*iter) && (*iter)->id == id) {
       (*iter)->SendPacket(p);
@@ -95,8 +85,6 @@ void PlayerManager::SendToPlayerById(sf::Uint16 id, sf::Packet p) {
 }
 
 void PlayerManager::Broadcast(sf::Packet p) {
-
-  sf::Lock Lock(mutex);
   for( iter = players.begin(); iter != players.end(); iter++) {
     (*iter)->SendPacket(p);
   }

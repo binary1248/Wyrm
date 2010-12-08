@@ -7,17 +7,9 @@
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
 
-Ship::Ship(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
-Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
-  id = id_;
-  name = name_;
+Ship::Ship(sf::Uint16 id, sf::String name, sf::Vector2f pos, sf::Vector2f vel, float rot, float rot_vel) :
+Object(SHIP, id, name, pos, vel, rot, rot_vel) {
   isPlayer = false;
-  position.x = 0;
-  position.y = 0;
-  rotation = 0;
-  velocity.x = 0;
-  velocity.y = 0;
-  rotational_velocity = 0;
   acceleration.x = 0;
   acceleration.y = 0;
   thrust = 0;
@@ -35,7 +27,15 @@ void Ship::Update(float time) {
   position += (velocity * time);
 }
 
-void Ship::HandlePacket(sf::Packet p) {
+void Ship::FillPartialPacket(sf::Packet& p) {
+
+}
+
+void Ship::FillFullPacket(sf::Packet& p) {
+
+}
+
+void Ship::HandlePacket(sf::Packet& p) {
   sf::Uint16 type1 = 1337;
 
   p >> type1;

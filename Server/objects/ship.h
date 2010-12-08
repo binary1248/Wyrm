@@ -10,7 +10,10 @@ class Ship : public Object{
 
     virtual void Update(float time);
 
-    virtual void HandlePacket(sf::Packet p);
+    virtual void FillPartialPacket(sf::Packet& p);
+    virtual void FillFullPacket(sf::Packet& p);
+
+    virtual void HandlePacket(sf::Packet& p);
 
     bool isPlayer;
 

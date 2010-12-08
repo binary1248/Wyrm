@@ -11,6 +11,12 @@ class Game {
     ~Game();
     int Run();
 
+    void Tick(float time);
+
+    PlayerManager* GetPlayerManager();
+    ObjectManager* GetObjectManager();
+    NetworkManager* GetNetworkManager();
+
   private:
     bool running;
 

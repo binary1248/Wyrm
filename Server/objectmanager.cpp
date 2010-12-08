@@ -3,13 +3,13 @@
 #include <SFML/Network.hpp>
 #include "player.h"
 #include "objects/objects.h"
-#include "networkmanager.h"
-#include "playermanager.h"
+#include "game.h"
 #include "objectmanager.h"
 
-ObjectManager::ObjectManager(PlayerManager* pm) {
+ObjectManager::ObjectManager(Game* g) {
   lastId = 0;
-  playermanager = pm;
+  game = g;
+  LastFullUpdate.Reset();
 }
 
 ObjectManager::~ObjectManager() {
@@ -27,7 +27,7 @@ void ObjectManager::RemoveObjectById(sf::Uint16 id) {
       sf::Packet packet;
       packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
              << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
-      playermanager->Broadcast(packet);
+      game->GetPlayerManager()->Broadcast(packet);
       delete (*i);
       objects.erase(i);
       break;
@@ -66,7 +66,7 @@ Object* ObjectManager::CreateObject(sf::Uint16 type) {
            << object->position.x     << object->position.y
            << object->velocity.x     << object->velocity.y
            << object->rotation       << object->rotational_velocity;
-    playermanager->Broadcast(packet);
+    game->GetPlayerManager()->Broadcast(packet);
   }
 
   std::cout << "Created object of type " << type << std::endl;
@@ -99,6 +99,16 @@ void ObjectManager::Tick(float time) {
   for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
     (*i)->Update(time);
   }
+
+  SendUpdate();
+}
+
+void ObjectManager::SendUpdate() {
+  if( LastFullUpdate.GetElapsedTime() < 2.0f ) {
+    SendPartialUpdate();
+  } else {
+    SendFullUpdate();
+  }
 }
 
 void ObjectManager::SendFullUpdate() {
@@ -106,8 +116,10 @@ void ObjectManager::SendFullUpdate() {
     sf::Packet packet;
     packet << (sf::Uint16)OBJECT << (*i)->id << (sf::Uint16)POSITION_UPDATE
            << (*i)->position.x << (*i)->position.y << (*i)->rotation;
-    playermanager->Broadcast(packet);
+    game->GetPlayerManager()->Broadcast(packet);
   }
+
+  LastFullUpdate.Reset();
 }
 
 void ObjectManager::SendPartialUpdate() {
@@ -123,7 +135,7 @@ void ObjectManager::SendPartialUpdate() {
         std::cout << "Couldn't determine what extra attributes to send." << std::endl;
         break;
     }
-    playermanager->Broadcast(packet);
+    game->GetPlayerManager()->Broadcast(packet);
   }
 }
 
@@ -136,6 +148,6 @@ void ObjectManager::SendStateToPlayerById(sf::Uint16 id) {
            << (*i)->position.x       << (*i)->position.y
            << (*i)->velocity.x       << (*i)->velocity.y
            << (*i)->rotation         << (*i)->rotational_velocity;
-    playermanager->SendToPlayerById(id, packet);
+    game->GetPlayerManager()->SendToPlayerById(id, packet);
   }
 }

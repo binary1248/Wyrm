@@ -4,12 +4,13 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
-#include "playermanager.h"
 #include "objects/object.h"
+
+class Game;
 
 class ObjectManager {
   public:
-    ObjectManager(PlayerManager* pm);
+    ObjectManager(Game* g);
     ~ObjectManager();
 
     void AddObject(Object* o);
@@ -22,11 +23,14 @@ class ObjectManager {
 
     void Tick(float time);
 
+    void SendUpdate();
     void SendFullUpdate();
     void SendPartialUpdate();
     void SendStateToPlayerById(sf::Uint16 id);
   private:
-    PlayerManager* playermanager;
+    Game* game;
+
+    sf::Clock LastFullUpdate;
 
     std::vector<Object*> objects;
     sf::Uint16 lastId;

@@ -1,14 +1,19 @@
-
-
 #include "object.h"
 
-Object::Object(sf::Uint16 type_, sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
-type(type_), id(id_), name(name_), position(pos_), velocity(vel_), rotation(rot_), rotational_velocity(rot_vel_) {
-
+Object::Object(sf::Uint16 type, sf::Uint16 id, sf::String name, sf::Vector2f pos, sf::Vector2f vel, float rot, float rot_vel) {
+  this->type = type;
+  this->id = id;
+  this->name = name;
+  this->position = pos;
+  this->velocity = vel;
+  this->rotation = rot;
+  this->rotational_velocity = rot_vel;
 }
 
 Object::~Object() {
 
 }
 
-void Object::HandlePacket(sf::Packet p) {}
+void Object::HandlePacket(sf::Packet& p) {
+
+}

@@ -3,13 +3,16 @@
 
 #include <vector>
 #include <SFML/Network.hpp>
-
 #include "player.h"
+
+class Game;
 
 class PlayerManager {
   public:
-    PlayerManager();
+    PlayerManager(Game* g);
     ~PlayerManager();
+
+    void Tick(float time);
 
     sf::Uint16 CreatePlayer(sf::String name, sf::TcpSocket* sock);
     void RemovePlayer(sf::Uint16 id);
@@ -21,6 +24,8 @@ class PlayerManager {
     void Broadcast(sf::Packet p);
 
   private:
+    Game* game;
+
     std::vector<Player*> players;
     std::vector<Player*>::iterator iter;
     sf::Uint16 lastId;

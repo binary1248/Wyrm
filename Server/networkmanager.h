@@ -3,35 +3,56 @@
 
 #include <vector>
 #include <SFML/Network.hpp>
-#include "playermanager.h"
 
-struct sock_id_pair {
-  sf::TcpSocket* s;
-  sf::Uint16 id;
-  bool half_open;
+class Game;
+
+class sock_id_pair {
+  public:
+    sock_id_pair(sf::TcpSocket* s);
+    ~sock_id_pair();
+
+    sf::TcpSocket* GetSocket();
+    sf::Uint16 GetId();
+    bool IsHalfOpen();
+
+    void SetId(sf::Uint16 id);
+    void SetHalfOpen(bool half_open);
+  private:
+    sf::TcpSocket* s;
+    sf::Uint16 id;
+    bool half_open;
 };
 
-class NetworkManager : private sf::Thread {
+class NetworkManager {
   public:
-    NetworkManager(PlayerManager* pm);
+    NetworkManager(Game* g);
     ~NetworkManager();
 
-    //void RemoveClient(sf::Uint16 id);
+    void Tick(float time);
 
-    bool running;
+    bool IsListening();
+
+    //void RemoveClient(sf::Uint16 id);
   private:
-    virtual void Run();
+    bool listening;
     void HandlePacket(sf::Packet p, sf::Uint16 id);
     void AcceptSocket();
     void HandleSockets();
 
-    PlayerManager* playermanager;
+    void ClientDisconnect(sf::TcpSocket& client, sock_id_pair* pair);
+    void ClientConnect(sf::TcpSocket* Client);
+    bool ClientAuth(sf::TcpSocket& client, sock_id_pair* pair, sf::Packet& packet);
+
+    Game* game;
 
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
-    std::vector<sock_id_pair> clients;
-    std::vector<sock_id_pair>::iterator iter;
+    std::vector<sock_id_pair*> clients;
+    std::vector<sock_id_pair*>::iterator iter;
 };
+
+#define PROTOCOL_VER_MAJOR 0.1f
+#define PROTOCOL_VER_MINOR 0.1f
 
 enum server_packet_t0{
   OBJECT = 0
