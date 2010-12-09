@@ -6,10 +6,10 @@
 
 class Game;
 
-class sock_id_pair {
+class ClientSocket {
   public:
-    sock_id_pair(sf::TcpSocket* s);
-    ~sock_id_pair();
+    ClientSocket(sf::TcpSocket* s);
+    ~ClientSocket();
 
     sf::TcpSocket* GetSocket();
     sf::Uint16 GetId();
@@ -21,6 +21,26 @@ class sock_id_pair {
     sf::TcpSocket* s;
     sf::Uint16 id;
     bool half_open;
+};
+
+class NetworkMessage {
+  public:
+    NetworkMessage(sf::Packet& p);
+    NetworkMessage(sf::String s);
+    NetworkMessage(const char* data, std::size_t size);
+
+    ~NetworkMessage() {}
+
+    Send(ClientSocket* s);
+    Send(sf::TcpSocket& s);
+
+    Receive(ClientSocket* s);
+    Receive(sf::TcpSocket& s);
+  private:
+    sf::Uint8 type;
+    const char* payload;
+
+    sf::Packet packet;
 };
 
 class NetworkManager {
@@ -39,16 +59,16 @@ class NetworkManager {
     void AcceptSocket();
     void HandleSockets();
 
-    void ClientDisconnect(sf::TcpSocket& client, sock_id_pair* pair);
+    void ClientDisconnect(sf::TcpSocket& client, ClientSocket* pair);
     void ClientConnect(sf::TcpSocket* Client);
-    bool ClientAuth(sf::TcpSocket& client, sock_id_pair* pair, sf::Packet& packet);
+    bool ClientAuth(sf::TcpSocket& client, ClientSocket* pair, sf::Packet& packet);
 
     Game* game;
 
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
-    std::vector<sock_id_pair*> clients;
-    std::vector<sock_id_pair*>::iterator iter;
+    std::vector<ClientSocket*> clients;
+    std::vector<ClientSocket*>::iterator iter;
 };
 
 #define PROTOCOL_VER_MAJOR 0.1f

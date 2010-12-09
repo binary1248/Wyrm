@@ -21,33 +21,33 @@ std::string ErrCode(sf::Socket::Status s) {
   }
 }
 
-sock_id_pair::sock_id_pair(sf::TcpSocket* s) {
+ClientSocket::ClientSocket(sf::TcpSocket* s) {
   this->s = s;
   half_open = true;
   id = 0xFFFF;
 }
 
-sock_id_pair::~sock_id_pair() {
+ClientSocket::~ClientSocket() {
 
 }
 
-sf::TcpSocket* sock_id_pair::GetSocket() {
+sf::TcpSocket* ClientSocket::GetSocket() {
   return s;
 }
 
-sf::Uint16 sock_id_pair::GetId() {
+sf::Uint16 ClientSocket::GetId() {
   return id;
 }
 
-bool sock_id_pair::IsHalfOpen() {
+bool ClientSocket::IsHalfOpen() {
   return half_open;
 }
 
-void sock_id_pair::SetId(sf::Uint16 id) {
+void ClientSocket::SetId(sf::Uint16 id) {
   this->id = id;
 }
 
-void sock_id_pair::SetHalfOpen(bool half_open) {
+void ClientSocket::SetHalfOpen(bool half_open) {
   this->half_open = half_open;
 }
 
@@ -120,7 +120,7 @@ void NetworkManager::AcceptSocket() {
 
 void NetworkManager::HandleSockets() {
   for (iter = clients.begin(); iter != clients.end(); iter++) {
-    sock_id_pair* pair = (*iter);
+    ClientSocket* pair = (*iter);
 
     if(!(pair->GetSocket())) {
       std::cerr << "Invalid socket..." << std::endl;
@@ -158,7 +158,7 @@ void NetworkManager::HandleSockets() {
   }
 }
 
-void NetworkManager::ClientDisconnect(sf::TcpSocket& client, sock_id_pair* pair) {
+void NetworkManager::ClientDisconnect(sf::TcpSocket& client, ClientSocket* pair) {
   std::cout << "Client " << client.GetRemoteAddress().ToString() << " disconnected.." << std::endl;
   selector.Remove(client);
   game->GetPlayerManager()->RemovePlayer(pair->GetId());
@@ -174,12 +174,12 @@ void NetworkManager::ClientConnect(sf::TcpSocket* Client) {
   packet << sf::String("Wyrm protocol version ") << (float)PROTOCOL_VER_MAJOR << (float)PROTOCOL_VER_MINOR;
   Client->Send(packet);
 
-  sock_id_pair* pair = new sock_id_pair(Client);
+  ClientSocket* pair = new ClientSocket(Client);
   clients.push_back(pair);
   selector.Add(*Client);
 }
 
-bool NetworkManager::ClientAuth(sf::TcpSocket& client, sock_id_pair* pair, sf::Packet& packet) {
+bool NetworkManager::ClientAuth(sf::TcpSocket& client, ClientSocket* pair, sf::Packet& packet) {
   std::cout << "Checking auth" << std::endl;
 
   if(CheckAuth(packet)) {
