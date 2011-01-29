@@ -11,6 +11,9 @@ class ClientSocket {
     ClientSocket(sf::TcpSocket* s);
     ~ClientSocket();
 
+    void Send(sf::Packet& p);
+    void Receive(sf::Packet& p);
+
     sf::TcpSocket* GetSocket();
     sf::Uint16 GetId();
     bool IsHalfOpen();
@@ -26,19 +29,23 @@ class ClientSocket {
 class NetworkMessage {
   public:
     NetworkMessage(sf::Packet& p);
-    NetworkMessage(sf::String s);
     NetworkMessage(const char* data, std::size_t size);
 
-    ~NetworkMessage() {}
+    ~NetworkMessage();
 
-    Send(ClientSocket* s);
-    Send(sf::TcpSocket& s);
+    void Send(ClientSocket* s);
+    void Receive(ClientSocket* s);
 
-    Receive(ClientSocket* s);
-    Receive(sf::TcpSocket& s);
+    const char* GetPayload();
+    std::size_t GetPayloadSize();
   private:
-    sf::Uint8 type;
-    const char* payload;
+    void ConstructPacket();
+    void ParsePacket();
+
+    sf::Uint16 type;
+    sf::Uint16 subtype;
+    char* payload;
+    std::size_t payload_size;
 
     sf::Packet packet;
 };

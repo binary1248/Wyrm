@@ -16,11 +16,11 @@
 	<File name="main.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="networkmanager.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="4363" topLine="136" />
+	<File name="networkmanager.cpp" open="1" top="1" tabpos="2">
+		<Cursor position="1876" topLine="3" />
 	</File>
-	<File name="networkmanager.h" open="1" top="1" tabpos="1">
-		<Cursor position="1847" topLine="27" />
+	<File name="networkmanager.h" open="1" top="0" tabpos="1">
+		<Cursor position="708" topLine="46" />
 	</File>
 	<File name="objectmanager.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1933" topLine="27" />
@@ -28,8 +28,8 @@
 	<File name="objectmanager.h" open="0" top="0" tabpos="0">
 		<Cursor position="589" topLine="0" />
 	</File>
-	<File name="objects\object.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="406" topLine="0" />
+	<File name="objects\object.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="23" topLine="0" />
 	</File>
 	<File name="objects\object.h" open="0" top="0" tabpos="0">
 		<Cursor position="434" topLine="0" />

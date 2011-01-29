@@ -263,7 +263,7 @@
 	<vector>
 	<SFML/Network.hpp>
 
-1291929992 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
+1296305049 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
 	<vector>
 	<SFML/Network.hpp>
 
@@ -284,7 +284,7 @@
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1291929992 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
+1296305049 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
 	<vector>
 	<SFML/Network.hpp>
 
@@ -301,8 +301,9 @@
 1291822623 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\ship.h
 	"object.h"
 
-1291822067 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.cpp
+1296305035 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.cpp
 	<iostream>
+	<cstring>
 	<SFML/Network.hpp>
 	"auth.h"
 	"player.h"
@@ -343,7 +344,7 @@
 	"game.h"
 	"objects/object.h"
 
-1291818800 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
+1292019768 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
 	<iostream>
 	<SFML/Network.hpp>
 	"objects/objects.h"

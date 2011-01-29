@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <SFML/Network.hpp>
 
 #include "auth.h"
@@ -31,6 +32,20 @@ ClientSocket::~ClientSocket() {
 
 }
 
+void ClientSocket::Send(sf::Packet& p) {
+  sf::Socket::Status s;
+  if( (s = GetSocket()->Send(p)) != sf::TcpSocket::Done ) {
+    std::cout << "Send Error: " << ErrCode(s) << std::endl;
+  }
+}
+
+void ClientSocket::Receive(sf::Packet& p) {
+  sf::Socket::Status s;
+  if( (s = GetSocket()->Receive(p)) != sf::TcpSocket::Done ) {
+    std::cout << "Receive Error: " << ErrCode(s) << std::endl;
+  }
+}
+
 sf::TcpSocket* ClientSocket::GetSocket() {
   return s;
 }
@@ -51,14 +66,108 @@ void ClientSocket::SetHalfOpen(bool half_open) {
   this->half_open = half_open;
 }
 
+NetworkMessage::NetworkMessage(sf::Packet& p) {
+  payload = 0;
+  payload_size = 0;
+
+  memcpy(&packet, &p, sizeof(sf::Packet));
+  ParsePacket();
+}
+
+NetworkMessage::NetworkMessage(const char* data, std::size_t size) {
+  if( size < 4 ) {
+    payload_size = 0;
+    payload = 0;
+    type = 0xFFFF;
+    subtype = 0xFFFF;
+    return;
+  }
+
+  payload_size = size;
+
+  payload = new char[payload_size];
+
+  memcpy(payload, data, payload_size);
+}
+
+NetworkMessage::~NetworkMessage() {
+  if( payload_size && payload ) {
+    delete[] payload;
+  }
+}
+
+void NetworkMessage::Send(ClientSocket* s) {
+  if( packet.GetDataSize() >= 4 ) {
+    s->Send(packet);
+  }
+}
+
+void NetworkMessage::Receive(ClientSocket* s) {
+  s->Receive(packet);
+  ParsePacket();
+}
+
+void NetworkMessage::ConstructPacket() {
+  packet.Clear();
+
+  if( type == 0xFFFF || subtype == 0xFFFF ) {
+    std::cout << "Invalid type/subtype" << std::endl;
+    return;
+  }
+
+  packet << type;
+  packet << subtype;
+
+  if( !payload_size || !payload ) {
+    //std::cout << "Invalid payload" << std::endl;
+    return;
+  }
+
+  packet.Append(payload, payload_size);
+}
+
+void NetworkMessage::ParsePacket() {
+  if( payload_size || payload ) {
+    delete[] payload;
+    payload = 0;
+    payload_size = 0;
+  }
+
+  std::size_t size = packet.GetDataSize();
+
+  if( size < 4 ) {
+    payload_size = 0;
+    payload = 0;
+    type = 0xFFFF;
+    subtype = 0xFFFF;
+    return;
+  }
+
+  packet >> type;
+  packet >> subtype;
+
+  payload_size = packet.GetDataSize();
+
+  payload = new char[payload_size];
+
+  memcpy(payload, packet.GetData(), payload_size);
+}
+
+inline const char* NetworkMessage::GetPayload() {
+  return payload;
+}
+
+inline std::size_t NetworkMessage::GetPayloadSize() {
+  return payload_size;
+}
+
 NetworkManager::NetworkManager(Game* g) {
   listening = false;
   selector.Clear();
 
   game = g;
 
-  if (sock_listener.Listen(1337) != sf::Socket::Done)
-  {
+  if (sock_listener.Listen(1337) != sf::Socket::Done) {
     // Error...
     std::cout << "WTF? Why can't I listen???" << std::endl;
   }
