@@ -9,25 +9,21 @@ class Game;
 
 class PlayerManager {
   public:
-    PlayerManager(Game* g);
+    PlayerManager();
     ~PlayerManager();
 
     void Tick(float time);
 
-    sf::Uint16 CreatePlayer(sf::String name, sf::TcpSocket* sock);
+    sf::Uint16 CreatePlayer(sf::TcpSocket* sock);
     void RemovePlayer(sf::Uint16 id);
     void ClearPlayers();
 
     void SendToPlayerById(sf::Uint16 id, sf::Packet p);
-    void DispatchPacket(sf::Packet p, sf::Uint16 id);
 
     void Broadcast(sf::Packet p);
 
   private:
-    Game* game;
-
     std::vector<Player*> players;
-    std::vector<Player*>::iterator iter;
     sf::Uint16 lastId;
 };
 

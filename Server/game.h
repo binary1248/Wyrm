@@ -7,7 +7,7 @@
 
 class Game {
   public:
-    Game();
+    static Game* getGame();
     ~Game();
     int Run();
 
@@ -18,6 +18,10 @@ class Game {
     NetworkManager* GetNetworkManager();
 
   private:
+    Game();
+
+    static Game* instance;
+
     bool running;
 
     PlayerManager* playermanager;

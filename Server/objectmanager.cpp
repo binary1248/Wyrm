@@ -6,9 +6,8 @@
 #include "game.h"
 #include "objectmanager.h"
 
-ObjectManager::ObjectManager(Game* g) {
+ObjectManager::ObjectManager() {
   lastId = 0;
-  game = g;
   LastFullUpdate.Reset();
 }
 
@@ -21,13 +20,27 @@ void ObjectManager::AddObject(Object* o) {
   objects.push_back(o);
 }
 
+void ObjectManager::RemoveObject(Object* o) {
+  for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
+    if((*i) && (*i)->id == o->GetId()) {
+      sf::Packet packet;
+      packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
+             << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
+      Game::getGame()->GetPlayerManager()->Broadcast(packet);
+      delete (*i);
+      objects.erase(i);
+      break;
+    }
+  }
+}
+
 void ObjectManager::RemoveObjectById(sf::Uint16 id) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+  for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
     if((*i) && (*i)->id == id) {
       sf::Packet packet;
       packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
              << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
-      game->GetPlayerManager()->Broadcast(packet);
+      Game::getGame()->GetPlayerManager()->Broadcast(packet);
       delete (*i);
       objects.erase(i);
       break;
@@ -36,9 +49,9 @@ void ObjectManager::RemoveObjectById(sf::Uint16 id) {
 }
 
 Object* ObjectManager::GetObjectById(sf::Uint16 id) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
-    if((*i)->id == id) {
-      return (*i);
+  for( size_t i = 0; i < objects.size(); i++ ) {
+    if(objects[i]->id == id) {
+      return objects[i];
     }
   }
   std::cout << "Couldn't find object with id " << id << std::endl;
@@ -66,7 +79,7 @@ Object* ObjectManager::CreateObject(sf::Uint16 type) {
            << object->position.x     << object->position.y
            << object->velocity.x     << object->velocity.y
            << object->rotation       << object->rotational_velocity;
-    game->GetPlayerManager()->Broadcast(packet);
+    Game::getGame()->GetPlayerManager()->Broadcast(packet);
   }
 
   std::cout << "Created object of type " << type << std::endl;
@@ -75,19 +88,19 @@ Object* ObjectManager::CreateObject(sf::Uint16 type) {
 }
 
 void ObjectManager::ClearObjects() {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end();) {
-    if(*i) {
-      delete (*i);
-      (*i) = 0;
-      objects.erase(i);
+  while( objects.size() ) {
+    if( objects.back() ) {
+      delete objects.back();
+      objects.back() = 0;
+      objects.pop_back();
     }
   }
 }
 
 void ObjectManager::SendPacketToObjectById(sf::Uint16 id, sf::Packet p) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
-    if((*i)->id == id) {
-      (*i)->HandlePacket(p);
+  for( size_t i = 0; i < objects.size(); i++ ) {
+    if(objects[i]->id == id) {
+      objects[i]->HandlePacket(p);
       return;
     }
   }
@@ -96,8 +109,8 @@ void ObjectManager::SendPacketToObjectById(sf::Uint16 id, sf::Packet p) {
 }
 
 void ObjectManager::Tick(float time) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
-    (*i)->Update(time);
+  for( size_t i = 0; i < objects.size(); i++ ) {
+    objects[i]->Update(time);
   }
 
   SendUpdate();
@@ -112,42 +125,42 @@ void ObjectManager::SendUpdate() {
 }
 
 void ObjectManager::SendFullUpdate() {
-  for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+  for( size_t i = 0; i < objects.size(); i++ ) {
     sf::Packet packet;
-    packet << (sf::Uint16)OBJECT << (*i)->id << (sf::Uint16)POSITION_UPDATE
-           << (*i)->position.x << (*i)->position.y << (*i)->rotation;
-    game->GetPlayerManager()->Broadcast(packet);
+    packet << (sf::Uint16)OBJECT << objects[i]->id << (sf::Uint16)POSITION_UPDATE
+           << objects[i]->position.x << objects[i]->position.y << objects[i]->rotation;
+    Game::getGame()->GetPlayerManager()->Broadcast(packet);
   }
 
   LastFullUpdate.Reset();
 }
 
 void ObjectManager::SendPartialUpdate() {
-  for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+  for( size_t i = 0; i < objects.size(); i++ ) {
     sf::Packet packet;
-    packet << (sf::Uint16)OBJECT << (*i)->id << (sf::Uint16)VELOCITY_UPDATE
-           << (*i)->velocity.x << (*i)->velocity.y << (*i)->rotational_velocity;
-    switch((*i)->type) {
+    packet << (sf::Uint16)OBJECT << objects[i]->id << (sf::Uint16)VELOCITY_UPDATE
+           << objects[i]->velocity.x << objects[i]->velocity.y << objects[i]->rotational_velocity;
+    switch(objects[i]->type) {
       case SHIP:
-        packet << ((Ship*)(*i))->thrust;
+        packet << ((Ship*)objects[i])->thrust;
         break;
       default:
         std::cout << "Couldn't determine what extra attributes to send." << std::endl;
         break;
     }
-    game->GetPlayerManager()->Broadcast(packet);
+    Game::getGame()->GetPlayerManager()->Broadcast(packet);
   }
 }
 
 void ObjectManager::SendStateToPlayerById(sf::Uint16 id) {
-  for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+  for( size_t i = 0; i < objects.size(); i++ ) {
     sf::Packet packet;
     packet << (sf::Uint16)OBJECT     << (sf::Uint16)0xFFFF
-           << (sf::Uint16)NEW_OBJECT << (*i)->type
-           << (*i)->id               << (*i)->name
-           << (*i)->position.x       << (*i)->position.y
-           << (*i)->velocity.x       << (*i)->velocity.y
-           << (*i)->rotation         << (*i)->rotational_velocity;
-    game->GetPlayerManager()->SendToPlayerById(id, packet);
+           << (sf::Uint16)NEW_OBJECT << objects[i]->type
+           << objects[i]->id         << objects[i]->name
+           << objects[i]->position.x << objects[i]->position.y
+           << objects[i]->velocity.x << objects[i]->velocity.y
+           << objects[i]->rotation   << objects[i]->rotational_velocity;
+    Game::getGame()->GetPlayerManager()->SendToPlayerById(id, packet);
   }
 }

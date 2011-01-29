@@ -3,23 +3,40 @@
 
 #include <vector>
 #include <SFML/Network.hpp>
+#include "objects/object.h"
 
 class Player {
   public:
-    Player(sf::Uint16, sf::String n, sf::TcpSocket* s);
+    Player(sf::Uint16, sf::TcpSocket* s);
     ~Player();
 
-    void SetShip(sf::Uint16 id);
-
     // Network Handlers
-    void HandlePacket(sf::Packet p);
+    void SelectSocket(sf::SocketSelector s);
     void SendPacket(sf::Packet p);
+    void ReceivePacket();
+
+    void HandlePacket(sf::Packet p);
+
+    void Auth(sf::Packet p);
     void Disconnect();
 
-    sf::String name;
-    sf::Uint16 id;
-    sf::Uint16 shipId;
+    bool Connected();
+    std::string GetIPAddressString();
+
+    sf::Uint16 GetId();
+
+    Object* GetAgent();
+    void SetAgent(Object* o);
+
+  private:
     sf::TcpSocket* connection;
+    bool connected;
+    bool half_open;
+    sf::Uint16 id;
+
+    sf::String name;
+
+    Object* agent;
 };
 
 #endif // PLAYER_H_INCLUDED

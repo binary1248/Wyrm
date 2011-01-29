@@ -6,9 +6,8 @@
 #include "game.h"
 #include "playermanager.h"
 
-PlayerManager::PlayerManager(Game* g) {
+PlayerManager::PlayerManager() {
   lastId = 0;
-  game = g;
 }
 
 PlayerManager::~PlayerManager() {
@@ -17,75 +16,72 @@ PlayerManager::~PlayerManager() {
 }
 
 void PlayerManager::Tick(float time) {
-
+  for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); ) {
+    if( !(*iter)->Connected() ) {
+      // Reap disconnected players
+      delete (*iter);
+      iter = players.erase(iter);
+      continue;
+    }
+    iter++;
+  }
 }
 
-sf::Uint16 PlayerManager::CreatePlayer(sf::String name, sf::TcpSocket* sock) {
-  Player* player = new Player(lastId++, name, sock);
+sf::Uint16 PlayerManager::CreatePlayer(sf::TcpSocket* sock) {
+  Player* player = new Player(lastId++, sock);
 
   players.push_back(player);
 
-  Object* o = game->GetObjectManager()->CreateObject(SHIP);
+  Object* o = Game::getGame()->GetObjectManager()->CreateObject(SHIP);
 
-  player->SetShip(o->id);
+  player->SetAgent(o);
 
-  std::cout << "Created new player with id " << player->id << " and ship id " << o->id << std::endl;
+  std::cout << "Created new player with id " << player->GetId() << " and ship id " << o->id << std::endl;
 
   sf::Packet packet;
   packet << (sf::Uint16)OBJECT     << (sf::Uint16)0xFFFF
          << (sf::Uint16)SET_ID     << o->id;
   player->SendPacket(packet);
 
-  game->GetObjectManager()->SendStateToPlayerById(player->id);
+  Game::getGame()->GetObjectManager()->SendStateToPlayerById(player->GetId());
 
-  return player->id;
+  return player->GetId();
 }
 
 void PlayerManager::RemovePlayer(sf::Uint16 id) {
-  for( iter = players.begin(); iter != players.end(); iter++) {
-    if( (*iter) && (*iter)->id == id) {
-      sf::Uint16 shipId = (*iter)->shipId;
+  for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); iter++) {
+    if( (*iter) && (*iter)->GetId() == id) {
+      Object* agent = (*iter)->GetAgent();
       delete (*iter);
       iter = players.erase(iter);
-      game->GetObjectManager()->RemoveObjectById( shipId );
-      std::cout << "Removed player with id " << (*iter)->id << " and ship id " << (*iter)->shipId << std::endl;
+      Game::getGame()->GetObjectManager()->RemoveObjectById( agent->GetId() );
+      std::cout << "Removed player with id " << (*iter)->GetId() << " and agent id " << (*iter)->GetAgent()->GetId() << std::endl;
       return;
     }
   }
 }
 
 void PlayerManager::ClearPlayers() {
-  for(iter = players.begin(); iter != players.end(); ) {
-    if(*iter) {
-      (*iter)->Disconnect();
-      delete (*iter);
-      (*iter) = 0;
-      iter = players.erase(iter);
-    }
-  }
-}
-
-void PlayerManager::DispatchPacket(sf::Packet p, sf::Uint16 id) {
-  for( iter = players.begin(); iter != players.end(); iter++) {
-    if( (*iter) && (*iter)->id == id ) {
-      // Get controlled object id and dispatch packet.
-      sf::Uint16 object_id = (*iter)->shipId;
-      game->GetObjectManager()->SendPacketToObjectById(object_id, p);
+  while(!players.empty()) {
+    if(players.back()) {
+      delete players.back();
+      players.back() = 0;
+      players.pop_back();
     }
   }
 }
 
 void PlayerManager::SendToPlayerById(sf::Uint16 id, sf::Packet p) {
-  for( iter = players.begin(); iter != players.end(); iter++) {
-    if((*iter) && (*iter)->id == id) {
-      (*iter)->SendPacket(p);
+  for( std::size_t i = 0; i < players.size(); i++ ) {
+    if( players[i] && players[i]->GetId() == id) {
+      players[i]->SendPacket(p);
       return;
     }
   }
 }
 
 void PlayerManager::Broadcast(sf::Packet p) {
-  for( iter = players.begin(); iter != players.end(); iter++) {
-    (*iter)->SendPacket(p);
+  for( std::size_t i = 0; i < players.size(); i++ ) {
+    players[i]->SendPacket(p);
   }
 }

@@ -15,6 +15,8 @@ class Object {
 
     virtual void HandlePacket(sf::Packet& p);
 
+    sf::Uint16 GetId();
+
     sf::Uint16 type;
 
     sf::Uint16 id;

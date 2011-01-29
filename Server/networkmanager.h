@@ -4,78 +4,43 @@
 #include <vector>
 #include <SFML/Network.hpp>
 
+inline std::string ErrCode(sf::Socket::Status s) {
+  switch(s) {
+    case sf::TcpSocket::Disconnected:
+      return "Disconnected";
+    case sf::TcpSocket::Done:
+      return "Done";
+    case sf::TcpSocket::Error:
+      return "Error";
+    case sf::TcpSocket::NotReady:
+      return "Not Ready";
+    default:
+      return "Undefined";
+  }
+}
+
 class Game;
-
-class ClientSocket {
-  public:
-    ClientSocket(sf::TcpSocket* s);
-    ~ClientSocket();
-
-    void Send(sf::Packet& p);
-    void Receive(sf::Packet& p);
-
-    sf::TcpSocket* GetSocket();
-    sf::Uint16 GetId();
-    bool IsHalfOpen();
-
-    void SetId(sf::Uint16 id);
-    void SetHalfOpen(bool half_open);
-  private:
-    sf::TcpSocket* s;
-    sf::Uint16 id;
-    bool half_open;
-};
-
-class NetworkMessage {
-  public:
-    NetworkMessage(sf::Packet& p);
-    NetworkMessage(const char* data, std::size_t size);
-
-    ~NetworkMessage();
-
-    void Send(ClientSocket* s);
-    void Receive(ClientSocket* s);
-
-    const char* GetPayload();
-    std::size_t GetPayloadSize();
-  private:
-    void ConstructPacket();
-    void ParsePacket();
-
-    sf::Uint16 type;
-    sf::Uint16 subtype;
-    char* payload;
-    std::size_t payload_size;
-
-    sf::Packet packet;
-};
 
 class NetworkManager {
   public:
-    NetworkManager(Game* g);
+    NetworkManager();
     ~NetworkManager();
 
     void Tick(float time);
 
     bool IsListening();
 
+    void SelectorAdd(sf::TcpSocket* s);
+    void SelectorRemove(sf::TcpSocket* s);
+
     //void RemoveClient(sf::Uint16 id);
   private:
     bool listening;
     void HandlePacket(sf::Packet p, sf::Uint16 id);
     void AcceptSocket();
-    void HandleSockets();
-
-    void ClientDisconnect(sf::TcpSocket& client, ClientSocket* pair);
-    void ClientConnect(sf::TcpSocket* Client);
-    bool ClientAuth(sf::TcpSocket& client, ClientSocket* pair, sf::Packet& packet);
-
-    Game* game;
 
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
-    std::vector<ClientSocket*> clients;
-    std::vector<ClientSocket*>::iterator iter;
 };
 
 #define PROTOCOL_VER_MAJOR 0.1f

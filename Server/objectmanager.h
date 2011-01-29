@@ -10,10 +10,11 @@ class Game;
 
 class ObjectManager {
   public:
-    ObjectManager(Game* g);
+    ObjectManager();
     ~ObjectManager();
 
     void AddObject(Object* o);
+    void RemoveObject(Object* o);
     void RemoveObjectById(sf::Uint16 id);
     Object* GetObjectById(sf::Uint16 id);
     Object* CreateObject(sf::Uint16 type);
@@ -28,8 +29,6 @@ class ObjectManager {
     void SendPartialUpdate();
     void SendStateToPlayerById(sf::Uint16 id);
   private:
-    Game* game;
-
     sf::Clock LastFullUpdate;
 
     std::vector<Object*> objects;

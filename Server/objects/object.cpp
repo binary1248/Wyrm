@@ -17,3 +17,7 @@ Object::~Object() {
 void Object::HandlePacket(sf::Packet& p) {
 
 }
+
+sf::Uint16 Object::GetId() {
+  return id;
+}

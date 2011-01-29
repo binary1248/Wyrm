@@ -1,12 +1,21 @@
 #include <iostream>
 #include "game.h"
 
+Game* Game::instance;
+
+Game* Game::getGame() {
+  if( !Game::instance ) {
+    instance = new Game();
+  }
+  return instance;
+}
+
 Game::Game() {
   running = false;
 
-  playermanager = new PlayerManager(this);
-  objectmanager = new ObjectManager(this);
-  networkmanager = new NetworkManager(this);
+  playermanager = new PlayerManager();
+  objectmanager = new ObjectManager();
+  networkmanager = new NetworkManager();
 }
 
 Game::~Game() {
