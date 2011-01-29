@@ -132,3 +132,152 @@
 	"gui.h"
 	"network.h"
 
+1283569290 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.cpp
+	<SFML/Graphics.hpp>
+	"backdrop.h"
+
+1283569198 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
+	<SFML/Graphics.hpp>
+
+1283899636 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"network.h"
+	"gui.h"
+	"events.h"
+
+1285978982 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.h
+	<SFML/Network.hpp>
+
+1285960970 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.h
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+
+1283546422 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.h
+	<SFML/Graphics.hpp>
+
+1285961074 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.cpp
+	<map>
+	<boost/shared_ptr.hpp>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+	<SFGUI/Button.hpp>
+	<SFGUI/Editbox.hpp>
+	"gui.h"
+	"network.h"
+
+1286012680 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"player.h"
+	"events.h"
+	"network.h"
+	"gui.h"
+	"objects/objects.h"
+	"objectmanager.h"
+	"backdrop.h"
+	"particle/particles.h"
+
+1283812682 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.h
+	<SFML/System.hpp>
+
+1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\objects.h
+	"ship.h"
+
+1283814254 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
+	"object.h"
+
+1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+
+1283812430 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
+	<vector>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"objects/object.h"
+
+1283784620 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\particles.h
+	"ParticleSystem.h"
+
+1283653196 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\particlesystem.h
+	"EmitterBase.h"
+	"AffectorBase.h"
+
+1218282262 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\emitterbase.h
+	<vector>
+	"SFML/Graphics.hpp"
+	"Particle.h"
+	"AffectorBase.h"
+
+1218281900 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\particle.h
+	"SFML/System.hpp"
+
+1218280552 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\affectorbase.h
+
+1285979150 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
+	<iostream>
+	<SFML/Network.hpp>
+	"network.h"
+	"player.h"
+	"objectmanager.h"
+
+1283821322 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+	<iostream>
+	<SFML/System.hpp>
+	<SFML/Network.hpp>
+	"network.h"
+	"player.h"
+	"objects/objects.h"
+	"objectmanager.h"
+
+1283814234 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.cpp
+	"object.h"
+
+1283821294 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	"objects/objects.h"
+	"network.h"
+	"backdrop.h"
+	"ship.h"
+
+1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\objects.h
+	"ship.h"
+
+1283814254 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
+	"object.h"
+
+1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+
+1285978982 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
+	<SFML/Network.hpp>
+
+1283569198 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
+	<SFML/Graphics.hpp>
+
+1283634060 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\emitterbase.cpp
+	<SFML/Graphics.hpp>
+	"EmitterBase.h"
+	<GL/gl.h>
+
+1283653198 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\particlesystem.cpp
+	"ParticleSystem.h"
+
+1283784634 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\particles.cpp
+	<SFML/Graphics.hpp>
+	"ParticleSystem.h"
+	"particles.h"
+
+1283820148 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
+	<iostream>
+	<cmath>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"objects/objects.h"
+	"objectmanager.h"
+	"player.h"
+
