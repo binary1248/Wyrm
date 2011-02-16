@@ -20,8 +20,7 @@ class Ship : public Object{
 
     sf::Sprite Sprite;
     sf::Text Text;
+    sf::Image Image;
 };
-
-extern sf::Image Image;
 
 #endif // SHIP_H_INCLUDED

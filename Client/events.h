@@ -4,5 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 int HandleEvents(sf::RenderWindow& app);
+void LoadKeymap();
 
 #endif // EVENTS_H_INCLUDED

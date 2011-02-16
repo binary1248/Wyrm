@@ -26,6 +26,4 @@ class ObjectManager {
     std::vector<Object*> objects;
 };
 
-extern ObjectManager objectmanager;
-
 #endif // OBJECTMANAGER_H_INCLUDED

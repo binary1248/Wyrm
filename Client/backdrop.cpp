@@ -2,19 +2,9 @@
 
 #include "backdrop.h"
 
-struct particle{
-  sf::Vector2f position;
-  float size;
-};
+Backdrop::Backdrop(sf::RenderWindow& w) {
+  backdrop_velocity = sf::Vector2f(0,0);
 
-sf::Image background;
-sf::Sprite background_sprite;
-sf::Vector2f backdrop_velocity = sf::Vector2f(0,0);
-sf::Clock LastDraw;
-
-particle particles[NUM_BACKDROP_PARTICLES];
-
-void LoadBackdrop(sf::RenderWindow& w) {
   background.LoadFromFile("background.jpg");
   background_sprite.SetImage(background);
 
@@ -25,7 +15,11 @@ void LoadBackdrop(sf::RenderWindow& w) {
   }
 }
 
-void DrawBackdrop(sf::RenderWindow& w) {
+Backdrop::~Backdrop() {
+
+}
+
+void Backdrop::Draw(sf::RenderWindow& w) {
   unsigned int width = w.GetWidth();
   unsigned int height = w.GetHeight();
 
@@ -59,6 +53,6 @@ void DrawBackdrop(sf::RenderWindow& w) {
   w.SetView(view);
 }
 
-void UpdateBackdrop(sf::Vector2f v) {
+void Backdrop::Update(sf::Vector2f v) {
   backdrop_velocity = (-v);
 }

@@ -23,7 +23,7 @@ enum client_packet_t1{
   CONTROL = 0
 };
 
-class NetworkHandler : public sf::Thread{
+class NetworkHandler {
   public:
     NetworkHandler();
     ~NetworkHandler();
@@ -35,15 +35,16 @@ class NetworkHandler : public sf::Thread{
 
     void HandlePacket(sf::Packet p);
 
-    bool connected;
-    bool authenticated;
-    bool running;
+    void Tick();
+
+    bool IsAuthenticated();
+    bool IsConnected();
   private:
-    virtual void Run();
     sf::TcpSocket Client;
     sf::SocketSelector Selector;
-};
 
-extern NetworkHandler networkhandler;
+    bool connected;
+    bool authenticated;
+};
 
 #endif // NETWORK_H_INCLUDED

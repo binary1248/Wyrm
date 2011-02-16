@@ -132,67 +132,68 @@
 	"gui.h"
 	"network.h"
 
-1283569290 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.cpp
+1297882976 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.cpp
 	<SFML/Graphics.hpp>
 	"backdrop.h"
 
-1283569198 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
+1297882969 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
 	<SFML/Graphics.hpp>
 
-1283899636 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
+1297887218 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 	"network.h"
 	"gui.h"
+	"game.h"
 	"events.h"
 
-1285978982 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.h
+1297873152 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.h
 	<SFML/Network.hpp>
 
-1285960970 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.h
-	<SFML/Graphics.hpp>
-	<SFGUI/GUI.hpp>
-
-1283546422 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.h
-	<SFML/Graphics.hpp>
-
-1285961074 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.cpp
+1297886609 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.h
 	<map>
-	<boost/shared_ptr.hpp>
 	<SFML/Graphics.hpp>
 	<SFGUI/GUI.hpp>
-	<SFGUI/Button.hpp>
-	<SFGUI/Editbox.hpp>
-	"gui.h"
-	"network.h"
+	"widgetset.h"
 
-1297819077 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
+1297886907 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.h
+	<SFML/Graphics.hpp>
+
+1297886636 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+	"gui.h"
+	"guievents.h"
+	"network.h"
+	"game.h"
+
+1297873839 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 	"player.h"
-	"events.h"
 	"network.h"
 	"gui.h"
+	"game.h"
 	"objects/objects.h"
 	"objectmanager.h"
-	"backdrop.h"
 	"particle/particles.h"
 
-1283812682 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.h
+1297871884 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.h
 	<SFML/System.hpp>
 
 1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\objects.h
 	"ship.h"
 
-1283814254 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
+1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
 	"object.h"
 
 1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1283812430 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
+1297874414 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -216,47 +217,48 @@
 
 1218280552 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\affectorbase.h
 
-1297396673 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
+1297883384 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
 	<iostream>
 	<SFML/Network.hpp>
 	"network.h"
 	"player.h"
 	"objectmanager.h"
+	"game.h"
 
-1297820448 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+1297882418 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
 	<iostream>
 	<SFML/System.hpp>
 	<SFML/Network.hpp>
 	"network.h"
 	"player.h"
+	"game.h"
 	"objects/objects.h"
 	"objectmanager.h"
 
 1283814234 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.cpp
 	"object.h"
 
-1297819634 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+1297883008 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
-	"objects/objects.h"
-	"network.h"
-	"backdrop.h"
 	"ship.h"
+	"objects/objects.h"
+	"game.h"
 
 1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\objects.h
 	"ship.h"
 
-1283814254 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
+1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
 	"object.h"
 
 1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1285978982 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
+1297873152 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
 	<SFML/Network.hpp>
 
-1283569198 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
+1297882969 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
 	<SFML/Graphics.hpp>
 
 1283634060 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\emitterbase.cpp
@@ -272,7 +274,7 @@
 	"ParticleSystem.h"
 	"particles.h"
 
-1283820148 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
+1297874595 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
 	<iostream>
 	<cmath>
 	<SFML/Graphics.hpp>
@@ -280,4 +282,63 @@
 	"objects/objects.h"
 	"objectmanager.h"
 	"player.h"
+	"game.h"
+
+1297882800 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.h
+	"objectmanager.h"
+	"gui.h"
+	"network.h"
+	"player.h"
+	"backdrop.h"
+
+1297887248 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
+	"game.h"
+	"backdrop.h"
+	"events.h"
+
+1297882800 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\game.h
+	"objectmanager.h"
+	"gui.h"
+	"network.h"
+	"player.h"
+	"backdrop.h"
+
+1297874414 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objectmanager.h
+	<vector>
+	<SFML/Graphics.hpp>
+	<SFML/Network.hpp>
+	"objects/object.h"
+
+1297886609 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\gui.h
+	<map>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+	"widgetset.h"
+
+1297871884 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\player.h
+	<SFML/System.hpp>
+
+1297886631 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\widgetset.h
+	<boost/shared_ptr.hpp>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+
+1297886631 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\widgetset.h
+	<boost/shared_ptr.hpp>
+	<SFML/Graphics.hpp>
+	<SFGUI/GUI.hpp>
+
+1297885184 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\widgetset.cpp
+	<iostream>
+	"widgetset.h"
+
+1297886544 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\guievents.h
+	"gui.h"
+
+1297886549 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\guievents.cpp
+	<SFGUI/GUI.hpp>
+	<SFGUI/Button.hpp>
+	<SFGUI/Editbox.hpp>
+	"guievents.h"
+	"game.h"
 

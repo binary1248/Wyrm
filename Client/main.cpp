@@ -3,29 +3,16 @@
 #include <SFML/Network.hpp>
 
 #include "player.h"
-#include "events.h"
 #include "network.h"
 #include "gui.h"
+#include "game.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
-#include "backdrop.h"
 #include "particle/particles.h"
 
-bool bRunning = true;
-
 int main(int argc, char** argv) {
-  // Create the main rendering window
-  sf::RenderWindow App(sf::VideoMode(1024, 768, 32), "WYRM");
 
-  App.EnableKeyRepeat(false);
-
-  LoadGUI(App);
-
-  sf::String username("TestUser");
-  sf::String password("TestPassword");
-
-  LoadBackdrop(App);
-  Image.LoadFromFile("spaceship.png");
+  Game::GetGame()->Run();
 
   /*
 	//So we whant to have a nice scale in effect on our particle system
@@ -54,47 +41,6 @@ int main(int argc, char** argv) {
 	partSys.AddEmitter(&emit2);
 	partSys.SetPosition(sf::Vector2f(400, 300));
   */
-
-  while ( bRunning && App.IsOpened() && !networkhandler.authenticated ) {
-    float ElapsedTime = App.GetFrameTime();
-    if( HandleEvents(App) )
-      bRunning = false;
-    App.Clear(sf::Color(0, 0, 0));
-    DrawGUI(App);
-    App.Display();
-    sf::Sleep(0.02 - ElapsedTime); // Limit 50 FPS
-  }
-
-  std::cout << "Proceeding to main game loop." << std::endl;
-
-  while ( bRunning && App.IsOpened() ) {
-    float ElapsedTime = App.GetFrameTime();
-    if( HandleEvents(App) )
-      bRunning = false;
-
-    objectmanager.Tick(ElapsedTime);
-    //partSys.Update(ElapsedTime);
-
-    // Clear the screen (fill it with black color)
-    App.Clear(sf::Color(0, 0, 0));
-
-    DrawBackdrop(App);
-
-    objectmanager.DrawAll(App);
-    //App.Draw(partSys);
-
-    // Display window contents on screen
-    App.Display();
-    sf::Sleep(0.02 - ElapsedTime); // Limit 50 FPS
-  }
-
-  if(player) {
-    delete player;
-    player = 0;
-  }
-
-  networkhandler.Disconnect();
-  networkhandler.Wait();
 
   return EXIT_SUCCESS;
 }

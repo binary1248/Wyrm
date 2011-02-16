@@ -53,8 +53,12 @@
 		<Unit filename="backdrop.h" />
 		<Unit filename="events.cpp" />
 		<Unit filename="events.h" />
+		<Unit filename="game.cpp" />
+		<Unit filename="game.h" />
 		<Unit filename="gui.cpp" />
 		<Unit filename="gui.h" />
+		<Unit filename="guievents.cpp" />
+		<Unit filename="guievents.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="network.cpp" />
 		<Unit filename="network.h" />
@@ -76,6 +80,8 @@
 		<Unit filename="particle\particlesystem.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
+		<Unit filename="widgetset.cpp" />
+		<Unit filename="widgetset.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

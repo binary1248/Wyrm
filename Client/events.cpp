@@ -1,15 +1,17 @@
-#include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
 #include "network.h"
 #include "gui.h"
+#include "game.h"
 #include "events.h"
+
+sf::Uint16 keymap[sf::Event::Count][sf::Key::Count];
 
 int HandleEvents(sf::RenderWindow& app) {
   sf::Event Event;
   while (app.GetEvent(Event))
   {
-    if( !HandleGUIEvent( Event ) )
+    if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) )
     {
       sf::Uint16 code = 1337;
 
@@ -18,54 +20,33 @@ int HandleEvents(sf::RenderWindow& app) {
         return 1;
       }
 
-      // Escape key pressed
-      if (Event.Type == sf::Event::KeyPressed) {
-        switch(Event.Key.Code) {
-          case sf::Key::Escape:
-            return 1;
-            break;
-          case sf::Key::W:
-            code = 0;
-            break;
-          case sf::Key::A:
-            code = 2;
-            break;
-          case sf::Key::S:
-            code = 4;
-            break;
-          case sf::Key::D:
-            code = 6;
-            break;
-          default:
-            break;
-        }
-      }
-      if (Event.Type == sf::Event::KeyReleased) {
-        switch(Event.Key.Code) {
-          case sf::Key::W:
-            code = 1;
-            break;
-          case sf::Key::A:
-            code = 3;
-            break;
-          case sf::Key::S:
-            code = 5;
-            break;
-          case sf::Key::D:
-            code = 7;
-            break;
-          default:
-            break;
+      if (Event.Type == sf::Event::KeyPressed || Event.Type == sf::Event::KeyReleased) {
+        if( Event.Key.Code == sf::Key::Escape ) {
+          // Escape key pressed
+          return 1;
+        } else {
+          code = keymap[Event.Type][Event.Key.Code];
         }
       }
 
-      if( networkhandler.authenticated && code != 1337) {
+      if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && code != 1337) {
         sf::Packet packet;
         packet << (sf::Uint16)COMMAND << (sf::Uint16)CONTROL << code;
-        networkhandler.Send(packet);
+        Game::GetGame()->GetNetworkHandler()->Send(packet);
       }
     }
   }
 
   return 0;
+}
+
+void LoadKeymap() {
+  keymap[sf::Event::KeyPressed][sf::Key::W] = 0;
+  keymap[sf::Event::KeyReleased][sf::Key::W] = 1;
+  keymap[sf::Event::KeyPressed][sf::Key::A] = 2;
+  keymap[sf::Event::KeyReleased][sf::Key::A] = 3;
+  keymap[sf::Event::KeyPressed][sf::Key::S] = 4;
+  keymap[sf::Event::KeyReleased][sf::Key::S] = 5;
+  keymap[sf::Event::KeyPressed][sf::Key::D] = 6;
+  keymap[sf::Event::KeyReleased][sf::Key::D] = 7;
 }

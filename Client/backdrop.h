@@ -5,8 +5,24 @@
 
 #define NUM_BACKDROP_PARTICLES 100
 
-void LoadBackdrop(sf::RenderWindow& w);
-void DrawBackdrop(sf::RenderWindow& w);
-void UpdateBackdrop(sf::Vector2f v);
+struct particle{
+  sf::Vector2f position;
+  float size;
+};
+
+class Backdrop {
+  public:
+    Backdrop(sf::RenderWindow& w);
+    ~Backdrop();
+    void Draw(sf::RenderWindow& w);
+    void Update(sf::Vector2f v);
+  private:
+    sf::Image background;
+    sf::Sprite background_sprite;
+    sf::Vector2f backdrop_velocity;
+    sf::Clock LastDraw;
+
+    particle particles[NUM_BACKDROP_PARTICLES];
+};
 
 #endif // BACKDROP_H_INCLUDED

@@ -1,46 +1,24 @@
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED
 
+#include <map>
 #include <SFML/Graphics.hpp>
 #include <SFGUI/GUI.hpp>
 
-class WidgetSet{
+#include "widgetset.h"
+
+class GUI {
   public:
-    typedef boost::shared_ptr<WidgetSet> Ptr;
-
-    static WidgetSet::Ptr Create(const sf::FloatRect rect, const std::string name);
-
-    ~WidgetSet();
-
-    void AddWidget(sfg::Widget::Ptr widget);
-
+    GUI(sf::RenderWindow& w);
+    ~GUI();
     void Draw(sf::RenderWindow& w);
-
     bool HandleEvent(sf::Event& e);
-
-    sf::FloatRect GetRect();
-
+    void Hide(const std::string& id);
     sfg::Widget::Ptr FindWidget(const std::string& id);
-
-    inline void Show() {active = true;}
-    inline void Hide() {active = false;}
-    inline bool IsActive() {return active;}
-    inline std::string GetName() {return name;}
+    WidgetSet::Ptr CreateSet(const sf::FloatRect rect, const std::string name);
+    static sf::FloatRect CenterRect(sf::RenderWindow& w, float width, float height);
   private:
-    WidgetSet(const sf::FloatRect rect, const std::string name);
-
-    sf::Shape background;
-    sfg::GUI* gui;
-    std::string name;
-    bool active;
+    std::map<std::string,WidgetSet::Ptr> sets;
 };
-
-void LoadGUI(sf::RenderWindow& w);
-
-void DrawGUI(sf::RenderWindow& w);
-
-bool HandleGUIEvent(sf::Event& e);
-
-extern bool bRunning;
 
 #endif // GUI_H_INCLUDED

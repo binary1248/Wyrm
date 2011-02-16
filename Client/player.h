@@ -14,7 +14,4 @@ class Player{
     sf::String name;
 };
 
-
-extern Player* player;
-
 #endif // PLAYER_H_INCLUDED

@@ -4,10 +4,9 @@
 
 #include "network.h"
 #include "player.h"
+#include "game.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
-
-ObjectManager objectmanager;
 
 ObjectManager::ObjectManager() {
 
@@ -91,12 +90,13 @@ void ObjectManager::DispatchPacket(sf::Packet p) {
       case REMOVE_OBJECT: {
         sf::Uint16 id;
         p >> id;
-        objectmanager.RemoveObjectById(id);
+        Game::GetGame()->GetObjectManager()->RemoveObjectById(id);
         break;
       }
       case SET_ID: {
         sf::Uint16 pid_;
         p >> pid_;
+        Player* player = Game::GetGame()->GetPlayer();
         if(!player) {
           player = new Player(0,"");
         }

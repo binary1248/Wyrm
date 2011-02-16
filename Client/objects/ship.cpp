@@ -1,14 +1,11 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "objects/objects.h"
-#include "network.h"
-#include "backdrop.h"
 #include "ship.h"
+#include "objects/objects.h"
+#include "game.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
-
-sf::Image Image;
 
 Ship::Ship(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
 Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
@@ -24,6 +21,7 @@ Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
   acceleration.x = 0;
   acceleration.y = 0;
   thrust = 0;
+  Image.LoadFromFile("spaceship.png");
   Sprite.SetImage(Image);
   Sprite.SetOrigin(Image.GetWidth()/2,Image.GetHeight()/2);
   Sprite.SetScale(1,1);
@@ -48,7 +46,7 @@ void Ship::Update(float time) {
   sf::FloatRect rect = Text.GetRect();
   Text.SetPosition(position + sf::Vector2f(-rect.Width/2,Image.GetHeight()/2));
   if( isPlayer ) {
-    UpdateBackdrop(velocity);
+    Game::GetGame()->GetBackdrop()->Update(velocity);
   }
 }
 
