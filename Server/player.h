@@ -1,7 +1,7 @@
 #ifndef PLAYER_H_INCLUDED
 #define PLAYER_H_INCLUDED
 
-#include <vector>
+#include <list>
 #include <SFML/Network.hpp>
 #include "objects/object.h"
 
@@ -11,8 +11,8 @@ class Player {
     ~Player();
 
     // Network Handlers
-    void SelectSocket(sf::SocketSelector s);
-    void SendPacket(sf::Packet p);
+    void Update();
+    void SendPacket(sf::Packet p, bool prio = false );
     void ReceivePacket();
 
     void HandlePacket(sf::Packet p);
@@ -33,10 +33,13 @@ class Player {
     bool connected;
     bool half_open;
     sf::Uint16 id;
+    std::list<sf::Packet*> buffer;
 
     sf::String name;
 
     Object* agent;
+
+    void Send(sf::Packet p);
 };
 
 #endif // PLAYER_H_INCLUDED

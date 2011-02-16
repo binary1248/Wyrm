@@ -232,10 +232,10 @@
 1283879828 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\auth.h
 	<SFML/Network.hpp>
 
-1296330986 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.cpp
+1297819411 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.cpp
 	"object.h"
 
-1296330961 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
+1297819403 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
@@ -259,12 +259,12 @@
 	<SFML/Network.hpp>
 	"player.h"
 
-1296330872 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.h
-	<vector>
+1297817439 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.h
+	<list>
 	<SFML/Network.hpp>
 	"objects/object.h"
 
-1296331995 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
+1297814355 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
 	<vector>
 	<SFML/Network.hpp>
 
@@ -281,11 +281,11 @@
 1291822623 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\ship.h
 	"object.h"
 
-1296330961 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
+1297819403 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1296331995 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
+1297814355 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
 	<vector>
 	<SFML/Network.hpp>
 
@@ -302,9 +302,8 @@
 1291822623 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\ship.h
 	"object.h"
 
-1296331970 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.cpp
+1297816225 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.cpp
 	<iostream>
-	<cstring>
 	<SFML/Network.hpp>
 	"game.h"
 	"networkmanager.h"
@@ -321,7 +320,7 @@
 1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\objects.h
 	"ship.h"
 
-1296332029 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.cpp
+1297819481 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.cpp
 	<iostream>
 	<cmath>
 	<cstring>
@@ -346,7 +345,7 @@
 	"game.h"
 	"objects/object.h"
 
-1296331462 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
+1297816600 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
 	<iostream>
 	<SFML/Network.hpp>
 	"objects/objects.h"

@@ -32,6 +32,7 @@ class NetworkManager {
 
     void SelectorAdd(sf::TcpSocket* s);
     void SelectorRemove(sf::TcpSocket* s);
+    bool SelectorIsReady(sf::TcpSocket* s);
 
     //void RemoveClient(sf::Uint16 id);
   private:
@@ -41,6 +42,7 @@ class NetworkManager {
 
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
+    sf::SocketSelector accept_selector;
 };
 
 #define PROTOCOL_VER_MAJOR 0.1f

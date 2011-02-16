@@ -24,6 +24,8 @@ int main(int argc, char** argv) {
   sf::String username("TestUser");
   sf::String password("TestPassword");
 
+  LoadBackdrop(App);
+  Image.LoadFromFile("spaceship.png");
 
   /*
 	//So we whant to have a nice scale in effect on our particle system
@@ -64,10 +66,6 @@ int main(int argc, char** argv) {
   }
 
   std::cout << "Proceeding to main game loop." << std::endl;
-
-  LoadBackdrop(App);
-  Image.LoadFromFile("spaceship.png");
-  std::cout << Image.GetHeight() << std::endl;
 
   while ( bRunning && App.IsOpened() ) {
     float ElapsedTime = App.GetFrameTime();

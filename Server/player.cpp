@@ -19,28 +19,49 @@ Player::Player(sf::Uint16 id_, sf::TcpSocket* s) {
   half_open = true;
   Game::getGame()->GetNetworkManager()->SelectorAdd(connection);
   std::cout << "Client " << GetIPAddressString() << " connected.." << std::endl;
-
-  // Say hi
-  sf::Packet packet;
-  packet << sf::String("Wyrm protocol version ") << (float)PROTOCOL_VER_MAJOR << (float)PROTOCOL_VER_MINOR;
-  SendPacket(packet);
 }
 
 Player::~Player() {
+  std::cout << "Destroying Player "  << (sf::Uint32)id << std::endl;
   Disconnect();
 }
 
-void Player::SelectSocket(sf::SocketSelector s) {
-  if( s.IsReady(*connection) ) {
+void Player::Update() {
+  if( Game::getGame()->GetNetworkManager()->SelectorIsReady(connection) ) {
     ReceivePacket();
   }
 }
 
-void Player::SendPacket(sf::Packet p) {
+void Player::Send( sf::Packet p )
+{
   sf::Socket::Status status = connection->Send(p);
 
   if(status != sf::TcpSocket::Done) {
-    std::cerr << "Failed sending data: " << ErrCode(status) << std::endl;
+    std::cout << "Failed sending data from client " << (sf::Uint32)id << ": " << ErrCode(status) << std::endl;
+    std::cout.flush();
+  }
+}
+
+void Player::SendPacket( sf::Packet p, bool prio ) {
+  if( !connection ) {
+    return;
+  }
+
+  if( half_open && !prio ) {
+    sf::Packet* _p = new sf::Packet;
+    _p->Append(p.GetData(), p.GetDataSize());
+    buffer.push_back(_p);
+
+    return;
+  } else if( prio ) {
+    Send(p);
+  } else {
+    while(!buffer.empty()) {
+      Send(*(buffer.front()));
+      buffer.pop_front();
+    }
+
+    Send(p);
   }
 }
 
@@ -50,13 +71,16 @@ void Player::ReceivePacket() {
 
   switch( status ) {
     case sf::Socket::Disconnected:
+      std::cout << "Client " << (sf::Uint32)id << " connection reset" << std::endl;
       Disconnect();
       break;
     case sf::Socket::Done:
       if(!half_open) {
+        //std::cout << "Client " << (sf::Uint32)id << " sent data" << std::endl;
         HandlePacket(p);
       } else {
-        CheckAuth(p);
+        std::cout << "Client " << (sf::Uint32)id << " sent auth data" << std::endl;
+        Auth(p);
       }
       break;
     default:
@@ -85,6 +109,18 @@ void Player::HandlePacket(sf::Packet p) {
     agent->HandlePacket(p);
   }
 
+  /*
+  for( size_t i = 0; i < payload_size; i++ ) {
+    if( isprint(payload[i]) ) {
+      std::cout << payload[i];
+    } else {
+      std::cout << ".";
+    }
+  }
+
+  std::cout << std::endl;
+  */
+
   if( payload ) {
     delete[] payload;
   }
@@ -96,14 +132,15 @@ void Player::Auth(sf::Packet p) {
   if(CheckAuth(p)) {
     sf::Packet packet;
     packet << sf::String("Authentication successful");
-    SendPacket(packet);
+    std::cout.flush();
+    SendPacket(packet, true);
 
     std::cout << "Authentication successful" << std::endl;
     half_open = false;
   } else {
     sf::Packet packet;
     packet << sf::String("Authentication failed");
-    SendPacket(packet);
+    SendPacket(packet, true);
 
 
     std::cout << "Authentication failed" << std::endl
@@ -117,13 +154,14 @@ void Player::Auth(sf::Packet p) {
 
 void Player::Disconnect() {
   if(connection) {
+    std::cout << "Disconnect Player " << (sf::Uint32)id << std::endl;
     std::cout << "Client " << GetIPAddressString() << " disconnected.." << std::endl;
     connection->Disconnect();
+    Game::getGame()->GetNetworkManager()->SelectorRemove(connection);
     //listener.RemoveClient(id);
     delete connection;
     connection = 0;
     connected = false;
-    Game::getGame()->GetNetworkManager()->SelectorRemove(connection);
   }
 }
 
@@ -145,4 +183,6 @@ Object* Player::GetAgent() {
 
 void Player::SetAgent(Object* o) {
   agent = o;
+  o->SetName( sf::String(GetIPAddressString()) );
+  //std::cout << "Set player name to " << GetIPAddressString() << std::endl;
 }

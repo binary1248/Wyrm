@@ -26,7 +26,7 @@ Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
   thrust = 0;
   Sprite.SetImage(Image);
   Sprite.SetOrigin(Image.GetWidth()/2,Image.GetHeight()/2);
-  Text.SetString(name);
+  Sprite.SetScale(1,1);
   Text.SetFont(sf::Font::GetDefaultFont());
   Text.SetScale(sf::Vector2f(2.0f,2.0f));
   Text.SetColor(sf::Color(255, 255, 255));
@@ -45,7 +45,8 @@ void Ship::Update(float time) {
   position += (velocity * time);
   Sprite.SetPosition(position);
   Sprite.SetRotation(rotation);
-  Text.SetPosition(position + sf::Vector2f(-33,22));
+  sf::FloatRect rect = Text.GetRect();
+  Text.SetPosition(position + sf::Vector2f(-rect.Width/2,Image.GetHeight()/2));
   if( isPlayer ) {
     UpdateBackdrop(velocity);
   }
@@ -57,6 +58,7 @@ void Ship::Draw(sf::RenderWindow& w) {
     View2.SetCenter(position);
     w.SetView(View2);
   }
+  Text.SetString(name);
   w.Draw(Sprite);
   w.Draw(Text);
 }

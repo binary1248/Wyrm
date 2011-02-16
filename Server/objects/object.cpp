@@ -21,3 +21,7 @@ void Object::HandlePacket(sf::Packet& p) {
 sf::Uint16 Object::GetId() {
   return id;
 }
+
+void Object::SetName( sf::String name ) {
+  this->name = name;
+}

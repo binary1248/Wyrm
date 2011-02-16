@@ -166,7 +166,7 @@
 	"gui.h"
 	"network.h"
 
-1286012680 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
+1297819077 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -216,14 +216,14 @@
 
 1218280552 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\affectorbase.h
 
-1285979150 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
+1297396673 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
 	<iostream>
 	<SFML/Network.hpp>
 	"network.h"
 	"player.h"
 	"objectmanager.h"
 
-1283821322 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+1297820448 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
 	<iostream>
 	<SFML/System.hpp>
 	<SFML/Network.hpp>
@@ -235,7 +235,7 @@
 1283814234 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.cpp
 	"object.h"
 
-1283821294 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+1297819634 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"objects/objects.h"

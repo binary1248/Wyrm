@@ -17,6 +17,8 @@ class Object {
 
     sf::Uint16 GetId();
 
+    void SetName(sf::String);
+
     sf::Uint16 type;
 
     sf::Uint16 id;

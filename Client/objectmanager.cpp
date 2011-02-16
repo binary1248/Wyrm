@@ -51,7 +51,14 @@ void ObjectManager::CreateObject(sf::Packet p) {
 
   p >> type >> id >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rot >> rot_vel;
 
-  if( GetObjectById(id) ) {
+  Object* o = GetObjectById(id);
+
+  if( o ) {
+    o->name = name;
+    o->position = pos;
+    o->velocity = vel;
+    o->rotation = rot;
+    o->rotational_velocity = rot_vel;
     return;
   }
 

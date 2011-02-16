@@ -19,10 +19,15 @@ void PlayerManager::Tick(float time) {
   for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); ) {
     if( !(*iter)->Connected() ) {
       // Reap disconnected players
+      std::cout << "Reaping disconnected player" << std::endl;
+      Object* agent = (*iter)->GetAgent();
       delete (*iter);
       iter = players.erase(iter);
+      Game::getGame()->GetObjectManager()->RemoveObjectById( agent->GetId() );
+      std::cout << "Removed player with id " << (*iter)->GetId() << " and agent id " << (*iter)->GetAgent()->GetId() << std::endl;
       continue;
     }
+    (*iter)->Update();
     iter++;
   }
 }
