@@ -6,6 +6,7 @@
 #include "player.h"
 
 class Game;
+class Object;
 
 class PlayerManager {
   public:
@@ -20,8 +21,11 @@ class PlayerManager {
 
     void SendToPlayerById(sf::Uint16 id, sf::Packet p);
 
+    void BroadcastNewObject(Object* o);
+
     void Broadcast(sf::Packet p);
 
+    inline sf::Uint16 NewID() { return lastId++; }
   private:
     std::vector<Player*> players;
     sf::Uint16 lastId;

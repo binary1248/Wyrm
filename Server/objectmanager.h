@@ -2,11 +2,29 @@
 #define OBJECTMANAGER_H_INCLUDED
 
 #include <vector>
+#include <map>
+#include <boost/function.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include "objects/objects.h"
 #include "objects/object.h"
 
+// Template object factory
+template <class T>
+Object* Create() { return new T(); }
+
+// A macro to register new object factories
+#define REGISTER_FACTORY(Type,Class) \
+class add_factory { \
+  public: \
+    add_factory() { \
+      ObjectManager::AddFactory(Type, Create<Class>); \
+    } \
+}; \
+add_factory af
+
 class Game;
+class Player;
 
 class ObjectManager {
   public:
@@ -20,19 +38,20 @@ class ObjectManager {
     Object* CreateObject(sf::Uint16 type);
     void ClearObjects();
 
-    void SendPacketToObjectById(sf::Uint16 id, sf::Packet p);
+    void SubscribeRelevant(Player* p);
 
     void Tick(float time);
 
-    void SendUpdate();
-    void SendFullUpdate();
-    void SendPartialUpdate();
-    void SendStateToPlayerById(sf::Uint16 id);
+    inline sf::Uint16 NewID() { return lastId++; }
+
+    static void AddFactory(sf::Uint16, boost::function<Object* ()> );
   private:
     sf::Clock LastFullUpdate;
 
     std::vector<Object*> objects;
     sf::Uint16 lastId;
+
+    static std::map< sf::Uint16, boost::function<Object* ()> >* factories;
 };
 
 #endif // OBJECTMANAGER_H_INCLUDED

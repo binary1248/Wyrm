@@ -1,10 +1,11 @@
 #include <iostream>
 #include <SFML/System.hpp>
-#include <SFML/Network.hpp>
 #include "player.h"
 #include "objects/objects.h"
 #include "game.h"
 #include "objectmanager.h"
+
+std::map< sf::Uint16, boost::function<Object* ()> >* ObjectManager::factories = 0;
 
 ObjectManager::ObjectManager() {
   lastId = 0;
@@ -13,7 +14,8 @@ ObjectManager::ObjectManager() {
 
 ObjectManager::~ObjectManager() {
   ClearObjects();
-  std::cout << "Object manager cleanup done." << std::endl;
+  std::cout << TIME << "Object manager cleanup done." << std::endl;
+  delete factories;
 }
 
 void ObjectManager::AddObject(Object* o) {
@@ -23,10 +25,6 @@ void ObjectManager::AddObject(Object* o) {
 void ObjectManager::RemoveObject(Object* o) {
   for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
     if((*i) && (*i)->id == o->GetId()) {
-      sf::Packet packet;
-      packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
-             << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
-      Game::getGame()->GetPlayerManager()->Broadcast(packet);
       delete (*i);
       objects.erase(i);
       break;
@@ -37,10 +35,6 @@ void ObjectManager::RemoveObject(Object* o) {
 void ObjectManager::RemoveObjectById(sf::Uint16 id) {
   for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
     if((*i) && (*i)->id == id) {
-      sf::Packet packet;
-      packet << (sf::Uint16)OBJECT        << (sf::Uint16)0xFFFF
-             << (sf::Uint16)REMOVE_OBJECT << (*i)->id;
-      Game::getGame()->GetPlayerManager()->Broadcast(packet);
       delete (*i);
       objects.erase(i);
       break;
@@ -54,37 +48,25 @@ Object* ObjectManager::GetObjectById(sf::Uint16 id) {
       return objects[i];
     }
   }
-  std::cout << "Couldn't find object with id " << id << std::endl;
+  std::cout << TIME << "Couldn't find object with id " << id << std::endl;
   return 0;
 }
 
 Object* ObjectManager::CreateObject(sf::Uint16 type) {
 
-  Object* object = 0;
-
-  switch(type) {
-    case SHIP:
-      object = new Ship(lastId++, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0);
-      break;
-    default:
-      std::cout << "Invalid object type." << std::endl;
-      break;
-  }
-  if(object) {
-    AddObject(object);
-    sf::Packet packet;
-    packet << (sf::Uint16)OBJECT     << (sf::Uint16)0xFFFF
-           << (sf::Uint16)NEW_OBJECT << object->type
-           << object->id             << object->name
-           << object->position.x     << object->position.y
-           << object->velocity.x     << object->velocity.y
-           << object->rotation       << object->rotational_velocity;
-    Game::getGame()->GetPlayerManager()->Broadcast(packet);
+  if( !factories ) {
+    std::cout << TIME << "No factories" << std::endl;
+    return 0;
   }
 
-  std::cout << "Created object of type " << type << std::endl;
+  std::map<sf::Uint16, boost::function<Object* ()> >::iterator i = factories->find(type);
 
-  return object;
+  if( i == factories->end() ) {
+    std::cout << TIME << "Invalid object type." << std::endl;
+    return 0;
+  } else {
+    return (i->second)();
+  }
 }
 
 void ObjectManager::ClearObjects() {
@@ -97,70 +79,28 @@ void ObjectManager::ClearObjects() {
   }
 }
 
-void ObjectManager::SendPacketToObjectById(sf::Uint16 id, sf::Packet p) {
+void ObjectManager::SubscribeRelevant(Player* p) {
   for( size_t i = 0; i < objects.size(); i++ ) {
-    if(objects[i]->id == id) {
-      objects[i]->HandlePacket(p);
-      return;
+    if( p->GetAgent() != objects[i] ) {
+      p->AddObjectToView(objects[i]);
     }
   }
-
-  std::cout << "Unhandled packet, id not found." << std::endl;
 }
 
 void ObjectManager::Tick(float time) {
   for( size_t i = 0; i < objects.size(); i++ ) {
+    if( objects[i]->IsFresh() ) {
+      Game::GetGame()->GetPlayerManager()->BroadcastNewObject(objects[i]);
+      objects[i]->ClearFresh();
+    }
     objects[i]->Update(time);
   }
-
-  SendUpdate();
 }
 
-void ObjectManager::SendUpdate() {
-  if( LastFullUpdate.GetElapsedTime() < 2.0f ) {
-    SendPartialUpdate();
-  } else {
-    SendFullUpdate();
+void ObjectManager::AddFactory(sf::Uint16 t, boost::function<Object* ()> factory) {
+  if( !factories ) {
+    factories = new std::map< sf::Uint16, boost::function<Object* ()> >;
   }
-}
-
-void ObjectManager::SendFullUpdate() {
-  for( size_t i = 0; i < objects.size(); i++ ) {
-    sf::Packet packet;
-    packet << (sf::Uint16)OBJECT << objects[i]->id << (sf::Uint16)POSITION_UPDATE
-           << objects[i]->position.x << objects[i]->position.y << objects[i]->rotation;
-    Game::getGame()->GetPlayerManager()->Broadcast(packet);
-  }
-
-  LastFullUpdate.Reset();
-}
-
-void ObjectManager::SendPartialUpdate() {
-  for( size_t i = 0; i < objects.size(); i++ ) {
-    sf::Packet packet;
-    packet << (sf::Uint16)OBJECT << objects[i]->id << (sf::Uint16)VELOCITY_UPDATE
-           << objects[i]->velocity.x << objects[i]->velocity.y << objects[i]->rotational_velocity;
-    switch(objects[i]->type) {
-      case SHIP:
-        packet << ((Ship*)objects[i])->thrust;
-        break;
-      default:
-        std::cout << "Couldn't determine what extra attributes to send." << std::endl;
-        break;
-    }
-    Game::getGame()->GetPlayerManager()->Broadcast(packet);
-  }
-}
-
-void ObjectManager::SendStateToPlayerById(sf::Uint16 id) {
-  for( size_t i = 0; i < objects.size(); i++ ) {
-    sf::Packet packet;
-    packet << (sf::Uint16)OBJECT     << (sf::Uint16)0xFFFF
-           << (sf::Uint16)NEW_OBJECT << objects[i]->type
-           << objects[i]->id         << objects[i]->name
-           << objects[i]->position.x << objects[i]->position.y
-           << objects[i]->velocity.x << objects[i]->velocity.y
-           << objects[i]->rotation   << objects[i]->rotational_velocity;
-    Game::getGame()->GetPlayerManager()->SendToPlayerById(id, packet);
-  }
+  ObjectManager::factories->insert( std::pair<sf::Uint16, boost::function<Object* ()> >(t, factory) );
+  std::cout << TIME << "Registered object factory type " << t << std::endl;
 }

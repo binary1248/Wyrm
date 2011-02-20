@@ -3,8 +3,12 @@
 
 #include <SFML/Network.hpp>
 
+#define PROTOCOL_VER_MAJOR 0.1f
+#define PROTOCOL_VER_MINOR 0.5f
+
 enum server_packet_t0{
   OBJECT = 0,
+  SET_ID
 };
 
 enum client_packet_t0{
@@ -12,11 +16,9 @@ enum client_packet_t0{
 };
 
 enum server_packet_t1{
-  POSITION_UPDATE = 0,
-  VELOCITY_UPDATE,
-  NEW_OBJECT,
-  REMOVE_OBJECT,
-  SET_ID
+  UPDATE = 0,
+  STATE,
+  REMOVE
 };
 
 enum client_packet_t1{

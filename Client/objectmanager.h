@@ -15,7 +15,7 @@ class ObjectManager {
     void AddObject(Object* o);
     void RemoveObjectById(sf::Uint16 id);
     Object* GetObjectById(sf::Uint16 id);
-    void CreateObject(sf::Packet p);
+    void CreateObject(sf::Packet p, sf::Uint16 id);
 
     void DispatchPacket(sf::Packet p);
 

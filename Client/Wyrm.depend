@@ -139,15 +139,14 @@
 1297882969 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
 	<SFML/Graphics.hpp>
 
-1297887218 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
-	<SFML/Graphics.hpp>
+1297887359 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
 	<SFML/Network.hpp>
 	"network.h"
 	"gui.h"
 	"game.h"
 	"events.h"
 
-1297873152 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.h
+1298149844 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.h
 	<SFML/Network.hpp>
 
 1297886609 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\gui.h
@@ -189,11 +188,11 @@
 1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
 	"object.h"
 
-1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
+1298054555 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1297874414 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
+1298053434 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -217,7 +216,7 @@
 
 1218280552 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\affectorbase.h
 
-1297883384 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
+1298053615 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\network.cpp
 	<iostream>
 	<SFML/Network.hpp>
 	"network.h"
@@ -225,7 +224,7 @@
 	"objectmanager.h"
 	"game.h"
 
-1297882418 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+1298151450 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
 	<iostream>
 	<SFML/System.hpp>
 	<SFML/Network.hpp>
@@ -235,10 +234,11 @@
 	"objects/objects.h"
 	"objectmanager.h"
 
-1283814234 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.cpp
+1298149759 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.cpp
+	<iostream>
 	"object.h"
 
-1297883008 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+1298151436 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"ship.h"
@@ -251,11 +251,11 @@
 1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
 	"object.h"
 
-1283814160 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
+1298054555 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1297873152 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
+1298149844 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
 	<SFML/Network.hpp>
 
 1297882969 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
@@ -303,7 +303,7 @@
 	"player.h"
 	"backdrop.h"
 
-1297874414 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objectmanager.h
+1298053434 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objectmanager.h
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>

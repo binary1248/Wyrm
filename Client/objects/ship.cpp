@@ -12,12 +12,6 @@ Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
   id = id_;
   name = name_;
   isPlayer = false;
-  position.x = 0;
-  position.y = 0;
-  rotation = 0;
-  velocity.x = 0;
-  velocity.y = 0;
-  rotational_velocity = 0;
   acceleration.x = 0;
   acceleration.y = 0;
   thrust = 0;
@@ -63,24 +57,32 @@ void Ship::Draw(sf::RenderWindow& w) {
 
 void Ship::HandlePacket(sf::Packet p) {
   sf::Uint16 type1;
-  sf::Vector2f val;
-  float val2;
-
-  p >> type1 >> val.x >> val.y >> val2;
+  p >> type1;
 
   switch(type1) {
-    case VELOCITY_UPDATE:
-      velocity = val;
-      rotational_velocity = val2;
-      p >> thrust;
+    case UPDATE:
+    {
+      sf::Vector2f pos;
+      sf::Vector2f vel;
+      p >> pos.x >> pos.y >> rotation >> vel.x >> vel.y >> rotational_velocity >> thrust;
+      position = pos;
+      velocity = vel;
       break;
-    case POSITION_UPDATE:
-      position = val;
-      rotation = val2;
-
+    }
+    case STATE:
+    {
+      sf::Uint16 type;
+      sf::Vector2f pos;
+      sf::Vector2f vel;
+      p >> type >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rotation >> rotational_velocity >> thrust;
+      position = pos;
+      velocity = vel;
       break;
-    default:
+    }
+    case REMOVE:
+    {
+      SetForRemoval();
       break;
+    }
   }
-
 }

@@ -36,8 +36,8 @@ int NetworkHandler::Connect(sf::String username, sf::String password) {
     packet >> string >> version_major >> version_minor;
     std::cout << string.ToAnsiString() << version_major << " " << version_minor << std::endl;
     if( !(string.ToAnsiString().compare("Wyrm protocol version ")) &&
-         (version_major == 0.1f) &&
-         (version_minor == 0.1f) ) {
+         (version_major == PROTOCOL_VER_MAJOR) &&
+         (version_minor == PROTOCOL_VER_MINOR) ) {
       sf::Packet packet;
       packet << username << password;
       Client.Send(packet);
@@ -82,8 +82,20 @@ void NetworkHandler::HandlePacket(sf::Packet p) {
   p >> type0;
 
   switch(type0) {
-    case OBJECT: {
+    case OBJECT:
+    {
       Game::GetGame()->GetObjectManager()->DispatchPacket(p);
+      break;
+    }
+    case SET_ID:
+    {
+      sf::Uint16 id;
+      p >> id;
+      Player* player = Game::GetGame()->GetPlayer();
+      if(!player) {
+        player = new Player(0,"");
+      }
+      player->SetShip(id);
       break;
     }
     default:

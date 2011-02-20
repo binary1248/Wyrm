@@ -39,16 +39,15 @@ Object* ObjectManager::GetObjectById(sf::Uint16 id) {
   return 0;
 }
 
-void ObjectManager::CreateObject(sf::Packet p) {
+void ObjectManager::CreateObject(sf::Packet p, sf::Uint16 id) {
   sf::Uint16 type;
-  sf::Uint16 id;
   sf::String name;
   sf::Vector2f pos;
   sf::Vector2f vel;
   float rot;
   float rot_vel;
 
-  p >> type >> id >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rot >> rot_vel;
+  p >> type >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rot >> rot_vel;
 
   Object* o = GetObjectById(id);
 
@@ -66,6 +65,7 @@ void ObjectManager::CreateObject(sf::Packet p) {
   switch(type) {
     case SHIP:
       object = new Ship(id, name, pos, vel, rot, rot_vel);
+      p >> ((Ship*)object)->thrust;
       break;
     default:
       std::cout << "Invalid object type." << std::endl;
@@ -79,52 +79,48 @@ void ObjectManager::CreateObject(sf::Packet p) {
 void ObjectManager::DispatchPacket(sf::Packet p) {
   sf::Uint16 id;
   p >> id;
-  if( id == 0xFFFF ) {
-    sf::Uint16 type1;
-    p >> type1;
-    switch(type1) {
-      case NEW_OBJECT: {
-        CreateObject(p);
-        break;
-      }
-      case REMOVE_OBJECT: {
-        sf::Uint16 id;
-        p >> id;
-        Game::GetGame()->GetObjectManager()->RemoveObjectById(id);
-        break;
-      }
-      case SET_ID: {
-        sf::Uint16 pid_;
-        p >> pid_;
-        Player* player = Game::GetGame()->GetPlayer();
-        if(!player) {
-          player = new Player(0,"");
-        }
-        player->SetShip(pid_);
-        break;
-      }
-      default:
-        break;
+
+  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+    if((*i)->id == id) {
+      (*i)->HandlePacket(p);
+      return;
     }
   }
-  else {
-    for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
-      if((*i)->id == id) {
-        (*i)->HandlePacket(p);
-        break;
-      }
-    }
+
+  sf::Uint16 type1;
+  p >> type1;
+
+  if( type1 != STATE ) {
+    std::cout << "Can't update non-existant object: " << id << std::endl;
+    return;
   }
+
+  CreateObject(p, id);
 }
 
 void ObjectManager::Tick(float time) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
+  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); ) {
+    if( (*i)->FlaggedForRemoval() ) {
+      delete (*i);
+      i = objects.erase(i);
+      continue;
+    }
     (*i)->Update(time);
+    i++;
   }
 }
 
 void ObjectManager::DrawAll(sf::RenderWindow& w) {
-  for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++) {
-    (*i)->Draw(w);
+  Object* agent = 0;
+  for(size_t i = 0; i < objects.size(); i++) {
+    if( objects[i]->type == SHIP && ((Ship*)objects[i])->isPlayer ) {
+      agent = objects[i];
+      continue;
+    }
+    objects[i]->Draw(w);
+  }
+
+  if( agent ) {
+    agent->Draw(w);
   }
 }

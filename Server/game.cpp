@@ -1,9 +1,10 @@
 #include <iostream>
+#include <sstream>
 #include "game.h"
 
 Game* Game::instance;
 
-Game* Game::getGame() {
+Game* Game::GetGame() {
   if( !Game::instance ) {
     instance = new Game();
   }
@@ -13,8 +14,8 @@ Game* Game::getGame() {
 Game::Game() {
   running = false;
 
-  playermanager = new PlayerManager();
   objectmanager = new ObjectManager();
+  playermanager = new PlayerManager();
   networkmanager = new NetworkManager();
 }
 
@@ -22,8 +23,8 @@ Game::~Game() {
   running = false;
 
   delete networkmanager;
-  delete objectmanager;
   delete playermanager;
+  delete objectmanager;
 }
 
 int Game::Run() {
@@ -35,7 +36,7 @@ int Game::Run() {
     return EXIT_FAILURE;
   }
 
-  std::cout << "Running..." << std::endl;
+  std::cout << TIME << "Running..." << std::endl;
 
   while (running) {
     float ElapsedTime = Clock.GetElapsedTime();
@@ -46,7 +47,7 @@ int Game::Run() {
     sf::Sleep(0.02 - Clock.GetElapsedTime()); // Limit 50 FPS
   }
 
-  std::cout << "Shutting down..." << std::endl;
+  std::cout << TIME << "Shutting down..." << std::endl;
 
   return EXIT_SUCCESS;
 }
@@ -57,14 +58,13 @@ void Game::Tick(float time) {
   playermanager->Tick(time);
 }
 
-PlayerManager* Game::GetPlayerManager() {
-  return playermanager;
-}
-
-ObjectManager* Game::GetObjectManager() {
-  return objectmanager;
-}
-
-NetworkManager* Game::GetNetworkManager() {
-  return networkmanager;
+std::string Game::GetTime() {
+  float time = clock.GetElapsedTime();
+  std::stringstream ss;
+  ss.setf( std::ios::fixed, std::ios::floatfield );
+  ss.fill('0');
+  ss.width(9);
+  ss.precision(4);
+  ss << time;
+  return "[" + ss.str() + "] ";
 }
