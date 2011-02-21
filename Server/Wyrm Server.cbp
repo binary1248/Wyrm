@@ -50,6 +50,8 @@
 		<Unit filename="objects\object.cpp" />
 		<Unit filename="objects\object.h" />
 		<Unit filename="objects\objects.h" />
+		<Unit filename="objects\planet.cpp" />
+		<Unit filename="objects\planet.h" />
 		<Unit filename="objects\ship.cpp" />
 		<Unit filename="objects\ship.h" />
 		<Unit filename="player.cpp" />

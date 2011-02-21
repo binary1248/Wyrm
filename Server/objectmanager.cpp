@@ -10,6 +10,7 @@ std::map< sf::Uint16, boost::function<Object* ()> >* ObjectManager::factories = 
 ObjectManager::ObjectManager() {
   lastId = 0;
   LastFullUpdate.Reset();
+  objects_loaded = false;
 }
 
 ObjectManager::~ObjectManager() {
@@ -88,6 +89,10 @@ void ObjectManager::SubscribeRelevant(Player* p) {
 }
 
 void ObjectManager::Tick(float time) {
+  if( !objects_loaded ) {
+    LoadObjects();
+  }
+
   for( size_t i = 0; i < objects.size(); i++ ) {
     if( objects[i]->IsFresh() ) {
       Game::GetGame()->GetPlayerManager()->BroadcastNewObject(objects[i]);
@@ -104,3 +109,30 @@ void ObjectManager::AddFactory(sf::Uint16 t, boost::function<Object* ()> factory
   ObjectManager::factories->insert( std::pair<sf::Uint16, boost::function<Object* ()> >(t, factory) );
   std::cout << TIME << "Registered object factory type " << t << std::endl;
 }
+
+void ObjectManager::LoadObjects() {
+  Planet* p = (Planet*)(CreateObject(PLANET));
+  p->velocity.x = 5; // Orbital vel
+  p->velocity.y = 400; // Orbital rad
+  p->rotational_velocity = 5;
+  p->anchor.x = 100;
+  p->anchor.y = -50;
+
+  objects_loaded = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

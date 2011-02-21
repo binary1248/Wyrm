@@ -19,8 +19,12 @@ Player::~Player() {
 
 void Player::SetShip(sf::Uint16 id_) {
   Object* o = Game::GetGame()->GetObjectManager()->GetObjectById(id_);
-  if(!o || (o->type != SHIP)) {
-    std::cout << "Could not set player ship." << std::endl;
+  if( !o ) {
+    std::cout << "Could not set player ship (not found): " << id_ << std::endl;
+    return;
+  }
+  if( o->type != SHIP ) {
+    std::cout << "Could not set player ship (not ship): " << o->type << std::endl;
     return;
   }
   Ship* playerShip = (Ship*)(Game::GetGame()->GetObjectManager()->GetObjectById(id_));

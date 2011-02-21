@@ -139,7 +139,7 @@
 1297882969 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
 	<SFML/Graphics.hpp>
 
-1297887359 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
+1298245910 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
 	<SFML/Network.hpp>
 	"network.h"
 	"gui.h"
@@ -182,18 +182,20 @@
 1297871884 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.h
 	<SFML/System.hpp>
 
-1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\objects.h
+1298244598 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\objects.h
 	"ship.h"
+	"planet.h"
 
-1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
+1298247195 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
 	"object.h"
 
 1298054555 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1298053434 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
+1298247663 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.h
 	<vector>
+	<boost/function.hpp>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 	"objects/object.h"
@@ -224,7 +226,7 @@
 	"objectmanager.h"
 	"game.h"
 
-1298151450 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+1298249014 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
 	<iostream>
 	<SFML/System.hpp>
 	<SFML/Network.hpp>
@@ -238,17 +240,19 @@
 	<iostream>
 	"object.h"
 
-1298151436 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+1298248997 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"ship.h"
 	"objects/objects.h"
 	"game.h"
+	"objectmanager.h"
 
-1283813560 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\objects.h
+1298244598 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\objects.h
 	"ship.h"
+	"planet.h"
 
-1297873929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
+1298247195 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
 	"object.h"
 
 1298054555 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
@@ -274,7 +278,7 @@
 	"ParticleSystem.h"
 	"particles.h"
 
-1297874595 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
+1298248966 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
 	<iostream>
 	<cmath>
 	<SFML/Graphics.hpp>
@@ -291,7 +295,7 @@
 	"player.h"
 	"backdrop.h"
 
-1297887248 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
+1298249721 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
 	"game.h"
 	"backdrop.h"
 	"events.h"
@@ -303,8 +307,9 @@
 	"player.h"
 	"backdrop.h"
 
-1298053434 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objectmanager.h
+1298247663 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objectmanager.h
 	<vector>
+	<boost/function.hpp>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 	"objects/object.h"
@@ -341,4 +346,18 @@
 	<SFGUI/Editbox.hpp>
 	"guievents.h"
 	"game.h"
+
+1298248505 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\planet.cpp
+	<iostream>
+	<SFML/Graphics.hpp>
+	"planet.h"
+	"network.h"
+	"objects/objects.h"
+	"objectmanager.h"
+
+1298247215 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\planet.h
+	"object.h"
+
+1298247215 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\planet.h
+	"object.h"
 

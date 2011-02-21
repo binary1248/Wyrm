@@ -15,13 +15,13 @@ Object* Create() { return new T(); }
 
 // A macro to register new object factories
 #define REGISTER_FACTORY(Type,Class) \
-class add_factory { \
+class add_factory_##Class { \
   public: \
-    add_factory() { \
+    add_factory_##Class() { \
       ObjectManager::AddFactory(Type, Create<Class>); \
     } \
 }; \
-add_factory af
+add_factory_##Class _##Class
 
 class Game;
 class Player;
@@ -45,7 +45,10 @@ class ObjectManager {
     inline sf::Uint16 NewID() { return lastId++; }
 
     static void AddFactory(sf::Uint16, boost::function<Object* ()> );
+
+    void LoadObjects();
   private:
+    bool objects_loaded;
     sf::Clock LastFullUpdate;
 
     std::vector<Object*> objects;

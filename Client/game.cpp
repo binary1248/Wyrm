@@ -6,7 +6,12 @@ Game* Game::instance;
 
 Game::Game() {
   // Create the main rendering window
-  App = new sf::RenderWindow(sf::VideoMode(1024, 768, 32), "WYRM");
+  App = new sf::RenderWindow(sf::VideoMode(1024, 768, 32),
+                             "WYRM",
+                             sf::Style::Titlebar | sf::Style::Close,
+                             sf::ContextSettings(24,    // Depth buffer
+                                                  8,    // Stencil buffer
+                                                  8) ); // AA level
 
   LoadKeymap();
   App->EnableKeyRepeat(false);

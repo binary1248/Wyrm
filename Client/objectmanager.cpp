@@ -8,12 +8,14 @@
 #include "objects/objects.h"
 #include "objectmanager.h"
 
+std::map< sf::Uint16, boost::function<Object* (sf::Uint16, sf::Packet&)> >* ObjectManager::factories = 0;
+
 ObjectManager::ObjectManager() {
 
 }
 
 ObjectManager::~ObjectManager() {
-
+  delete factories;
 }
 
 void ObjectManager::AddObject(Object* o) {
@@ -41,36 +43,28 @@ Object* ObjectManager::GetObjectById(sf::Uint16 id) {
 
 void ObjectManager::CreateObject(sf::Packet p, sf::Uint16 id) {
   sf::Uint16 type;
-  sf::String name;
-  sf::Vector2f pos;
-  sf::Vector2f vel;
-  float rot;
-  float rot_vel;
-
-  p >> type >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rot >> rot_vel;
-
-  Object* o = GetObjectById(id);
-
-  if( o ) {
-    o->name = name;
-    o->position = pos;
-    o->velocity = vel;
-    o->rotation = rot;
-    o->rotational_velocity = rot_vel;
-    return;
-  }
+  p >> type;
 
   Object* object = 0;
 
-  switch(type) {
-    case SHIP:
-      object = new Ship(id, name, pos, vel, rot, rot_vel);
-      p >> ((Ship*)object)->thrust;
-      break;
-    default:
-      std::cout << "Invalid object type." << std::endl;
-      break;
+  if( GetObjectById(id) ) {
+    return;
   }
+
+  if( !factories ) {
+    std::cout << "No factories" << std::endl;
+    return;
+  }
+
+  std::map<sf::Uint16, boost::function<Object* (sf::Uint16, sf::Packet&)> >::iterator i = factories->find(type);
+
+  if( i == factories->end() ) {
+    std::cout << "Invalid object type." << std::endl;
+    return;
+  } else {
+    object = (i->second)(id, p);
+  }
+
   if(object) {
     AddObject(object);
   }
@@ -123,4 +117,12 @@ void ObjectManager::DrawAll(sf::RenderWindow& w) {
   if( agent ) {
     agent->Draw(w);
   }
+}
+
+void ObjectManager::AddFactory(sf::Uint16 t, boost::function<Object* (sf::Uint16, sf::Packet&)> factory) {
+  if( !factories ) {
+    factories = new std::map< sf::Uint16, boost::function<Object* (sf::Uint16, sf::Packet&)> >;
+  }
+  ObjectManager::factories->insert( std::pair<sf::Uint16, boost::function<Object* (sf::Uint16, sf::Packet&)> >(t, factory) );
+  std::cout << "Registered object factory type " << t << std::endl;
 }

@@ -6,6 +6,7 @@
 class Ship : public Object{
   public:
     Ship(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_);
+    Ship(sf::Uint16 id_, sf::Packet& p);
     virtual ~Ship();
 
     virtual void Update(float time);

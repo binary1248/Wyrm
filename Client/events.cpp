@@ -41,6 +41,13 @@ int HandleEvents(sf::RenderWindow& app) {
 }
 
 void LoadKeymap() {
+
+  for( size_t i = 0; i < sf::Event::Count; i++ ) {
+    for( size_t j = 0; j < sf::Key::Count; j++ ) {
+      keymap[i][j] = 1337;
+    }
+  }
+
   keymap[sf::Event::KeyPressed][sf::Key::W] = 0;
   keymap[sf::Event::KeyReleased][sf::Key::W] = 1;
   keymap[sf::Event::KeyPressed][sf::Key::A] = 2;

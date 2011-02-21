@@ -37,7 +37,7 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
-			<Add library="sfgui2" />
+			<Add library="sfgui" />
 			<Add library="sfml2-audio-s" />
 			<Add library="sfml2-network-s" />
 			<Add library="sfml2-graphics-s" />
@@ -68,6 +68,8 @@
 		<Unit filename="objects\object.cpp" />
 		<Unit filename="objects\object.h" />
 		<Unit filename="objects\objects.h" />
+		<Unit filename="objects\planet.cpp" />
+		<Unit filename="objects\planet.h" />
 		<Unit filename="objects\ship.cpp" />
 		<Unit filename="objects\ship.h" />
 		<Unit filename="particle\AffectorBase.h" />
