@@ -16,7 +16,7 @@ NetworkHandler::~NetworkHandler() {
 }
 
 int NetworkHandler::Connect(sf::String username, sf::String password) {
-  if (Client.Connect("192.168.0.100", 1337) != sf::Socket::Done)
+  if (Client.Connect("localhost", 1337) != sf::Socket::Done)
   {
     // Error...
     std::cout << "Can't connect to server..." << std::endl;
