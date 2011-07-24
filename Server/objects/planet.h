@@ -17,6 +17,12 @@ class Planet : public Object {
     virtual void FillFullPacket(sf::Packet& p);
     virtual void HandlePacket(sf::Packet& p);
 
+    inline void SetOrbit(float v, float r) { velocity.x = v; velocity.y = r; }
+    inline void SetRotationalVelocity(float v) { rotational_velocity = v; }
+    inline void SetAngle(float a) { angle = a; }
+    inline void SetAnchor(float x, float y) { anchor.x = x; anchor.y = y; }
+
+  private:
     float angle;
     sf::Vector2f anchor;
 };

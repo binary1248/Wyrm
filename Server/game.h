@@ -1,13 +1,9 @@
 #ifndef GAME_H_INCLUDED
 #define GAME_H_INCLUDED
 
-#include <SFML/System.hpp>
-
 #include "objectmanager.h"
 #include "playermanager.h"
 #include "networkmanager.h"
-
-#define TIME Game::GetGame()->GetTime()
 
 class Game {
   public:
@@ -33,8 +29,6 @@ class Game {
     PlayerManager* playermanager;
     ObjectManager* objectmanager;
     NetworkManager* networkmanager;
-
-    sf::Clock clock;
 };
 
 #endif // GAME_H_INCLUDED

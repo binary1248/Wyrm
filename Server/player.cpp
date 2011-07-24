@@ -1,61 +1,63 @@
 #include <iostream>
-#include <SFML/Network.hpp>
-
+#include <sstream>
 #include "game.h"
 #include "player.h"
+#include "utility.h"
 #include "networkmanager.h"
 #include "auth.h"
 
-Player::Player(sf::TcpSocket* s, Object* o) {
+Player::Player(Object* o) {
   id = Game::GetGame()->GetPlayerManager()->NewID();
-  name = s->GetRemoteAddress().ToString();
-  connection = s;
   agent = 0;
-  alive = true;
+  delete_me = false;
   half_open = true;
-  Game::GetGame()->GetNetworkManager()->AddPlayer(this);
-  std::cout << TIME << "Client " << GetIPAddressString() << " connected.." << std::endl;
 
-  // Set agent
-  SetAgent(o);
+  std::stringstream ss;
+  ss << "Player " << id;
+  name = ss.str();
 
   // Subscribe all relevant objects
   Game::GetGame()->GetObjectManager()->SubscribeRelevant(this);
+
+  // Set agent
+  SetAgent(o);
 }
 
 Player::~Player() {
-  Game::GetGame()->GetNetworkManager()->RemovePlayer(this);
-
-  std::cout << TIME << "Client " << (sf::Uint32)id << " " << GetIPAddressString() << " disconnected.." << std::endl;
-
-  connection->Disconnect();
-  delete connection;
-  connection = 0;
-
   for( size_t i = 0; i < view.size(); i++ ) {
     view[i]->Unsubscribe(this);
   }
 
-  Game::GetGame()->GetObjectManager()->RemoveObjectById( agent->GetId() );
+  Game::GetGame()->GetNetworkManager()->RemovePlayer(this);
+
+  agent->Delete();
+
+  while( send_buffer.size() ) {
+    if( send_buffer.front() ) {
+      delete send_buffer.front();
+    }
+    send_buffer.pop_front();
+  }
+
+  while( recv_buffer.size() ) {
+    if( recv_buffer.front() ) {
+      delete recv_buffer.front();
+    }
+    recv_buffer.pop_front();
+  }
 }
 
 void Player::Update() {
   FlushBuffer();
-  if( !recv_buffer.empty() ) {
-    Receive();
-  }
+  HandleSocketData();
 }
 
 void Player::Send( sf::Packet& p ) {
-  sf::Socket::Status status = connection->Send(p);
-
-  if(status != sf::TcpSocket::Done) {
-    std::cout << TIME << "Failed sending data from client " << (sf::Uint32)id << ": " << ErrCode(status) << std::endl;
-  }
+  Game::GetGame()->GetNetworkManager()->SendData(this, p);
 }
 
 void Player::FlushBuffer() {
-  if( !alive || half_open ) {
+  if( IsDeleted() || half_open ) {
     return;
   }
 
@@ -68,7 +70,7 @@ void Player::FlushBuffer() {
 }
 
 void Player::SendPacket( sf::Packet& p, bool prio ) {
-  if( !alive ) {
+  if( IsDeleted() ) {
     return;
   }
 
@@ -85,13 +87,20 @@ void Player::ReceivePacket(sf::Packet* p) {
   recv_buffer.push_back(p);
 }
 
-void Player::Receive() {
+void Player::HandleSocketData() {
+  if( recv_buffer.empty() ) {
+    return;
+  }
+
   sf::Packet p = *(recv_buffer.front());
 
   if(!half_open) {
     HandlePacket(p);
   } else {
-    std::cout << TIME << "Client " << (sf::Uint32)id << " sent auth data" << std::endl;
+    std::stringstream ss;
+    ss << "Client " << (sf::Uint32)id << " sent auth data";
+    LogConsole(ss.str());
+
     Auth(p);
   }
 
@@ -101,7 +110,7 @@ void Player::Receive() {
 
 void Player::HandlePacket(sf::Packet& p) {
   if( p.GetDataSize() < 4 ) {
-    std::cout << TIME << "Player sent packet size < 4" << std::endl;
+    LogConsole("Player sent packet size < 4");
     return;
   }
 
@@ -113,7 +122,10 @@ void Player::HandlePacket(sf::Packet& p) {
       agent->HandlePacket(p);
       break;
     default:
-      std::cout << TIME << "Player sent packet with type0=" << type0 << std::endl;
+      std::stringstream ss;
+      ss << "Player sent packet with type0=" << type0;
+      LogConsole(ss.str());
+
       break;
   }
 }
@@ -124,35 +136,28 @@ void Player::Auth(sf::Packet p) {
     packet << sf::String("Authentication successful");
     SendPacket(packet, true);
 
-    std::cout << TIME << "Authentication successful" << std::endl;
+    LogConsole("Authentication successful");
     half_open = false;
   } else {
     sf::Packet packet;
     packet << sf::String("Authentication failed");
     SendPacket(packet, true);
 
+    std::stringstream ss;
+    ss << "Authentication failed: "
+       << GetName()
+       << " disconnected (auth failure)..";
+    LogConsole(ss.str());
 
-    std::cout << TIME << "Authentication failed" << std::endl
-              << "Client "
-              << GetIPAddressString()
-              << " disconnected (auth failure).."
-              << std::endl;
-    Kill();
-  }
-}
-
-void Player::Kill() {
-  if(alive) {
-    alive = false;
+    Delete();
   }
 }
 
 void Player::SetAgent(Object* o) {
   agent = o;
-  o->SetName( sf::String(GetIPAddressString()) );
-  AddObjectToView(o);
+  o->SetName( GetName() );
   sf::Packet packet;
-  packet << (sf::Uint16)SET_ID << o->id;
+  packet << (sf::Uint16)SET_ID << o->GetId();
   SendPacket(packet);
 }
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include "utility.h"
 #include "game.h"
 
 Game* Game::instance;
@@ -36,7 +37,7 @@ int Game::Run() {
     return EXIT_FAILURE;
   }
 
-  std::cout << TIME << "Running..." << std::endl;
+  LogConsole("Running...");
 
   while (running) {
     float ElapsedTime = Clock.GetElapsedTime();
@@ -47,7 +48,7 @@ int Game::Run() {
     sf::Sleep(0.02 - Clock.GetElapsedTime()); // Limit 50 FPS
   }
 
-  std::cout << TIME << "Shutting down..." << std::endl;
+  LogConsole("Shutting down...");;
 
   return EXIT_SUCCESS;
 }
@@ -58,13 +59,4 @@ void Game::Tick(float time) {
   playermanager->Tick(time);
 }
 
-std::string Game::GetTime() {
-  float time = clock.GetElapsedTime();
-  std::stringstream ss;
-  ss.setf( std::ios::fixed, std::ios::floatfield );
-  ss.fill('0');
-  ss.width(9);
-  ss.precision(4);
-  ss << time;
-  return "[" + ss.str() + "] ";
-}
+

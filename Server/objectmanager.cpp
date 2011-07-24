@@ -1,8 +1,10 @@
 #include <iostream>
+#include <sstream>
 #include <SFML/System.hpp>
 #include "player.h"
 #include "objects/objects.h"
 #include "game.h"
+#include "utility.h"
 #include "objectmanager.h"
 
 std::map< sf::Uint16, boost::function<Object* ()> >* ObjectManager::factories = 0;
@@ -15,7 +17,9 @@ ObjectManager::ObjectManager() {
 
 ObjectManager::~ObjectManager() {
   ClearObjects();
-  std::cout << TIME << "Object manager cleanup done." << std::endl;
+
+  LogConsole("Object manager cleanup done.");
+
   delete factories;
 }
 
@@ -25,7 +29,7 @@ void ObjectManager::AddObject(Object* o) {
 
 void ObjectManager::RemoveObject(Object* o) {
   for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
-    if((*i) && (*i)->id == o->GetId()) {
+    if((*i) && (*i)->GetId() == o->GetId()) {
       delete (*i);
       objects.erase(i);
       break;
@@ -35,7 +39,7 @@ void ObjectManager::RemoveObject(Object* o) {
 
 void ObjectManager::RemoveObjectById(sf::Uint16 id) {
   for( std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); i++ ) {
-    if((*i) && (*i)->id == id) {
+    if((*i) && (*i)->GetId() == id) {
       delete (*i);
       objects.erase(i);
       break;
@@ -45,28 +49,34 @@ void ObjectManager::RemoveObjectById(sf::Uint16 id) {
 
 Object* ObjectManager::GetObjectById(sf::Uint16 id) {
   for( size_t i = 0; i < objects.size(); i++ ) {
-    if(objects[i]->id == id) {
+    if(objects[i]->GetId() == id) {
       return objects[i];
     }
   }
-  std::cout << TIME << "Couldn't find object with id " << id << std::endl;
+
+  std::stringstream ss;
+  ss << "Couldn't find object with id " << id;
+  LogConsole(ss.str());
+
   return 0;
 }
 
 Object* ObjectManager::CreateObject(sf::Uint16 type) {
 
   if( !factories ) {
-    std::cout << TIME << "No factories" << std::endl;
+    LogConsole("No factories");
     return 0;
   }
 
   std::map<sf::Uint16, boost::function<Object* ()> >::iterator i = factories->find(type);
 
   if( i == factories->end() ) {
-    std::cout << TIME << "Invalid object type." << std::endl;
+    LogConsole("Invalid object type.");
     return 0;
   } else {
-    return (i->second)();
+    Object* o = (i->second)();
+    AddObject(o);
+    return o;
   }
 }
 
@@ -75,16 +85,14 @@ void ObjectManager::ClearObjects() {
     if( objects.back() ) {
       delete objects.back();
       objects.back() = 0;
-      objects.pop_back();
     }
+    objects.pop_back();
   }
 }
 
 void ObjectManager::SubscribeRelevant(Player* p) {
   for( size_t i = 0; i < objects.size(); i++ ) {
-    if( p->GetAgent() != objects[i] ) {
-      p->AddObjectToView(objects[i]);
-    }
+    p->AddObjectToView(objects[i]);
   }
 }
 
@@ -93,12 +101,20 @@ void ObjectManager::Tick(float time) {
     LoadObjects();
   }
 
-  for( size_t i = 0; i < objects.size(); i++ ) {
+  for( size_t i = 0; i < objects.size(); ) {
+    if( objects[i]->IsDeleted() ) {
+      RemoveObject(objects[i]);
+      continue;
+    }
+
     if( objects[i]->IsFresh() ) {
       Game::GetGame()->GetPlayerManager()->BroadcastNewObject(objects[i]);
       objects[i]->ClearFresh();
     }
+
     objects[i]->Update(time);
+
+    i++;
   }
 }
 
@@ -106,33 +122,19 @@ void ObjectManager::AddFactory(sf::Uint16 t, boost::function<Object* ()> factory
   if( !factories ) {
     factories = new std::map< sf::Uint16, boost::function<Object* ()> >;
   }
+
   ObjectManager::factories->insert( std::pair<sf::Uint16, boost::function<Object* ()> >(t, factory) );
-  std::cout << TIME << "Registered object factory type " << t << std::endl;
+
+  std::stringstream ss;
+  ss << "Registered object factory type " << t;
+  LogConsole(ss.str());
 }
 
 void ObjectManager::LoadObjects() {
   Planet* p = (Planet*)(CreateObject(PLANET));
-  p->velocity.x = 5; // Orbital vel
-  p->velocity.y = 400; // Orbital rad
-  p->rotational_velocity = 5;
-  p->anchor.x = 100;
-  p->anchor.y = -50;
+  p->SetOrbit(5,400);
+  p->SetRotationalVelocity(5);
+  p->SetAnchor(100,50);
 
   objects_loaded = true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

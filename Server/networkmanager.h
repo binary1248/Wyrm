@@ -1,23 +1,8 @@
 #ifndef NETWORK_H_INCLUDED
 #define NETWORK_H_INCLUDED
 
-#include <vector>
+#include <map>
 #include <SFML/Network.hpp>
-
-inline std::string ErrCode(sf::Socket::Status s) {
-  switch(s) {
-    case sf::TcpSocket::Disconnected:
-      return "Disconnected";
-    case sf::TcpSocket::Done:
-      return "Done";
-    case sf::TcpSocket::Error:
-      return "Error";
-    case sf::TcpSocket::NotReady:
-      return "Not Ready";
-    default:
-      return "Undefined";
-  }
-}
 
 class Game;
 
@@ -28,9 +13,12 @@ class NetworkManager {
 
     void Tick(float time);
 
+    void ReceiveData(Player*, sf::TcpSocket*);
+    void SendData(Player*, sf::Packet&);
+
     bool IsListening();
 
-    void AddPlayer(Player* p);
+    void AddPlayer(Player* p, sf::TcpSocket* s);
     void RemovePlayer(Player* p);
   private:
     bool listening;
@@ -40,7 +28,7 @@ class NetworkManager {
     sf::TcpListener sock_listener;
     sf::SocketSelector selector;
 
-    std::set<Player*> players;
+    std::map<Player*, sf::TcpSocket*> players;
 };
 
 #define PROTOCOL_VER_MAJOR 0.1f

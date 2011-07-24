@@ -8,7 +8,7 @@
 
 class Player {
   public:
-    Player(sf::TcpSocket* s, Object* o);
+    Player(Object* o);
     ~Player();
 
     // Network Handlers
@@ -17,10 +17,8 @@ class Player {
     void ReceivePacket(sf::Packet*);
     void HandlePacket(sf::Packet& p);
     void Auth(sf::Packet p);
-    void Kill();
-    inline bool Alive() { return alive; }
-    inline std::string GetIPAddressString() { return connection->GetRemoteAddress().ToString(); }
-    inline sf::TcpSocket* GetConnection() { return connection; }
+    inline void Delete() { delete_me = true; }
+    inline bool IsDeleted() { return delete_me; }
 
     // ID Handlers
     inline sf::Uint16 GetId() { return id; }
@@ -30,9 +28,11 @@ class Player {
     // View Handlers
     void AddObjectToView(Object* o);
     void RemoveObjectFromView(Object* o);
+
+    inline std::string GetName() { return name; }
   private:
     void Send(sf::Packet& p);
-    void Receive();
+    void HandleSocketData();
     void FlushBuffer();
 
     // ID vars
@@ -42,7 +42,7 @@ class Player {
 
     // Network vars
     sf::TcpSocket* connection;
-    bool alive;
+    bool delete_me;
     bool half_open;
     std::list<sf::Packet*> send_buffer;
     std::list<sf::Packet*> recv_buffer;

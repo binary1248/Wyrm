@@ -1,10 +1,11 @@
 #include <iostream>
+#include <sstream>
 #include <SFML/Graphics.hpp>
-
 #include "ship.h"
 #include "networkmanager.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
+#include "utility.h"
 #include "player.h"
 #include "game.h"
 
@@ -88,7 +89,9 @@ void Ship::HandlePacket(sf::Packet& p) {
           rotational_velocity = 000;
           break;
         default:
-          std::cout << TIME << id << " sent bogus code" << std::endl;
+          std::stringstream ss;
+          ss << GetId() << " sent bogus code";
+          LogConsole(ss.str());
           break;
       }
       break;

@@ -24,6 +24,7 @@ class Object {
     // ID Handlers
     inline sf::Uint16 GetId() { return id; }
     inline void SetName( sf::String name ) { this->name = name; }
+    inline std::string GetName() { return name; }
 
     // Dirty flag Handlers
     inline bool IsDirty() { return dirty; }
@@ -38,22 +39,27 @@ class Object {
     inline void SetFresh() { fresh = true; }
     inline void ClearFresh() { fresh = false; }
 
-    sf::Uint16 type;
+    // Delete Handlers
+    inline void Delete() { delete_me = true; }
+    inline bool IsDeleted() { return delete_me; }
 
+  private:
     sf::Uint16 id;
+    sf::Uint16 type;
     sf::String name;
+
+    bool dirty;
+    bool fresh;
+
+    bool delete_me;
+  protected:
+    std::set<Player*> subscribers;
 
     sf::Vector2f position;
     sf::Vector2f velocity;
 
     float rotation;
     float rotational_velocity;
-  private:
-    bool dirty;
-    bool removal;
-    bool fresh;
-  protected:
-    std::set<Player*> subscribers;
 };
 
 #endif // OBJECT_H_INCLUDED

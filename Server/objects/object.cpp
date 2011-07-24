@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <sstream>
+#include "utility.h"
 #include "object.h"
 #include "networkmanager.h"
 #include "player.h"
@@ -13,7 +14,7 @@ Object::Object(sf::Uint16 type, sf::String name, sf::Vector2f pos, sf::Vector2f 
   this->rotation = rot;
   this->rotational_velocity = rot_vel;
 
-  removal = false;
+  delete_me = false;
 
   id = Game::GetGame()->GetObjectManager()->NewID();
 
@@ -21,21 +22,26 @@ Object::Object(sf::Uint16 type, sf::String name, sf::Vector2f pos, sf::Vector2f 
 
   SetFresh();
 
-  Game::GetGame()->GetObjectManager()->AddObject(this);
+  std::stringstream ss;
 
-  std::cout << TIME << "Created object of type " << type << std::endl;
+  ss << "Created object of type " << type;
+
+  LogConsole(ss.str());
 }
 
 Object::~Object() {
-  removal = true;
   for( std::set<Player*>::iterator i = subscribers.begin(); i != subscribers.end(); i++ ) {
-    if( (*i)->Alive() ) {
+    if( !(*i)->IsDeleted() ) {
       (*i)->RemoveObjectFromView(this);
     }
   }
 }
 
 void Object::Update(float time) {
+  if( IsDeleted() ) {
+
+  }
+
   rotation += (rotational_velocity * time);
   position += (velocity * time);
 
@@ -76,7 +82,7 @@ void Object::SendState() {
 }
 
 void Object::Subscribe(Player* p) {
-  if( removal ) {
+  if( IsDeleted() ) {
     return;
   }
 
@@ -87,7 +93,7 @@ void Object::Subscribe(Player* p) {
 }
 
 void Object::Unsubscribe(Player* p) {
-  if( !p->Alive() ) {
+  if( p->IsDeleted() ) {
     return;
   }
 
@@ -96,7 +102,7 @@ void Object::Unsubscribe(Player* p) {
     sf::Packet packet;
     packet << (sf::Uint16)OBJECT << id << (sf::Uint16)REMOVE;
     (*i)->SendPacket(packet);
-    if( !removal ) {
+    if( !IsDeleted() ) {
       subscribers.erase(i);
     }
   }

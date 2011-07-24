@@ -15,8 +15,8 @@ class PlayerManager {
 
     void Tick(float time);
 
-    sf::Uint16 CreatePlayer(sf::TcpSocket* sock);
-    void RemovePlayer(sf::Uint16 id);
+    Player* CreatePlayer();
+    void RemovePlayer(Player* p);
     void ClearPlayers();
 
     void SendToPlayerById(sf::Uint16 id, sf::Packet p);

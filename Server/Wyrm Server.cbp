@@ -58,6 +58,8 @@
 		<Unit filename="player.h" />
 		<Unit filename="playermanager.cpp" />
 		<Unit filename="playermanager.h" />
+		<Unit filename="utility.cpp" />
+		<Unit filename="utility.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

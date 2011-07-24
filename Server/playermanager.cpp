@@ -1,7 +1,8 @@
 #include <iostream>
+#include <sstream>
 #include <SFML/Network.hpp>
-
 #include "objects/objects.h"
+#include "utility.h"
 #include "player.h"
 #include "game.h"
 #include "playermanager.h"
@@ -12,16 +13,14 @@ PlayerManager::PlayerManager() {
 
 PlayerManager::~PlayerManager() {
   ClearPlayers();
-  std::cout << TIME << "Player manager cleanup done." << std::endl;
+  LogConsole("Player manager cleanup done.");
 }
 
 void PlayerManager::Tick(float time) {
   for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); ) {
-    if( !(*iter)->Alive() ) {
-      // Reap disconnected players
-      std::cout << TIME << "Removing player with id " << (*iter)->GetId() << " and agent id " << (*iter)->GetAgent()->GetId() << std::endl;
-      delete (*iter);
-      iter = players.erase(iter);
+    if( (*iter)->IsDeleted() ) {
+      // Reap deleted players
+      RemovePlayer(*iter);
       continue;
     }
     // Update connected players
@@ -30,27 +29,36 @@ void PlayerManager::Tick(float time) {
   }
 }
 
-sf::Uint16 PlayerManager::CreatePlayer(sf::TcpSocket* sock) {
+Player* PlayerManager::CreatePlayer() {
   Object* o = Game::GetGame()->GetObjectManager()->CreateObject(SHIP);
-  o->SetName( sock->GetRemoteAddress().ToString() );
+
   if( !o ) {
-    sock->Disconnect();
-    return 0xFFFF;
+    return 0;
   }
-  Player* player = new Player(sock, o);
+
+  Player* player = new Player(o);
   players.push_back(player);
-  std::cout << TIME << "Created new player with id " << player->GetId() << " and ship id " << o->id << std::endl;
-  return player->GetId();
+
+  o->SetName( player->GetName() );
+
+  std::stringstream ss;
+  ss << "Created new player with id " << player->GetId() << " and ship id " << o->GetId();
+  LogConsole(ss.str());
+
+  return player;
 }
 
-void PlayerManager::RemovePlayer(sf::Uint16 id) {
+void PlayerManager::RemovePlayer(Player* p) {
   for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); iter++) {
-    if( (*iter) && (*iter)->GetId() == id) {
-      Object* agent = (*iter)->GetAgent();
-      delete (*iter);
+    if( (*iter) == p ) {
+      std::stringstream ss;
+      ss << "Removed player with id " << p->GetId();
+      LogConsole(ss.str());
+
+      delete p;
+      p = 0;
       iter = players.erase(iter);
-      Game::GetGame()->GetObjectManager()->RemoveObjectById( agent->GetId() );
-      std::cout << TIME << "Removed player with id " << (*iter)->GetId() << " and agent id " << (*iter)->GetAgent()->GetId() << std::endl;
+
       return;
     }
   }
