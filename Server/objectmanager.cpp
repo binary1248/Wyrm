@@ -10,12 +10,14 @@
 std::map< sf::Uint16, boost::function<Object* ()> >* ObjectManager::factories = 0;
 
 ObjectManager::ObjectManager() {
-  lastId = 0;
+  lastObjectId = 0;
+  lastSystemId = 0;
   LastFullUpdate.Reset();
   objects_loaded = false;
 }
 
 ObjectManager::~ObjectManager() {
+  ClearSystems();
   ClearObjects();
 
   LogConsole("Object manager cleanup done.");
@@ -25,6 +27,7 @@ ObjectManager::~ObjectManager() {
 
 void ObjectManager::AddObject(Object* o) {
   objects.push_back(o);
+  GetSystemById(0)->AddObject(o);
 }
 
 void ObjectManager::RemoveObject(Object* o) {
@@ -90,9 +93,32 @@ void ObjectManager::ClearObjects() {
   }
 }
 
-void ObjectManager::SubscribeRelevant(Player* p) {
-  for( size_t i = 0; i < objects.size(); i++ ) {
-    p->AddObjectToView(objects[i]);
+System* ObjectManager::GetSystemById(sf::Uint16 id) {
+  for( size_t i = 0; i < systems.size(); i++ ) {
+    if(systems[i]->GetId() == id) {
+      return systems[i];
+    }
+  }
+
+  std::stringstream ss;
+  ss << "Couldn't find systems with id " << id;
+  LogConsole(ss.str());
+
+  return 0;
+}
+
+void ObjectManager::CreateSystem(std::string name) {
+  System* s = new System(lastSystemId++, name);
+  systems.push_back(s);
+}
+
+void ObjectManager::ClearSystems() {
+  while( systems.size() ) {
+    if( systems.back() ) {
+      delete systems.back();
+      systems.back() = 0;
+    }
+    systems.pop_back();
   }
 }
 
@@ -107,14 +133,13 @@ void ObjectManager::Tick(float time) {
       continue;
     }
 
-    if( objects[i]->IsFresh() ) {
-      Game::GetGame()->GetPlayerManager()->BroadcastNewObject(objects[i]);
-      objects[i]->ClearFresh();
-    }
-
     objects[i]->Update(time);
 
     i++;
+  }
+
+  for( size_t i = 0; i < systems.size(); i++ ) {
+    systems[i]->Tick(time);
   }
 }
 
@@ -131,6 +156,8 @@ void ObjectManager::AddFactory(sf::Uint16 t, boost::function<Object* ()> factory
 }
 
 void ObjectManager::LoadObjects() {
+  CreateSystem("System 1");
+
   Planet* p = (Planet*)(CreateObject(PLANET));
   p->SetOrbit(5,400);
   p->SetRotationalVelocity(5);

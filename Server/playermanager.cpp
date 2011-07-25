@@ -45,12 +45,15 @@ Player* PlayerManager::CreatePlayer() {
   ss << "Created new player with id " << player->GetId() << " and ship id " << o->GetId();
   LogConsole(ss.str());
 
+  Game::GetGame()->GetObjectManager()->GetSystemById(0)->AddPlayer(player);
+
   return player;
 }
 
 void PlayerManager::RemovePlayer(Player* p) {
   for( std::vector<Player*>::iterator iter = players.begin(); iter != players.end(); iter++) {
     if( (*iter) == p ) {
+
       std::stringstream ss;
       ss << "Removed player with id " << p->GetId();
       LogConsole(ss.str());
@@ -71,26 +74,5 @@ void PlayerManager::ClearPlayers() {
       players.back() = 0;
       players.pop_back();
     }
-  }
-}
-
-void PlayerManager::SendToPlayerById(sf::Uint16 id, sf::Packet p) {
-  for( std::size_t i = 0; i < players.size(); i++ ) {
-    if( players[i] && players[i]->GetId() == id) {
-      players[i]->SendPacket(p);
-      return;
-    }
-  }
-}
-
-void PlayerManager::BroadcastNewObject(Object* o) {
-  for( std::size_t i = 0; i < players.size(); i++ ) {
-    players[i]->AddObjectToView(o);
-  }
-}
-
-void PlayerManager::Broadcast(sf::Packet p) {
-  for( std::size_t i = 0; i < players.size(); i++ ) {
-    players[i]->SendPacket(p);
   }
 }

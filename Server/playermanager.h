@@ -19,10 +19,7 @@ class PlayerManager {
     void RemovePlayer(Player* p);
     void ClearPlayers();
 
-    void SendToPlayerById(sf::Uint16 id, sf::Packet p);
-
     void BroadcastNewObject(Object* o);
-
     void Broadcast(sf::Packet p);
 
     inline sf::Uint16 NewID() { return lastId++; }

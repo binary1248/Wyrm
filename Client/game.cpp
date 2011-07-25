@@ -25,6 +25,8 @@ Game::Game() {
   backdrop = new Backdrop(*App);
 
   bRunning = true;
+
+  player = 0;
 }
 
 Game::~Game() {
@@ -90,6 +92,15 @@ Player* Game::GetPlayer() {
   }
 }
 
+Player* Game::CreatePlayer(sf::Uint16 id_, std::string name_) {
+  if( player ) {
+    return player;
+  } else {
+    player = new Player(0,"");
+    return player;
+  }
+}
+
 NetworkHandler* Game::GetNetworkHandler() {
   if( networkhandler ) {
     return networkhandler;
@@ -129,6 +140,9 @@ void Game::Tick(float t) {
 
   if( networkhandler->IsAuthenticated() ) {
     objectmanager->Tick(t);
+    if( player ) {
+      player->Tick(t);
+    }
     //partSys.Update(t);
 
     backdrop->Draw(*App);

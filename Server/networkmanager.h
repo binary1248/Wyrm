@@ -3,6 +3,7 @@
 
 #include <map>
 #include <SFML/Network.hpp>
+#include "player.h"
 
 class Game;
 

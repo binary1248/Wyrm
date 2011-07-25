@@ -17,8 +17,6 @@ class Object {
     // Network Handlers
     virtual void FillPartialPacket(sf::Packet& p);
     virtual void FillFullPacket(sf::Packet& p);
-    virtual void SendUpdate();
-    virtual void SendState();
     virtual void HandlePacket(sf::Packet& p) = 0;
 
     // ID Handlers
@@ -30,10 +28,6 @@ class Object {
     inline bool IsDirty() { return dirty; }
     inline void SetDirty() { dirty = true; }
     inline void ClearDirty() { dirty = false; }
-
-    // View Handlers
-    void Subscribe(Player* p);
-    void Unsubscribe(Player* p);
 
     inline bool IsFresh() { return fresh; }
     inline void SetFresh() { fresh = true; }
@@ -53,8 +47,6 @@ class Object {
 
     bool delete_me;
   protected:
-    std::set<Player*> subscribers;
-
     sf::Vector2f position;
     sf::Vector2f velocity;
 

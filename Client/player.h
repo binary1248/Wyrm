@@ -8,10 +8,14 @@ class Player{
     Player(sf::Uint16 id_, sf::String name_);
     ~Player();
 
+    void Tick(float time);
+
     void SetShip(sf::Uint16 id_);
 
     sf::Uint16 id;
     sf::String name;
+  private:
+    sf::Uint16 tentativeAgentId;
 };
 
 #endif // PLAYER_H_INCLUDED

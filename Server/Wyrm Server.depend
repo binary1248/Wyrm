@@ -232,7 +232,7 @@
 1311268190 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\auth.h
 	<SFML/Network.hpp>
 
-1311482052 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.cpp
+1311566195 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.cpp
 	<iostream>
 	<sstream>
 	"utility.h"
@@ -241,7 +241,7 @@
 	"player.h"
 	"game.h"
 
-1311482668 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
+1311563860 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
 	<set>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -257,7 +257,7 @@
 	"playermanager.h"
 	"networkmanager.h"
 
-1311268190 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.h
+1311563785 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.h
 	<vector>
 	<map>
 	<boost/function.hpp>
@@ -265,21 +265,23 @@
 	<SFML/Network.hpp>
 	"objects/objects.h"
 	"objects/object.h"
+	"system.h"
 
-1311481958 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.h
+1311560271 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.h
 	<vector>
 	<SFML/Network.hpp>
 	"player.h"
 
-1311481712 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.h
+1311563809 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.h
 	<list>
 	<set>
 	<SFML/Network.hpp>
 	"objects/object.h"
 
-1311479873 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
+1311562998 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
 	<map>
 	<SFML/Network.hpp>
+	"player.h"
 
 1311482604 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\ship.cpp
 	<iostream>
@@ -300,21 +302,22 @@
 1311268190 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\ship.h
 	"object.h"
 
-1311482668 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
+1311563860 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
 	<set>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1311479873 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
+1311562998 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
 	<map>
 	<SFML/Network.hpp>
+	"player.h"
 
-1311481958 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\playermanager.h
+1311560271 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\playermanager.h
 	<vector>
 	<SFML/Network.hpp>
 	"player.h"
 
-1311481712 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\player.h
+1311563809 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\player.h
 	<list>
 	<set>
 	<SFML/Network.hpp>
@@ -331,7 +334,7 @@
 	"utility.h"
 	"networkmanager.h"
 
-1311482594 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
+1311566230 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
 	<iostream>
 	<sstream>
 	<SFML/System.hpp>
@@ -345,7 +348,7 @@
 	"ship.h"
 	"planet.h"
 
-1311482614 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.cpp
+1311566106 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\player.cpp
 	<iostream>
 	<sstream>
 	"game.h"
@@ -362,7 +365,7 @@
 	"playermanager.h"
 	"networkmanager.h"
 
-1311268190 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objectmanager.h
+1311563785 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objectmanager.h
 	<vector>
 	<map>
 	<boost/function.hpp>
@@ -370,8 +373,9 @@
 	<SFML/Network.hpp>
 	"objects/objects.h"
 	"objects/object.h"
+	"system.h"
 
-1311482613 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
+1311564128 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
 	<iostream>
 	<sstream>
 	<SFML/Network.hpp>
@@ -381,7 +385,7 @@
 	"game.h"
 	"playermanager.h"
 
-1311268190 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\planet.cpp
+1311564109 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\planet.cpp
 	<iostream>
 	<cmath>
 	"planet.h"
@@ -405,4 +409,23 @@
 
 1311472929 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\utility.h
 	<string>
+
+1311566152 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\system.cpp
+	<sstream>
+	<SFML/Network.hpp>
+	"networkmanager.h"
+	"utility.h"
+	"system.h"
+
+1311564047 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\system.h
+	<vector>
+	<utility>
+	"objects/object.h"
+	"player.h"
+
+1311564047 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\system.h
+	<vector>
+	<utility>
+	"objects/object.h"
+	"player.h"
 

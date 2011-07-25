@@ -36,7 +36,7 @@ void Planet::Update(float time) {
   rotation += rotational_velocity * time;
 
   if( update_timer.GetElapsedTime() > 10 ) {
-    SendUpdate();
+    SetDirty();
     update_timer.Reset();
   }
 }

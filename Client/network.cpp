@@ -93,7 +93,7 @@ void NetworkHandler::HandlePacket(sf::Packet p) {
       p >> id;
       Player* player = Game::GetGame()->GetPlayer();
       if(!player) {
-        player = new Player(0,"");
+        player = Game::GetGame()->CreatePlayer(0,"");
       }
       player->SetShip(id);
       break;

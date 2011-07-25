@@ -23,32 +23,23 @@ Object::Object(sf::Uint16 type, sf::String name, sf::Vector2f pos, sf::Vector2f 
   SetFresh();
 
   std::stringstream ss;
-
-  ss << "Created object of type " << type;
-
+  ss << "Created object " << id << " of type " << type;
   LogConsole(ss.str());
 }
 
 Object::~Object() {
-  for( std::set<Player*>::iterator i = subscribers.begin(); i != subscribers.end(); i++ ) {
-    if( !(*i)->IsDeleted() ) {
-      (*i)->RemoveObjectFromView(this);
-    }
-  }
+  std::stringstream ss;
+  ss << "Destroyed object " << id << " of type " << type;
+  LogConsole(ss.str());
 }
 
 void Object::Update(float time) {
   if( IsDeleted() ) {
-
+    return;
   }
 
   rotation += (rotational_velocity * time);
   position += (velocity * time);
-
-  if( IsDirty() ) {
-    SendUpdate();
-  }
-  ClearDirty();
 }
 
 void Object::FillPartialPacket(sf::Packet& p) {
@@ -63,47 +54,4 @@ void Object::FillFullPacket(sf::Packet& p) {
     << position.x << position.y
     << velocity.x << velocity.y
     << rotation   << rotational_velocity;
-}
-
-void Object::SendUpdate() {
-  sf::Packet p;
-  FillPartialPacket(p);
-  for( std::set<Player*>::iterator i = subscribers.begin(); i != subscribers.end(); i++ ) {
-    (*i)->SendPacket(p);
-  }
-}
-
-void Object::SendState() {
-  sf::Packet p;
-  FillFullPacket(p);
-  for( std::set<Player*>::iterator i = subscribers.begin(); i != subscribers.end(); i++ ) {
-    (*i)->SendPacket(p);
-  }
-}
-
-void Object::Subscribe(Player* p) {
-  if( IsDeleted() ) {
-    return;
-  }
-
-  subscribers.insert(p);
-  sf::Packet packet;
-  FillFullPacket(packet);
-  p->SendPacket(packet);
-}
-
-void Object::Unsubscribe(Player* p) {
-  if( p->IsDeleted() ) {
-    return;
-  }
-
-  std::set<Player*>::iterator i = subscribers.find(p);
-  if( i != subscribers.end() ) {
-    sf::Packet packet;
-    packet << (sf::Uint16)OBJECT << id << (sf::Uint16)REMOVE;
-    (*i)->SendPacket(packet);
-    if( !IsDeleted() ) {
-      subscribers.erase(i);
-    }
-  }
 }

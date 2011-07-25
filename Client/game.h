@@ -19,6 +19,7 @@ class Game {
 
     GUI* GetGUI();
     Player* GetPlayer();
+    Player* CreatePlayer(sf::Uint16 id_, std::string name_);
     NetworkHandler* GetNetworkHandler();
     ObjectManager* GetObjectManager();
     Backdrop* GetBackdrop();

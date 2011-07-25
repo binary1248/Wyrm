@@ -8,6 +8,7 @@
 #include <SFML/Network.hpp>
 #include "objects/objects.h"
 #include "objects/object.h"
+#include "system.h"
 
 // Template object factory
 template <class T>
@@ -38,11 +39,13 @@ class ObjectManager {
     Object* CreateObject(sf::Uint16 type);
     void ClearObjects();
 
-    void SubscribeRelevant(Player* p);
+    System* GetSystemById(sf::Uint16 id);
+    void CreateSystem(std::string name);
+    void ClearSystems();
 
     void Tick(float time);
 
-    inline sf::Uint16 NewID() { return lastId++; }
+    inline sf::Uint16 NewID() { return lastObjectId++; }
 
     static void AddFactory(sf::Uint16, boost::function<Object* ()> );
 
@@ -52,7 +55,9 @@ class ObjectManager {
     sf::Clock LastFullUpdate;
 
     std::vector<Object*> objects;
-    sf::Uint16 lastId;
+    std::vector<System*> systems;
+    sf::Uint16 lastObjectId;
+    sf::Uint16 lastSystemId;
 
     static std::map< sf::Uint16, boost::function<Object* ()> >* factories;
 };

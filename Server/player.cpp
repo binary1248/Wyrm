@@ -16,18 +16,13 @@ Player::Player(Object* o) {
   ss << "Player " << id;
   name = ss.str();
 
-  // Subscribe all relevant objects
-  Game::GetGame()->GetObjectManager()->SubscribeRelevant(this);
+  LogConsole( name + " created" );
 
   // Set agent
   SetAgent(o);
 }
 
 Player::~Player() {
-  for( size_t i = 0; i < view.size(); i++ ) {
-    view[i]->Unsubscribe(this);
-  }
-
   Game::GetGame()->GetNetworkManager()->RemovePlayer(this);
 
   agent->Delete();
@@ -45,6 +40,8 @@ Player::~Player() {
     }
     recv_buffer.pop_front();
   }
+
+  LogConsole( name + " destroyed" );
 }
 
 void Player::Update() {
@@ -159,24 +156,4 @@ void Player::SetAgent(Object* o) {
   sf::Packet packet;
   packet << (sf::Uint16)SET_ID << o->GetId();
   SendPacket(packet);
-}
-
-void Player::AddObjectToView(Object* o) {
-  for( size_t i = 0; i < view.size(); i++ ) {
-    if( view[i] == o ) {
-      return;
-    }
-  }
-  view.push_back(o);
-  o->Subscribe(this);
-}
-
-void Player::RemoveObjectFromView(Object* o) {
-  for( std::vector<Object*>::iterator i = view.begin(); i != view.end(); i++ ) {
-    if( (*i) == o ) {
-      view.erase(i);
-      o->Unsubscribe(this);
-      return;
-    }
-  }
 }

@@ -25,10 +25,6 @@ class Player {
     inline Object* GetAgent() { return agent; }
     void SetAgent(Object* o);
 
-    // View Handlers
-    void AddObjectToView(Object* o);
-    void RemoveObjectFromView(Object* o);
-
     inline std::string GetName() { return name; }
   private:
     void Send(sf::Packet& p);
@@ -46,9 +42,6 @@ class Player {
     bool half_open;
     std::list<sf::Packet*> send_buffer;
     std::list<sf::Packet*> recv_buffer;
-
-    // Player view vars
-    std::vector<Object*> view;
 };
 
 #endif // PLAYER_H_INCLUDED
