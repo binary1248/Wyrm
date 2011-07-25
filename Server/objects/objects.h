@@ -3,10 +3,12 @@
 
 #include "ship.h"
 #include "planet.h"
+#include "star.h"
 
 enum object_t{
   SHIP = 0,
   PLANET = 1,
+  STAR = 2,
 };
 
 #endif // OBJECTS_H_INCLUDED

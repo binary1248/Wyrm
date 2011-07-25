@@ -21,7 +21,8 @@ class Ship : public Object{
 
     sf::Sprite Sprite;
     sf::Text Text;
-    sf::Image Image;
+
+    float image_height;
 };
 
 #endif // SHIP_H_INCLUDED

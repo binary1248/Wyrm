@@ -2,6 +2,7 @@
 #define GAME_H_INCLUDED
 
 #include "objectmanager.h"
+#include "resourcemanager.h"
 #include "gui.h"
 #include "network.h"
 #include "player.h"
@@ -9,7 +10,6 @@
 
 class Game {
   public:
-    Game();
     ~Game();
 
     static Game* GetGame();
@@ -22,8 +22,10 @@ class Game {
     Player* CreatePlayer(sf::Uint16 id_, std::string name_);
     NetworkHandler* GetNetworkHandler();
     ObjectManager* GetObjectManager();
+    ResourceManager* GetResourceManager();
     Backdrop* GetBackdrop();
   private:
+    Game();
     void Tick(float t);
     bool bRunning;
 
@@ -32,6 +34,7 @@ class Game {
     sf::RenderWindow* App;
     NetworkHandler* networkhandler;
     ObjectManager* objectmanager;
+    ResourceManager* resourcemanager;
     Backdrop* backdrop;
     GUI* gui;
 

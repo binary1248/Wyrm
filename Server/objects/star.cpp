@@ -1,24 +1,24 @@
 #include <iostream>
 #include <cmath>
 
-#include "planet.h"
+#include "star.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
 
-REGISTER_FACTORY(PLANET,Planet);
+REGISTER_FACTORY(STAR,Star);
 
-Planet::Planet(sf::String name, sf::Vector2f pos, sf::Vector2f vel, float rot, float rot_vel) :
-Object(PLANET, name, pos, vel, rot, rot_vel) {
+Star::Star(sf::String name, sf::Vector2f pos, sf::Vector2f vel, float rot, float rot_vel) :
+Object(STAR, name, pos, vel, rot, rot_vel) {
   angle = 0;
 }
 
-Planet::~Planet() {
+Star::~Star() {
 
 }
 
-void Planet::Update(float time) {
+void Star::Update(float time) {
   angle += velocity.x * time;
   while( angle > 360 ) {
     angle -= 360;
@@ -39,16 +39,16 @@ void Planet::Update(float time) {
   }
 }
 
-void Planet::FillPartialPacket(sf::Packet& p) {
+void Star::FillPartialPacket(sf::Packet& p) {
   Object::FillPartialPacket(p);
   p << angle << anchor.x << anchor.y;
 }
 
-void Planet::FillFullPacket(sf::Packet& p) {
+void Star::FillFullPacket(sf::Packet& p) {
   Object::FillFullPacket(p);
   p << angle << anchor.x << anchor.y;
 }
 
-void Planet::HandlePacket(sf::Packet& p) {
+void Star::HandlePacket(sf::Packet& p) {
 
 }

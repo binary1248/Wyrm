@@ -18,7 +18,6 @@ class Planet : public Object{
     sf::Vector2f anchor;
 
     sf::Sprite Sprite;
-    sf::Image Image;
 };
 
 #endif // PLANET_H_INCLUDED

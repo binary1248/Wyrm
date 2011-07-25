@@ -18,6 +18,8 @@ Game::Game() {
 
   gui = new GUI(*App);
 
+  resourcemanager = new ResourceManager;
+
   objectmanager = new ObjectManager;
 
   networkhandler = new NetworkHandler;
@@ -46,6 +48,10 @@ Game::~Game() {
 
   if( objectmanager ) {
     delete objectmanager;
+  }
+
+  if( resourcemanager ) {
+    delete resourcemanager;
   }
 
   if( gui ) {
@@ -96,7 +102,7 @@ Player* Game::CreatePlayer(sf::Uint16 id_, std::string name_) {
   if( player ) {
     return player;
   } else {
-    player = new Player(0,"");
+    player = new Player(id_,name_);
     return player;
   }
 }
@@ -112,6 +118,14 @@ NetworkHandler* Game::GetNetworkHandler() {
 ObjectManager* Game::GetObjectManager() {
   if( objectmanager ) {
     return objectmanager;
+  } else {
+    return NULL;
+  }
+}
+
+ResourceManager* Game::GetResourceManager() {
+  if( resourcemanager ) {
+    return resourcemanager;
   } else {
     return NULL;
   }
@@ -152,5 +166,5 @@ void Game::Tick(float t) {
   }
 
   // Display window contents on screen
-    App->Display();
+  App->Display();
 }

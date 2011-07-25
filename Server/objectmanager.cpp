@@ -163,5 +163,10 @@ void ObjectManager::LoadObjects() {
   p->SetRotationalVelocity(5);
   p->SetAnchor(100,50);
 
+  Star* s = (Star*)(CreateObject(STAR));
+  s->SetOrbit(0,0);
+  s->SetRotationalVelocity(0);
+  s->SetAnchor(100,50);
+
   objects_loaded = true;
 }

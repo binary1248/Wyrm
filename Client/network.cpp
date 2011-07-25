@@ -43,21 +43,24 @@ int NetworkHandler::Connect(sf::String username, sf::String password) {
       Client.Send(packet);
     } else {
       std::cout << "Protocol mismatch" << std::endl;
+      Disconnect();
       return -1;
     }
   }
 
   {
     sf::Packet packet;
-    if( Client.Receive(packet) != sf::TcpSocket::Done )
+    if( Client.Receive(packet) != sf::TcpSocket::Done ) {
       std::cout << "Error while receiving." << std::endl;
+      Disconnect();
+      return -1;
+    }
     sf::String s;
     packet >> s;
     if(!s.ToAnsiString().compare("Authentication successful")) {
       std::cout << "Authentication successful" << std::endl;
       authenticated = true;
-    }
-    else {
+    } else {
       std::cout << "Authentication failed: " << s.ToAnsiString() << std::endl;
       Disconnect();
       return -1;
@@ -108,7 +111,7 @@ void NetworkHandler::Tick() {
     return;
   }
 
-  if( Selector.Wait(0.010) ) {
+  while( Selector.Wait(0.000001) ) {
     sf::Packet packet;
     Client.Receive(packet);
     HandlePacket(packet);

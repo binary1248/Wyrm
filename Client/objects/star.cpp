@@ -5,14 +5,14 @@
 #include "network.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
-#include "planet.h"
+#include "star.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
 
-REGISTER_FACTORY(PLANET,Planet);
+REGISTER_FACTORY(STAR,Star);
 
-Planet::Planet(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
-Object(PLANET, id_, name_, pos_, vel_, rot_, rot_vel_) {
+Star::Star(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
+Object(STAR, id_, name_, pos_, vel_, rot_, rot_vel_) {
   id = id_;
   name = name_;
   angle = 0;
@@ -22,8 +22,8 @@ Object(PLANET, id_, name_, pos_, vel_, rot_, rot_vel_) {
   Sprite.SetScale(0.4,0.4);
 }
 
-Planet::Planet(sf::Uint16 id_, sf::Packet& p) :
-Object(PLANET, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
+Star::Star(sf::Uint16 id_, sf::Packet& p) :
+Object(STAR, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   p >> name >> position.x >> position.y >> velocity.x >> velocity.y
     >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
 
@@ -33,11 +33,11 @@ Object(PLANET, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   Sprite.SetScale(0.4,0.4);
 }
 
-Planet::~Planet() {
+Star::~Star() {
 
 }
 
-void Planet::Update(float time) {
+void Star::Update(float time) {
   angle += velocity.x * time;
 
   while( angle > 360 ) {
@@ -58,11 +58,11 @@ void Planet::Update(float time) {
   Sprite.SetRotation(rotation);
 }
 
-void Planet::Draw(sf::RenderWindow& w) {
+void Star::Draw(sf::RenderWindow& w) {
   w.Draw(Sprite);
 }
 
-void Planet::HandlePacket(sf::Packet p) {
+void Star::HandlePacket(sf::Packet p) {
   sf::Uint16 type1;
   p >> type1;
 

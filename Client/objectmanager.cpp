@@ -19,6 +19,12 @@ ObjectManager::~ObjectManager() {
 }
 
 void ObjectManager::AddObject(Object* o) {
+  for( size_t i = 0; i < objects.size(); i++ ) {
+    if( objects[i] == o ) {
+      return;
+    }
+  }
+
   objects.push_back(o);
 }
 
@@ -94,7 +100,7 @@ void ObjectManager::DispatchPacket(sf::Packet p) {
 
 void ObjectManager::Tick(float time) {
   for(std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); ) {
-    if( (*i)->FlaggedForRemoval() ) {
+    if( (*i)->IsDeleted() ) {
       delete (*i);
       i = objects.erase(i);
       continue;

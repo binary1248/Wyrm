@@ -18,14 +18,15 @@ Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
   acceleration.x = 0;
   acceleration.y = 0;
   thrust = 0;
-  Image.LoadFromFile("spaceship.png");
-  Sprite.SetImage(Image);
-  Sprite.SetOrigin(Image.GetWidth()/2,Image.GetHeight()/2);
+  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("spaceship.png");
+  Sprite.SetImage(*image);
+  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
   Sprite.SetScale(1,1);
   Text.SetFont(sf::Font::GetDefaultFont());
-  Text.SetScale(sf::Vector2f(2.0f,2.0f));
   Text.SetColor(sf::Color(255, 255, 255));
   Text.SetScale(0.4f, 0.4f);
+
+  image_height = image->GetHeight();
 }
 
 Ship::Ship(sf::Uint16 id_, sf::Packet& p) :
@@ -36,14 +37,15 @@ Object(SHIP, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   isPlayer = false;
   acceleration.x = 0;
   acceleration.y = 0;
-  Image.LoadFromFile("spaceship.png");
-  Sprite.SetImage(Image);
-  Sprite.SetOrigin(Image.GetWidth()/2,Image.GetHeight()/2);
+  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("spaceship.png");
+  Sprite.SetImage(*image);
+  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
   Sprite.SetScale(1,1);
   Text.SetFont(sf::Font::GetDefaultFont());
-  Text.SetScale(sf::Vector2f(2.0f,2.0f));
   Text.SetColor(sf::Color(255, 255, 255));
   Text.SetScale(0.4f, 0.4f);
+
+  image_height = image->GetHeight();
 }
 
 Ship::~Ship() {
@@ -58,8 +60,9 @@ void Ship::Update(float time) {
   position += (velocity * time);
   Sprite.SetPosition(position);
   Sprite.SetRotation(rotation);
+
   sf::FloatRect rect = Text.GetRect();
-  Text.SetPosition(position + sf::Vector2f(-rect.Width/2,Image.GetHeight()/2));
+  Text.SetPosition(position + sf::Vector2f(-rect.Width/2,image_height/3));
 
   if( isPlayer ) {
     Game::GetGame()->GetBackdrop()->Update(velocity);
@@ -103,7 +106,7 @@ void Ship::HandlePacket(sf::Packet p) {
     }
     case REMOVE:
     {
-      SetForRemoval();
+      Delete();
       break;
     }
   }

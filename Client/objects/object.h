@@ -13,8 +13,8 @@ class Object {
 
     virtual void HandlePacket(sf::Packet p);
 
-    inline bool FlaggedForRemoval() { return removal; }
-    inline void SetForRemoval() { removal = true; }
+    inline bool IsDeleted() { return delete_me; }
+    inline void Delete() { delete_me = true; }
 
     sf::Uint16 type;
 
@@ -27,7 +27,7 @@ class Object {
     float rotation;
     float rotational_velocity;
   private:
-    bool removal;
+    bool delete_me;
 };
 
 #endif // OBJECT_H_INCLUDED

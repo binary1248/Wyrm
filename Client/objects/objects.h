@@ -6,7 +6,8 @@
 
 enum object_t{
   SHIP = 0,
-  PLANET = 1
+  PLANET = 1,
+  STAR = 2,
 };
 
 #endif // OBJECTS_H_INCLUDED

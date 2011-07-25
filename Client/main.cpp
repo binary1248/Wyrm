@@ -42,5 +42,7 @@ int main(int argc, char** argv) {
 	partSys.SetPosition(sf::Vector2f(400, 300));
   */
 
+  delete Game::GetGame();
+
   return EXIT_SUCCESS;
 }

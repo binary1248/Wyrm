@@ -29,23 +29,27 @@ void Backdrop::Draw(sf::RenderWindow& w) {
 
   for( unsigned int i = 0; i < NUM_BACKDROP_PARTICLES; i++) {
     particles[i].position += (backdrop_velocity * LastDraw.GetElapsedTime());
-    if( particles[i].position.x < 0 ) {
-      particles[i].position.x = width;
-    }
-    else if( particles[i].position.x >= width ) {
-      particles[i].position.x = 0;
+
+    while( particles[i].position.x < 0 ) {
+      particles[i].position.x += width;
     }
 
-    if( particles[i].position.y < 0 ) {
-      particles[i].position.y = height;
+    while( particles[i].position.x >= width ) {
+      particles[i].position.x -= width;
     }
-    else if( particles[i].position.y >= height ) {
-      particles[i].position.y = 0;
+
+    while( particles[i].position.y < 0 ) {
+      particles[i].position.y += height;
     }
-    w.Draw(sf::Shape::Circle(   particles[i].position.x,
-                                particles[i].position.y,
-                                particles[i].size,
-                                sf::Color(255, 255, 255, 85)));
+
+    while( particles[i].position.y >= height ) {
+      particles[i].position.y -= height;
+    }
+
+    w.Draw(sf::Shape::Circle( particles[i].position.x,
+                              particles[i].position.y,
+                              particles[i].size,
+                              sf::Color(255, 255, 255, 85) ) );
   }
 
   LastDraw.Reset();

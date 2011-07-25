@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Wyrm" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Debug" />
-				<Option object_output="obj/Debug/" />
+				<Option output="bin\Debug\Wyrm" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin\Debug" />
+				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -18,9 +18,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Wyrm" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Release" />
-				<Option object_output="obj/Release/" />
+				<Option output="bin\Release\Wyrm" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin\Release" />
+				<Option object_output="obj\Release\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -32,9 +32,9 @@
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
-				<Option output="bin/Debug/Wyrm" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Debug" />
-				<Option object_output="obj/Debug/" />
+				<Option output="bin\Debug\Wyrm" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin\Debug" />
+				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -47,9 +47,9 @@
 				</Linker>
 			</Target>
 			<Target title="Release Linux">
-				<Option output="bin/Release/Wyrm" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Release" />
-				<Option object_output="obj/Release/" />
+				<Option output="bin\Release\Wyrm" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin\Release" />
+				<Option object_output="obj\Release\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -96,24 +96,28 @@
 		<Unit filename="network.h" />
 		<Unit filename="objectmanager.cpp" />
 		<Unit filename="objectmanager.h" />
-		<Unit filename="objects/object.cpp" />
-		<Unit filename="objects/object.h" />
-		<Unit filename="objects/objects.h" />
-		<Unit filename="objects/planet.cpp" />
-		<Unit filename="objects/planet.h" />
-		<Unit filename="objects/ship.cpp" />
-		<Unit filename="objects/ship.h" />
-		<Unit filename="particle/AffectorBase.h" />
-		<Unit filename="particle/EmitterBase.cpp" />
-		<Unit filename="particle/EmitterBase.h" />
-		<Unit filename="particle/Particle.h" />
-		<Unit filename="particle/ParticleSystem.cpp" />
-		<Unit filename="particle/ParticleSystem.h" />
-		<Unit filename="particle/particles.cpp" />
-		<Unit filename="particle/particles.h" />
-		<Unit filename="particle/particlesystem.h" />
+		<Unit filename="objects\object.cpp" />
+		<Unit filename="objects\object.h" />
+		<Unit filename="objects\objects.h" />
+		<Unit filename="objects\planet.cpp" />
+		<Unit filename="objects\planet.h" />
+		<Unit filename="objects\ship.cpp" />
+		<Unit filename="objects\ship.h" />
+		<Unit filename="objects\star.cpp" />
+		<Unit filename="objects\star.h" />
+		<Unit filename="particle\AffectorBase.h" />
+		<Unit filename="particle\EmitterBase.cpp" />
+		<Unit filename="particle\EmitterBase.h" />
+		<Unit filename="particle\Particle.h" />
+		<Unit filename="particle\ParticleSystem.cpp" />
+		<Unit filename="particle\ParticleSystem.h" />
+		<Unit filename="particle\particles.cpp" />
+		<Unit filename="particle\particles.h" />
+		<Unit filename="particle\particlesystem.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
+		<Unit filename="resourcemanager.cpp" />
+		<Unit filename="resourcemanager.h" />
 		<Unit filename="widgetset.cpp" />
 		<Unit filename="widgetset.h" />
 		<Extensions>

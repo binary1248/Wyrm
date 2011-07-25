@@ -54,6 +54,8 @@
 		<Unit filename="objects\planet.h" />
 		<Unit filename="objects\ship.cpp" />
 		<Unit filename="objects\ship.h" />
+		<Unit filename="objects\star.cpp" />
+		<Unit filename="objects\star.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="playermanager.cpp" />

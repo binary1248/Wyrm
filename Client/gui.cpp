@@ -14,29 +14,23 @@ sf::FloatRect GUI::CenterRect(sf::RenderWindow& w, float width, float height) {
 }
 
 void GUI::Hide(const std::string& id) {
-  std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin();
-
   sfg::Widget::Ptr p;
 
-  while(i != sets.end()) {
+  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
     if(!i->second->GetName().compare(id)) {
       i->second->Hide();
       return;
     }
-    i++;
   }
 }
 
 sfg::Widget::Ptr GUI::FindWidget(const std::string& id) {
-  std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin();
-
   sfg::Widget::Ptr p;
 
-  while(i != sets.end()) {
+  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
     p = i->second->FindWidget(id);
     if(p)
       break;
-    i++;
   }
 
   return p;
@@ -45,7 +39,7 @@ sfg::Widget::Ptr GUI::FindWidget(const std::string& id) {
 WidgetSet::Ptr GUI::CreateSet(const sf::FloatRect rect, const std::string name) {
   if(sets.find(name) == sets.end()) {
     WidgetSet::Ptr ptr(WidgetSet::Create( rect, name ));
-    sets.insert(std::pair<std::string,WidgetSet::Ptr>(name,ptr));
+    sets.insert( std::pair<std::string,WidgetSet::Ptr>(name,ptr) );
     return ptr;
   } else {
     std::cout << "Window already exists." << std::endl;
