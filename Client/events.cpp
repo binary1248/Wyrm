@@ -1,5 +1,6 @@
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <SFML/Network.hpp>
-
 #include "network.h"
 #include "gui.h"
 #include "game.h"
@@ -11,8 +12,9 @@ int HandleEvents(sf::RenderWindow& app) {
   sf::Event Event;
   while (app.GetEvent(Event))
   {
-    if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) )
-    {
+    if (Event.Type == sf::Event::Resized) {
+      glViewport(0, 0, Event.Size.Width, Event.Size.Height);
+    } else if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) ) {
       sf::Uint16 code = 1337;
 
       // Window closed

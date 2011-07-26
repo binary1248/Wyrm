@@ -41,12 +41,12 @@ void Star::Update(float time) {
 
 void Star::FillPartialPacket(sf::Packet& p) {
   Object::FillPartialPacket(p);
-  p << angle << anchor.x << anchor.y;
+  p << angle << position.x << position.y << rotation;
 }
 
 void Star::FillFullPacket(sf::Packet& p) {
   Object::FillFullPacket(p);
-  p << angle << anchor.x << anchor.y;
+  p << angle << position.x << position.y << rotation << anchor.x << anchor.y;
 }
 
 void Star::HandlePacket(sf::Packet& p) {

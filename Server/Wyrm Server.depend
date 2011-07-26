@@ -278,7 +278,7 @@
 	<SFML/Network.hpp>
 	"objects/object.h"
 
-1311626587 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
+1311694386 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\networkmanager.h
 	<map>
 	<SFML/Network.hpp>
 	"player.h"
@@ -308,7 +308,7 @@
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
 
-1311626587 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
+1311694386 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\networkmanager.h
 	<map>
 	<SFML/Network.hpp>
 	"player.h"
@@ -335,7 +335,7 @@
 	"utility.h"
 	"networkmanager.h"
 
-1311627074 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
+1311694171 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
 	<iostream>
 	<sstream>
 	<SFML/System.hpp>
@@ -387,7 +387,7 @@
 	"game.h"
 	"playermanager.h"
 
-1311626831 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\planet.cpp
+1311694516 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\planet.cpp
 	<iostream>
 	<cmath>
 	"planet.h"
@@ -431,7 +431,7 @@
 	"objects/object.h"
 	"player.h"
 
-1311626834 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\star.cpp
+1311694309 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\star.cpp
 	<iostream>
 	<cmath>
 	"star.h"

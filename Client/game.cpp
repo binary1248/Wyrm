@@ -1,3 +1,6 @@
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <SFML/Window.hpp>
 #include "game.h"
 #include "backdrop.h"
 #include "events.h"
@@ -8,10 +11,28 @@ Game::Game() {
   // Create the main rendering window
   App = new sf::RenderWindow(sf::VideoMode(1024, 768, 32),
                              "WYRM",
-                             sf::Style::Titlebar | sf::Style::Close,
+                             sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize ,
                              sf::ContextSettings(24,    // Depth buffer
                                                   8,    // Stencil buffer
                                                   8) ); // AA level
+
+  // Set color and depth clear value
+  glClearDepth(1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+  // Enable Z-buffer read and write
+  glDisable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
+
+  // Setup a perspective projection
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(90.f, 1.f, 1.f, 500.f);
+
+  glDisable(GL_LIGHTING);
+  glEnable(GL_BLEND);
+
+  glMatrixMode(GL_MODELVIEW);
 
   LoadKeymap();
   App->EnableKeyRepeat(false);
@@ -149,6 +170,8 @@ void Game::Tick(float t) {
 
   // Clear the screen (fill it with black color)
   App->Clear(sf::Color(0, 0, 0));
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   gui->Draw(*App);
 

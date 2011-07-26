@@ -41,7 +41,7 @@ void Planet::Update(float time) {
 
 void Planet::FillPartialPacket(sf::Packet& p) {
   Object::FillPartialPacket(p);
-  p << angle << anchor.x << anchor.y;
+  p << angle;
 }
 
 void Planet::FillFullPacket(sf::Packet& p) {

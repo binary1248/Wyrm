@@ -4,7 +4,7 @@
 #include <SFML/Network.hpp>
 
 #define PROTOCOL_VER_MAJOR 0.1f
-#define PROTOCOL_VER_MINOR 0.6f
+#define PROTOCOL_VER_MINOR 0.7f
 
 enum server_packet_t0{
   OBJECT = 0,

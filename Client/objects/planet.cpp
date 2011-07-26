@@ -71,7 +71,7 @@ void Planet::HandlePacket(sf::Packet p) {
     {
       sf::Vector2f pos;
       sf::Vector2f vel;
-      p >> pos.x >> pos.y >> rotation >> vel.x >> vel.y >> rotational_velocity >> angle >> anchor.x >> anchor.y;
+      p >> pos.x >> pos.y >> rotation >> vel.x >> vel.y >> rotational_velocity >> angle;
       position = pos;
       velocity = vel;
       break;
