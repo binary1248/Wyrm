@@ -52,6 +52,8 @@ Game::Game() {
   bRunning = true;
 
   player = 0;
+
+
 }
 
 Game::~Game() {

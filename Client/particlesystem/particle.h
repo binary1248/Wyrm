@@ -5,7 +5,7 @@
 
 class Particle {
   public:
-    Particle( std::string image = "particle4.png" );
+    Particle( sf::Image* image );
     Particle(const Particle& p);
     ~Particle();
 
@@ -32,12 +32,12 @@ class Particle {
     inline sf::Vector2f GetAcceleration() { return acceleration; }
     inline void SetAcceleration(sf::Vector2f a) { acceleration = a; }
 
-    void SetImage(std::string i);
+    void SetImage(sf::Image* i);
   private:
     bool alive;
     bool visible;
 
-    std::string image;
+    sf::Image* image;
 
     float life;
     float lifetime;

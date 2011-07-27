@@ -197,7 +197,7 @@
 	"network.h"
 	"game.h"
 
-1311615029 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
+1311777448 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -207,7 +207,6 @@
 	"game.h"
 	"objects/objects.h"
 	"objectmanager.h"
-	"particle/particles.h"
 
 1311565043 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.h
 	<SFML/System.hpp>
@@ -326,7 +325,7 @@
 	"player.h"
 	"backdrop.h"
 
-1311735092 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
+1311793869 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
 	<GL/gl.h>
 	<GL/glu.h>
 	<SFML/Window.hpp>
@@ -578,20 +577,24 @@
 	<iostream>
 	"widgetset.h"
 
-1311625058 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.h
+1311794382 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.h
 	<map>
+	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1311625058 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\resourcemanager.h
+1311794382 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\resourcemanager.h
 	<map>
+	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1311625297 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.cpp
+1311795531 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.cpp
+	<cmath>
+	<iostream>
 	"resourcemanager.h"
 
-1311735896 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
+1311795449 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"game.h"
@@ -605,12 +608,12 @@
 	"object.h"
 	"particlesystem/particlesystem.h"
 
-1311736141 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.cpp
+1311793972 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.cpp
 	"game.h"
 	"resourcemanager.h"
 	"particle.h"
 
-1311736076 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.h
+1311793963 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.h
 	<SFML/Graphics.hpp>
 
 1311735773 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particleemitter.cpp
@@ -637,7 +640,7 @@
 	"particle.h"
 	"particleemitter.h"
 
-1311736076 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particle.h
+1311793963 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particle.h
 	<SFML/Graphics.hpp>
 
 1311734296 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particleemitter.h

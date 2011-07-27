@@ -2,15 +2,14 @@
 #include "resourcemanager.h"
 #include "particle.h"
 
-Particle::Particle(std::string i) {
+Particle::Particle(sf::Image* i) {
   alive = true;
   life = 0.0f;
   visible = true;
 
   image = i;
 
-  sf::Image* Image = Game::GetGame()->GetResourceManager()->OpenImage(i);
-  sprite.SetImage(*Image);
+  sprite.SetImage(*image);
 }
 
 Particle::Particle(const Particle& p) {
@@ -29,19 +28,16 @@ Particle::Particle(const Particle& p) {
 
   image = p.image;
 
-  sf::Image* Image = Game::GetGame()->GetResourceManager()->OpenImage(image);
-  sprite.SetImage(*Image);
+  sprite.SetImage(*image);
 }
 
 Particle::~Particle() {
 
 }
 
-void Particle::SetImage(std::string i) {
+void Particle::SetImage(sf::Image* i) {
   image = i;
-
-  sf::Image* Image = Game::GetGame()->GetResourceManager()->OpenImage(i);
-  sprite.SetImage(*Image);
+  sprite.SetImage(*image);
 }
 
 void Particle::Tick(float secs) {

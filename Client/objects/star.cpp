@@ -38,17 +38,17 @@ Star::~Star() {
 void Star::CreateParticleSystem() {
   ps = new ParticleSystem();
 
-  Particle* part = new Particle("particle4.png");
+  Particle* part = new Particle(Game::GetGame()->GetResourceManager()->GetParticle(64, 0.010, 0.2));
   part->SetVelocity(sf::Vector2f(10,0));
   part->SetColorStart(sf::Color(255,255,255,255));
   part->SetColorEnd(sf::Color(255,200,0,0));
   part->SetLifetime(7);
-  part->SetSizeStart(sf::Vector2f(2,2));
-  part->SetSizeEnd(sf::Vector2f(2,2));
+  part->SetSizeStart(sf::Vector2f(3,3));
+  part->SetSizeEnd(sf::Vector2f(3,3));
 
   ParticleEmitter* pe = new ParticleEmitter(ps);
   pe->SetPrototype(part);
-  pe->SetRate(100);
+  pe->SetRate(30);
   pe->SetSpread(180);
 
   ps->AddEmitter(pe);
