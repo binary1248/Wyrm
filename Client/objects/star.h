@@ -2,6 +2,7 @@
 #define STAR_H_INCLUDED
 
 #include "object.h"
+#include "particlesystem/particlesystem.h"
 
 class Star : public Object{
   public:
@@ -13,11 +14,12 @@ class Star : public Object{
     virtual void Draw(sf::RenderWindow& w);
 
     virtual void HandlePacket(sf::Packet p);
-
+  private:
+    void CreateParticleSystem();
     float angle;
     sf::Vector2f anchor;
 
-    sf::Sprite Sprite;
+    ParticleSystem* ps;
 };
 
 #endif // STAR_H_INCLUDED

@@ -111,6 +111,12 @@
 		<Unit filename="objects\ship.h" />
 		<Unit filename="objects\star.cpp" />
 		<Unit filename="objects\star.h" />
+		<Unit filename="particlesystem\particle.cpp" />
+		<Unit filename="particlesystem\particle.h" />
+		<Unit filename="particlesystem\particleemitter.cpp" />
+		<Unit filename="particlesystem\particleemitter.h" />
+		<Unit filename="particlesystem\particlesystem.cpp" />
+		<Unit filename="particlesystem\particlesystem.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="resourcemanager.cpp" />

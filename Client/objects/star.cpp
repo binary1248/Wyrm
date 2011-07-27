@@ -5,6 +5,7 @@
 #include "network.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
+#include "particlesystem/particlesystem.h"
 #include "star.h"
 
 #define clean_angle(a) (((a+90)/180)*M_PI)
@@ -16,10 +17,8 @@ Object(STAR, id_, name_, pos_, vel_, rot_, rot_vel_) {
   id = id_;
   name = name_;
   angle = 0;
-  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
-  Sprite.SetImage(*image);
-  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.4,0.4);
+
+  CreateParticleSystem();
 }
 
 Star::Star(sf::Uint16 id_, sf::Packet& p) :
@@ -27,14 +26,33 @@ Object(STAR, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   p >> name >> position.x >> position.y >> velocity.x >> velocity.y
     >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
 
-  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
-  Sprite.SetImage(*image);
-  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.4,0.4);
+  CreateParticleSystem();
 }
 
 Star::~Star() {
+  if( ps ) {
+    delete ps;
+  }
+}
 
+void Star::CreateParticleSystem() {
+  ps = new ParticleSystem();
+
+  Particle* part = new Particle("particle4.png");
+  part->SetVelocity(sf::Vector2f(10,0));
+  part->SetColorStart(sf::Color(255,255,255,255));
+  part->SetColorEnd(sf::Color(255,200,0,0));
+  part->SetLifetime(7);
+  part->SetSizeStart(sf::Vector2f(2,2));
+  part->SetSizeEnd(sf::Vector2f(2,2));
+
+  ParticleEmitter* pe = new ParticleEmitter(ps);
+  pe->SetPrototype(part);
+  pe->SetRate(100);
+  pe->SetSpread(180);
+
+  ps->AddEmitter(pe);
+  ps->Start();
 }
 
 void Star::Update(float time) {
@@ -54,12 +72,12 @@ void Star::Update(float time) {
 
   rotation += rotational_velocity * time;
 
-  Sprite.SetPosition(position);
-  Sprite.SetRotation(rotation);
+  ps->SetPosition(position);
+  ps->Tick(time);
 }
 
 void Star::Draw(sf::RenderWindow& w) {
-  w.Draw(Sprite);
+  ps->Draw(w);
 }
 
 void Star::HandlePacket(sf::Packet p) {

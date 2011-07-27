@@ -19,7 +19,7 @@ Object(PLANET, id_, name_, pos_, vel_, rot_, rot_vel_) {
   sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
   Sprite.SetImage(*image);
   Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.4,0.4);
+  Sprite.SetScale(0.2,0.2);
 }
 
 Planet::Planet(sf::Uint16 id_, sf::Packet& p) :
@@ -30,7 +30,7 @@ Object(PLANET, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
   Sprite.SetImage(*image);
   Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.4,0.4);
+  Sprite.SetScale(0.2,0.2);
 }
 
 Planet::~Planet() {

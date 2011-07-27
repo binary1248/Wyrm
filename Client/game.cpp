@@ -16,6 +16,8 @@ Game::Game() {
                                                   8,    // Stencil buffer
                                                   8) ); // AA level
 
+  srand( time(NULL) );
+
   // Set color and depth clear value
   glClearDepth(1.0f);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

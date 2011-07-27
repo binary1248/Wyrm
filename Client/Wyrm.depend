@@ -326,7 +326,7 @@
 	"player.h"
 	"backdrop.h"
 
-1311696407 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
+1311735092 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
 	<GL/gl.h>
 	<GL/glu.h>
 	<SFML/Window.hpp>
@@ -382,7 +382,7 @@
 	"guievents.h"
 	"game.h"
 
-1311694534 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\planet.cpp
+1311736298 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\planet.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"game.h"
@@ -591,15 +591,54 @@
 1311625297 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.cpp
 	"resourcemanager.h"
 
-1311627021 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
+1311735896 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"game.h"
 	"network.h"
 	"objects/objects.h"
 	"objectmanager.h"
+	"particlesystem/particlesystem.h"
 	"star.h"
 
-1311627033 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.h
+1311735903 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.h
 	"object.h"
+	"particlesystem/particlesystem.h"
+
+1311736141 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.cpp
+	"game.h"
+	"resourcemanager.h"
+	"particle.h"
+
+1311736076 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.h
+	<SFML/Graphics.hpp>
+
+1311735773 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particleemitter.cpp
+	<cmath>
+	"particle.h"
+	"particlesystem.h"
+	"particleemitter.h"
+
+1311734296 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particleemitter.h
+
+1311734995 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particlesystem.cpp
+	<iostream>
+	"particle.h"
+	"particleemitter.h"
+	"particlesystem.h"
+
+1311734300 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particlesystem.h
+	<vector>
+	"particle.h"
+	"particleemitter.h"
+
+1311734300 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particlesystem.h
+	<vector>
+	"particle.h"
+	"particleemitter.h"
+
+1311736076 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particle.h
+	<SFML/Graphics.hpp>
+
+1311734296 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\particlesystem\particleemitter.h
 
