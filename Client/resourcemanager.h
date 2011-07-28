@@ -21,6 +21,7 @@ class ResourceManager {
     sf::SoundBuffer* OpenSound(std::string);
     sf::Image* GetParticle(int size, float sigma2, float exp);
     sf::Image* GetBackground(int width, int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes );
+    sf::Image* GetPlanet(int width, int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes );
   private:
     std::map<std::string, sf::Image*> images;
     std::map<std::string, sf::SoundBuffer*> sounds;

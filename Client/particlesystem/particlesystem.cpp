@@ -42,6 +42,18 @@ void ParticleSystem::Tick(float secs) {
   }
 }
 
+void ParticleSystem::Start(float secs) {
+  running = true;
+
+  if( secs < 0.0001f ) {
+    return;
+  }
+
+  for( float f = 0; f < secs; f+=1 ) {
+    Tick(1);
+  }
+}
+
 void ParticleSystem::Stop() {
   running = false;
 

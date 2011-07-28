@@ -159,8 +159,8 @@ void ObjectManager::LoadObjects() {
   CreateSystem("System 1");
 
   Planet* p = (Planet*)(CreateObject(PLANET));
-  p->SetOrbit(5,400);
-  p->SetRotationalVelocity(5);
+  p->SetOrbit(2,400);
+  p->SetRotationalVelocity(2);
   p->SetAnchor(0,0);
   p->SetName("Planet 1");
 

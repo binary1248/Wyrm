@@ -16,10 +16,8 @@ Object(PLANET, id_, name_, pos_, vel_, rot_, rot_vel_) {
   id = id_;
   name = name_;
   angle = 0;
-  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
-  Sprite.SetImage(*image);
-  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.2,0.2);
+
+  Init();
 }
 
 Planet::Planet(sf::Uint16 id_, sf::Packet& p) :
@@ -27,14 +25,28 @@ Object(PLANET, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   p >> name >> position.x >> position.y >> velocity.x >> velocity.y
     >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
 
-  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("planet.png");
-  Sprite.SetImage(*image);
-  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(0.2,0.2);
+  Init();
 }
 
 Planet::~Planet() {
+  if( image ) {
+    delete image;
+  }
+}
 
+void Planet::Init() {
+  float amplitudes[] = {80,80,10,80,0,0,0,0};
+
+  image = Game::GetGame()->GetResourceManager()->GetPlanet(100,
+                                                           100,
+                                                           sf::Color(0xDB,0x99,0x00,255),
+                                                           4,
+                                                           8,
+                                                           (float*)amplitudes );
+
+  Sprite.SetImage(*image);
+  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
+  Sprite.SetScale(1.6,1.6);
 }
 
 void Planet::Update(float time) {

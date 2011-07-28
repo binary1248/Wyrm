@@ -14,10 +14,14 @@ class Planet : public Object{
 
     virtual void HandlePacket(sf::Packet p);
 
+  private:
+    void Init();
+
     float angle;
     sf::Vector2f anchor;
 
     sf::Sprite Sprite;
+    sf::Image* image;
 };
 
 #endif // PLANET_H_INCLUDED

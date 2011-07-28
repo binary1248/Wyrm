@@ -117,6 +117,8 @@
 		<Unit filename="particlesystem\particleemitter.h" />
 		<Unit filename="particlesystem\particlesystem.cpp" />
 		<Unit filename="particlesystem\particlesystem.h" />
+		<Unit filename="perlin.cpp" />
+		<Unit filename="perlin.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="resourcemanager.cpp" />

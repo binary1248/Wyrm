@@ -14,7 +14,7 @@ class ParticleSystem {
     void Draw(sf::RenderTarget& r);
 
     void Tick(float secs);
-    inline void Start() { running = true; }
+    void Start(float secs = 0);
     void Stop();
 
     inline void AddEmitter(ParticleEmitter* pe) { emitters.push_back(pe); }

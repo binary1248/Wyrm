@@ -38,11 +38,11 @@ Star::~Star() {
 void Star::CreateParticleSystem() {
   ps = new ParticleSystem();
 
-  Particle* part = new Particle(Game::GetGame()->GetResourceManager()->GetParticle(64, 0.010, 0.2));
+  Particle* part = new Particle(Game::GetGame()->GetResourceManager()->GetParticle(64, 0.02, 0.2));
   part->SetVelocity(sf::Vector2f(10,0));
   part->SetColorStart(sf::Color(255,255,255,255));
   part->SetColorEnd(sf::Color(255,200,0,0));
-  part->SetLifetime(9);
+  part->SetLifetime(10);
   part->SetSizeStart(sf::Vector2f(2.5,2.5));
   part->SetSizeEnd(sf::Vector2f(2.5,2.5));
 
@@ -51,8 +51,9 @@ void Star::CreateParticleSystem() {
   pe->SetRate(20);
   pe->SetSpread(180);
 
+  ps->SetPosition(position);
   ps->AddEmitter(pe);
-  ps->Start();
+  ps->Start(10);
 }
 
 void Star::Update(float time) {
