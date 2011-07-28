@@ -113,7 +113,7 @@ void ObjectManager::Tick(float time) {
 void ObjectManager::DrawAll(sf::RenderWindow& w) {
   Object* agent = 0;
   for(size_t i = 0; i < objects.size(); i++) {
-    if( objects[i]->type == SHIP && ((Ship*)objects[i])->isPlayer ) {
+    if( objects[i]->type == SHIP && ((Ship*)objects[i])->IsPlayer() ) {
       agent = objects[i];
       continue;
     }

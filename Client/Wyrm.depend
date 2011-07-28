@@ -160,11 +160,12 @@
 
 1285961074 "
 
-1311614694 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.cpp
+1311819856 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.cpp
 	<SFML/Graphics.hpp>
+	"game.h"
 	"backdrop.h"
 
-1311268200 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
+1311818462 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\backdrop.h
 	<SFML/Graphics.hpp>
 
 1311696491 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\events.cpp
@@ -215,7 +216,7 @@
 	"ship.h"
 	"planet.h"
 
-1311626244 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
+1311820890 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.h
 	"object.h"
 
 1311624007 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\object.h
@@ -255,7 +256,7 @@
 	"objectmanager.h"
 	"game.h"
 
-1311624037 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
+1311820842 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objectmanager.cpp
 	<iostream>
 	<SFML/System.hpp>
 	<SFML/Network.hpp>
@@ -269,7 +270,7 @@
 	<iostream>
 	"object.h"
 
-1311626298 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
+1311820923 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\ship.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"ship.h"
@@ -281,7 +282,7 @@
 	"ship.h"
 	"planet.h"
 
-1311626244 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
+1311820890 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\ship.h
 	"object.h"
 
 1311624007 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\objects\object.h
@@ -291,7 +292,7 @@
 1311694546 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\network.h
 	<SFML/Network.hpp>
 
-1311268200 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
+1311818462 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\backdrop.h
 	<SFML/Graphics.hpp>
 
 1311268192 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particle\emitterbase.cpp
@@ -307,7 +308,7 @@
 	"ParticleSystem.h"
 	"particles.h"
 
-1311565812 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
+1311820883 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\player.cpp
 	<iostream>
 	<cmath>
 	<SFML/Graphics.hpp>
@@ -325,7 +326,7 @@
 	"player.h"
 	"backdrop.h"
 
-1311793869 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
+1311818820 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\game.cpp
 	<GL/gl.h>
 	<GL/glu.h>
 	<SFML/Window.hpp>
@@ -577,24 +578,24 @@
 	<iostream>
 	"widgetset.h"
 
-1311794382 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.h
+1311819764 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.h
 	<map>
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1311794382 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\resourcemanager.h
+1311819764 c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\\resourcemanager.h
 	<map>
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1311795531 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.cpp
+1311823333 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\resourcemanager.cpp
 	<cmath>
 	<iostream>
 	"resourcemanager.h"
 
-1311795449 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
+1311820519 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\objects\star.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	"game.h"
@@ -608,7 +609,7 @@
 	"object.h"
 	"particlesystem/particlesystem.h"
 
-1311793972 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.cpp
+1311820642 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\client\particlesystem\particle.cpp
 	"game.h"
 	"resourcemanager.h"
 	"particle.h"

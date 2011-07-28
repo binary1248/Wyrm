@@ -1,12 +1,23 @@
 #include <SFML/Graphics.hpp>
-
+#include "game.h"
 #include "backdrop.h"
+
+#define TEX_SIZE 512
 
 Backdrop::Backdrop(sf::RenderWindow& w) {
   backdrop_velocity = sf::Vector2f(0,0);
 
-  background.LoadFromFile("background.jpg");
-  background_sprite.SetImage(background);
+  float amplitudes[] = {30,20,20,20,10,10,0,0};
+
+  image = 0;
+
+  image = Game::GetGame()->GetResourceManager()->GetBackground(TEX_SIZE,
+                                                               TEX_SIZE,
+                                                               sf::Color(90,180,180,255),
+                                                               4,
+                                                               8,
+                                                               (float*)amplitudes );
+  background_sprite.SetImage(*image);
 
   for( unsigned int i = 0; i < NUM_BACKDROP_PARTICLES; i++) {
     particles[i].position.x = sf::Randomizer::Random(0.0f,(float)w.GetWidth());
@@ -16,7 +27,9 @@ Backdrop::Backdrop(sf::RenderWindow& w) {
 }
 
 Backdrop::~Backdrop() {
-
+  if( image ) {
+    delete image;
+  }
 }
 
 void Backdrop::Draw(sf::RenderWindow& w) {
@@ -25,6 +38,9 @@ void Backdrop::Draw(sf::RenderWindow& w) {
 
   sf::View view = w.GetView();
   w.SetView(w.GetDefaultView());
+  float x_scale = (float)width / TEX_SIZE;
+  float y_scale = (float)height / TEX_SIZE;
+  background_sprite.SetScale(x_scale, y_scale);
   w.Draw(background_sprite);
 
   for( unsigned int i = 0; i < NUM_BACKDROP_PARTICLES; i++) {

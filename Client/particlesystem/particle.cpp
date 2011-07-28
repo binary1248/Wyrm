@@ -29,6 +29,7 @@ Particle::Particle(const Particle& p) {
   image = p.image;
 
   sprite.SetImage(*image);
+  sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
 }
 
 Particle::~Particle() {

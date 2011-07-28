@@ -37,6 +37,9 @@ class Object {
     inline void Delete() { delete_me = true; }
     inline bool IsDeleted() { return delete_me; }
 
+    inline sf::Vector2f GetPosition() { return position; }
+    inline void SetPosition(sf::Vector2f p) { position = p; }
+
   private:
     sf::Uint16 id;
     sf::Uint16 type;

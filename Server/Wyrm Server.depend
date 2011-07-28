@@ -241,7 +241,7 @@
 	"player.h"
 	"game.h"
 
-1311563860 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
+1311821080 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objects\object.h
 	<set>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -303,7 +303,7 @@
 1311268190 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\ship.h
 	"object.h"
 
-1311563860 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
+1311821080 c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\\objects\object.h
 	<set>
 	<SFML/Graphics.hpp>
 	<SFML/Network.hpp>
@@ -335,7 +335,7 @@
 	"utility.h"
 	"networkmanager.h"
 
-1311694171 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
+1311820216 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\objectmanager.cpp
 	<iostream>
 	<sstream>
 	<SFML/System.hpp>
@@ -377,7 +377,7 @@
 	"objects/object.h"
 	"system.h"
 
-1311564128 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
+1311821092 source:c:\users\dimitri (thedim)\desktop\wyrm\trunk\server\playermanager.cpp
 	<iostream>
 	<sstream>
 	<SFML/Network.hpp>

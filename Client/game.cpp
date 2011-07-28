@@ -47,13 +47,11 @@ Game::Game() {
 
   networkhandler = new NetworkHandler;
 
-  backdrop = new Backdrop(*App);
-
   bRunning = true;
 
   player = 0;
 
-
+  backdrop = 0;
 }
 
 Game::~Game() {
@@ -180,6 +178,10 @@ void Game::Tick(float t) {
   gui->Draw(*App);
 
   if( networkhandler->IsAuthenticated() ) {
+    if( !backdrop ) {
+      backdrop = new Backdrop(*App);
+    }
+
     objectmanager->Tick(t);
     if( player ) {
       player->Tick(t);

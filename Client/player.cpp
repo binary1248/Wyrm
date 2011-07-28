@@ -37,7 +37,7 @@ void Player::SetShip(sf::Uint16 id_) {
     return;
   }
   Ship* playerShip = (Ship*)(Game::GetGame()->GetObjectManager()->GetObjectById(id_));
-  playerShip->isPlayer = true;
+  playerShip->SetPlayer(true);
   std::cout << "Set player ship to object: " << id_ << std::endl;
   tentativeAgentId = 0xffff;
 }

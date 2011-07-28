@@ -17,10 +17,12 @@ class Backdrop {
     void Draw(sf::RenderWindow& w);
     void Update(sf::Vector2f v);
   private:
-    sf::Image background;
+    //sf::Image background;
     sf::Sprite background_sprite;
     sf::Vector2f backdrop_velocity;
     sf::Clock LastDraw;
+
+    sf::Image* image;
 
     particle particles[NUM_BACKDROP_PARTICLES];
 };

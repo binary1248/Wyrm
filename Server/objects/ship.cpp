@@ -62,7 +62,7 @@ void Ship::HandlePacket(sf::Packet& p) {
         case 2:
           //std::cout << TIME << id << " 2" << std::endl;
           //velocity.x = -100;
-          rotational_velocity = 100;
+          rotational_velocity = 200;
           break;
         case 3:
           //std::cout << TIME << id << " 3" << std::endl;
@@ -81,7 +81,7 @@ void Ship::HandlePacket(sf::Packet& p) {
         case 6:
           //std::cout << TIME << id << " 6" << std::endl;
           //velocity.x = 100;
-          rotational_velocity = -100;
+          rotational_velocity = -200;
           break;
         case 7:
           //std::cout << TIME << id << " 7" << std::endl;

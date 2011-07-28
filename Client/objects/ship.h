@@ -13,7 +13,10 @@ class Ship : public Object{
     virtual void Draw(sf::RenderWindow& w);
 
     virtual void HandlePacket(sf::Packet p);
-
+    inline void SetPlayer(bool b) { isPlayer = b; }
+    inline bool IsPlayer() { return isPlayer; }
+  private:
+    void Init();
     bool isPlayer;
 
     sf::Vector2f acceleration;

@@ -14,19 +14,7 @@ Ship::Ship(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel
 Object(SHIP, id_, name_, pos_, vel_, rot_, rot_vel_) {
   id = id_;
   name = name_;
-  isPlayer = false;
-  acceleration.x = 0;
-  acceleration.y = 0;
-  thrust = 0;
-  sf::Image* image = Game::GetGame()->GetResourceManager()->OpenImage("spaceship.png");
-  Sprite.SetImage(*image);
-  Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
-  Sprite.SetScale(1,1);
-  Text.SetFont(sf::Font::GetDefaultFont());
-  Text.SetColor(sf::Color(255, 255, 255));
-  Text.SetScale(0.4f, 0.4f);
-
-  image_height = image->GetHeight();
+  Init();
 }
 
 Ship::Ship(sf::Uint16 id_, sf::Packet& p) :
@@ -34,6 +22,14 @@ Object(SHIP, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   p >> name >> position.x >> position.y >> velocity.x >> velocity.y
     >> rotation >> rotational_velocity >> thrust;
 
+  Init();
+}
+
+Ship::~Ship() {
+
+}
+
+void Ship::Init() {
   isPlayer = false;
   acceleration.x = 0;
   acceleration.y = 0;
@@ -42,14 +38,10 @@ Object(SHIP, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
   Sprite.SetOrigin(image->GetWidth()/2,image->GetHeight()/2);
   Sprite.SetScale(1,1);
   Text.SetFont(sf::Font::GetDefaultFont());
-  Text.SetColor(sf::Color(255, 255, 255));
+  Text.SetColor(sf::Color(0, 255, 0));
   Text.SetScale(0.4f, 0.4f);
 
   image_height = image->GetHeight();
-}
-
-Ship::~Ship() {
-
 }
 
 void Ship::Update(float time) {

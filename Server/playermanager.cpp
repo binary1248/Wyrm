@@ -31,6 +31,7 @@ void PlayerManager::Tick(float time) {
 
 Player* PlayerManager::CreatePlayer() {
   Object* o = Game::GetGame()->GetObjectManager()->CreateObject(SHIP);
+  o->SetPosition(sf::Vector2f(100,100));
 
   if( !o ) {
     return 0;
