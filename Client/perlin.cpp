@@ -1,7 +1,12 @@
 #include <cmath>
+#include <boost/random.hpp>
 #include "perlin.h"
 
 float noise_vals_2d[512][512];
+
+boost::lagged_fibonacci607 rng;
+boost::uniform_real<float> u(0.0f, 1.0f);
+boost::variate_generator<boost::lagged_fibonacci607&, boost::uniform_real<float> > gen(rng, u);
 
 inline float InterpolateCosine(float a, float b, float x) {
 	float f = (1 - cos(x * M_PI)) * 0.5f;
@@ -21,8 +26,9 @@ inline float Noise(unsigned int x) {
 
 inline float Noise(int x, int y) {
   return noise_vals_2d[y][x];
-
   //return Noise(x+y*8997587);
+
+  //return gen();
 }
 
 inline float Noise(int x, int y, int z) {

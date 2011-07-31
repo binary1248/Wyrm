@@ -32,16 +32,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
+			<Add option="-DSFML_EXPORTS" />
 		</Compiler>
 		<Linker>
-			<Add library="sfml2-network-s" />
-			<Add library="sfml2-system-s" />
+			<Add library="sfml-network-s" />
+			<Add library="sfml-system-s" />
 			<Add library="pthread" />
 		</Linker>
 		<Unit filename="auth.cpp" />
 		<Unit filename="auth.h" />
 		<Unit filename="game.cpp" />
 		<Unit filename="game.h" />
+		<Unit filename="inventory.cpp" />
+		<Unit filename="inventory.h" />
+		<Unit filename="items\item.cpp" />
+		<Unit filename="items\item.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="networkmanager.cpp" />
 		<Unit filename="networkmanager.h" />

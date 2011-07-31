@@ -1,3 +1,4 @@
+#include <sstream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SFML/Window.hpp>
@@ -37,7 +38,7 @@ Game::Game() {
   glMatrixMode(GL_MODELVIEW);
 
   LoadKeymap();
-  App->EnableKeyRepeat(false);
+  App->EnableKeyRepeat(true);
 
   gui = new GUI(*App);
 
@@ -94,10 +95,23 @@ Game* Game::GetGame() {
 }
 
 void Game::Run() {
+  static unsigned int counter = 0;
+  static sf::Clock fps_timer;
   while ( bRunning && App->IsOpened() ) {
-    float ElapsedTime = App->GetFrameTime();
+    float ElapsedTime = (float)(App->GetFrameTime()) / 1000.0f;
     Tick(ElapsedTime);
-    sf::Sleep(0.02 - ElapsedTime); // Limit 50 FPS
+
+    counter++;
+
+    if( fps_timer.GetElapsedTime() > 1000 ) {
+      fps_timer.Reset();
+      std::stringstream ss;
+      ss << "WYRM - " << counter << " FPS";
+      counter = 0;
+      App->SetTitle( ss.str() );
+    }
+
+    App->SetFramerateLimit(200);
   }
 }
 
@@ -175,8 +189,6 @@ void Game::Tick(float t) {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  gui->Draw(*App);
-
   if( networkhandler->IsAuthenticated() ) {
     if( !backdrop ) {
       backdrop = new Backdrop(*App);
@@ -193,6 +205,12 @@ void Game::Tick(float t) {
     objectmanager->DrawAll(*App);
     //App.Draw(partSys);
   }
+
+  gui->Draw(*App);
+
+  //sf::Shape rect = sf::Shape::Rectangle(10,10,100,100, sf::Color(255,255,255));
+
+  //App->Draw(rect);
 
   // Display window contents on screen
   App->Display();

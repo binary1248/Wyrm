@@ -51,7 +51,7 @@ void Ship::Update(float time) {
   velocity += (acceleration * time);
   position += (velocity * time);
   Sprite.SetPosition(position);
-  Sprite.SetRotation(rotation);
+  Sprite.SetRotation(-rotation);
 
   sf::FloatRect rect = Text.GetRect();
   Text.SetPosition(position + sf::Vector2f(-rect.Width/2,image_height/3));

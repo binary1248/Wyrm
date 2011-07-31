@@ -20,10 +20,16 @@ Player::Player(Object* o) {
 
   // Set agent
   SetAgent(o);
+
+  inventory = new Inventory();
 }
 
 Player::~Player() {
   Game::GetGame()->GetNetworkManager()->RemovePlayer(this);
+
+  if( inventory ) {
+    delete inventory;
+  }
 
   agent->Delete();
 
@@ -45,6 +51,10 @@ Player::~Player() {
 }
 
 void Player::Update() {
+  if( inventory->IsDirty() ) {
+    inventory->SendUpdate(this);
+  }
+
   FlushBuffer();
   HandleSocketData();
 }

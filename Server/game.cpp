@@ -40,12 +40,16 @@ int Game::Run() {
   LogConsole("Running...");
 
   while (running) {
-    float ElapsedTime = Clock.GetElapsedTime();
+    float ElapsedTime = (float)(Clock.GetElapsedTime())/1000.0f;
     Clock.Reset();
 
     Tick(ElapsedTime);
 
-    sf::Sleep(0.02 - Clock.GetElapsedTime()); // Limit 50 FPS
+    int sleepTime = 2 - Clock.GetElapsedTime();
+
+    sleepTime = ( sleepTime > 0 ) ? sleepTime : 0;
+
+    //sf::Sleep( sleepTime ); // Limit 50 FPS
   }
 
   LogConsole("Shutting down...");;

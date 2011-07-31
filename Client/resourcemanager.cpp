@@ -224,14 +224,18 @@ void PerlinThreadFunction3D(void* UserData) {
 
       float dist = sqrt( (x-tp->width/2)*(x-tp->width/2) + (y-tp->height/2)*(y-tp->height/2) );
 
-      if( dist <= (float)(radius-16) ) {
+
+
+      if( dist <= (float)(radius-8) ) {
         tp->matrix[(y*tp->width+x)*4+3] = 255;
-      } else if( dist <= (float)(radius-8) ) {
+      } else if( dist <= (float)(radius-4) ) {
         float border = radius - dist;
-        tp->matrix[(y*tp->width+x)*4+0] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+0], 255, (15-border)/15);
-        tp->matrix[(y*tp->width+x)*4+1] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+1], 255, (15-border)/15);
-        tp->matrix[(y*tp->width+x)*4+2] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+2], 255, (15-border)/15);
-        tp->matrix[(y*tp->width+x)*4+3] = (int)(border * 32);
+        tp->matrix[(y*tp->width+x)*4+0] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+0], 255, (10-border)/15);
+        tp->matrix[(y*tp->width+x)*4+1] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+1], 255, (10-border)/15);
+        tp->matrix[(y*tp->width+x)*4+2] = (int)InterpolateCosine( tp->matrix[(y*tp->width+x)*4+2], 255, (10-border)/15);
+        tp->matrix[(y*tp->width+x)*4+3] = (int)(border * 64);
+      } else {
+        tp->matrix[(y*tp->width+x)*4+3] = 0;
       }
     }
   }

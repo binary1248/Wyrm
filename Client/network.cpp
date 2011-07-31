@@ -77,6 +77,7 @@ void NetworkHandler::Disconnect() {
 
 void NetworkHandler::Send(sf::Packet p) {
   Client.Send(p);
+  std::cout << "Sent" << std::endl;
 }
 
 void NetworkHandler::HandlePacket(sf::Packet p) {
@@ -111,7 +112,7 @@ void NetworkHandler::Tick() {
     return;
   }
 
-  while( Selector.Wait(0.000001) ) {
+  while( Selector.Wait(1) ) {
     sf::Packet packet;
     Client.Receive(packet);
     HandlePacket(packet);

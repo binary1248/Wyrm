@@ -72,15 +72,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
+			<Add option="-DSFML_EXPORTS" />
+			<Add option="-DSFGUI_EXPORTS" />
+			<Add option="-DSFGUI_STATIC" />
 		</Compiler>
 		<Linker>
 			<Add library="sfgui" />
-			<Add library="sfml2-audio-s" />
-			<Add library="sfml2-network-s" />
-			<Add library="sfml2-graphics-s" />
-			<Add library="sfml2-window-s" />
-			<Add library="sfml2-system-s" />
-			<Add library="yaml-cpp" />
+			<Add library="sfml-network-s" />
+			<Add library="sfml-audio-s" />
+			<Add library="sfml-graphics-s" />
+			<Add library="sfml-window-s" />
+			<Add library="sfml-system-s" />
 			<Add library="pthread" />
 			<Add library="freetype" />
 			<Add library="jpeg" />
@@ -97,6 +100,10 @@
 		<Unit filename="gui.h" />
 		<Unit filename="guievents.cpp" />
 		<Unit filename="guievents.h" />
+		<Unit filename="inventory.cpp" />
+		<Unit filename="inventory.h" />
+		<Unit filename="items\item.cpp" />
+		<Unit filename="items\item.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="network.cpp" />
 		<Unit filename="network.h" />
@@ -123,8 +130,6 @@
 		<Unit filename="player.h" />
 		<Unit filename="resourcemanager.cpp" />
 		<Unit filename="resourcemanager.h" />
-		<Unit filename="widgetset.cpp" />
-		<Unit filename="widgetset.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -1,6 +1,7 @@
 #include <iostream>
+#include <SFGUI/Window.hpp>
+#include <SFGUI/Button.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFGUI/GUI.hpp>
 
 #include "gui.h"
 #include "guievents.h"
@@ -14,38 +15,58 @@ sf::FloatRect GUI::CenterRect(sf::RenderWindow& w, float width, float height) {
 }
 
 void GUI::Hide(const std::string& id) {
-  sfg::Widget::Ptr p;
-
-  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
-    if(!i->second->GetName().compare(id)) {
-      i->second->Hide();
+  for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
+    if( (*i)->GetName() == id ) {
+      (*i)->Show(false);
       return;
     }
   }
 }
 
+void GUI::Show(const std::string& id) {
+  for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
+    if( (*i)->GetName() == id ) {
+      (*i)->Show(true);
+      return;
+    }
+  }
+}
+
+void GUI::AddWidget(sfg::Widget::Ptr w, std::string name) {
+  w->SetName(name);
+  widgets.push_back( w );
+}
+
 sfg::Widget::Ptr GUI::FindWidget(const std::string& id) {
   sfg::Widget::Ptr p;
 
-  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
-    p = i->second->FindWidget(id);
-    if(p)
+  for( std::vector<sfg::Widget::Ptr>::iterator i = widgets.begin(); i != widgets.end(); i++ ) {
+    if( (*i)->GetName() == id ) {
+      p = (*i);
       break;
+    }
   }
 
   return p;
 }
 
-WidgetSet::Ptr GUI::CreateSet(const sf::FloatRect rect, const std::string name) {
-  if(sets.find(name) == sets.end()) {
-    WidgetSet::Ptr ptr(WidgetSet::Create( rect, name ));
-    sets.insert( std::pair<std::string,WidgetSet::Ptr>(name,ptr) );
-    return ptr;
-  } else {
-    std::cout << "Window already exists." << std::endl;
+sfg::Window::Ptr GUI::CreateWindow(const std::string& name) {
+  for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
+    if( (*i)->GetName() == name ) {
+      (*i)->Show(false);
+      std::cout << "Window already exists." << std::endl;
+      sfg::Window::Ptr ptr;
+      return ptr;
+    }
   }
-  WidgetSet::Ptr ptr;
-  return ptr;
+
+  sfg::Window::Ptr window( sfg::Window::Create() );
+  window->SetName( name );
+  window->SetTitle( name );
+  window->SetBorderWidth( 10.f );
+  //window->SetStyle(sfg::Window::Titlebar | sfg::Window::Background );
+  windows.push_back( window );
+  return window;
 }
 
 GUI::GUI(sf::RenderWindow& w) {
@@ -60,17 +81,24 @@ void GUI::Draw(sf::RenderWindow& w) {
   sf::View view = w.GetView();
   w.SetView(w.GetDefaultView());
 
-  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
-    i->second->Draw(w);
+  for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
+    (*i)->Expose(w);
   }
 
   w.SetView(view);
 }
 
 bool GUI::HandleEvent(sf::Event& e) {
-  for( std::map<std::string,WidgetSet::Ptr>::iterator i = sets.begin(); i != sets.end(); i++ ) {
-    if(i->second->IsActive())
-      return i->second->HandleEvent(e);
+
+  for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
+    if( !(*i)->IsVisible() ) {
+      continue;
+    }
+
+    if( (*i)->HandleEvent( e ) == sfg::Widget::EatEvent ) {
+      return true;
+    }
   }
+
   return false;
 }

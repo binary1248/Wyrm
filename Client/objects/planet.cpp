@@ -35,7 +35,7 @@ Planet::~Planet() {
 }
 
 void Planet::Init() {
-  float amplitudes[] = {80,80,10,80,0,0,0,0};
+  float amplitudes[] = {100,60,10,80,0,10,30,40};
 
   image = Game::GetGame()->GetResourceManager()->GetPlanet(100,
                                                            100,

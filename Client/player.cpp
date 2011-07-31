@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 
+#include "items/item.h"
 #include "objects/objects.h"
 #include "objectmanager.h"
 #include "player.h"
@@ -13,10 +14,16 @@ Player::Player(sf::Uint16 id_, sf::String name_) {
   name = name_;
 
   tentativeAgentId = 0xffff;
+
+  inventory = new Inventory();
+
+  inventory->AddItem( new Item("Some Item", "Some Type"), 2 );
 }
 
 Player::~Player() {
-
+  if( inventory ) {
+    delete inventory;
+  }
 }
 
 void Player::Tick(float time) {

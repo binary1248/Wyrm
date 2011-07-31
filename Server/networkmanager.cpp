@@ -38,7 +38,7 @@ NetworkManager::~NetworkManager() {
 }
 
 void NetworkManager::Tick(float time) {
-  if( selector.Wait(0.001) ) {
+  if( selector.Wait(1) ) {
     if( selector.IsReady(sock_listener) ) {
       AcceptSocket();
     }

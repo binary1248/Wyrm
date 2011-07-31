@@ -4,6 +4,7 @@
 #include <list>
 #include <set>
 #include <SFML/Network.hpp>
+#include "inventory.h"
 #include "objects/object.h"
 
 class Player {
@@ -26,6 +27,7 @@ class Player {
     void SetAgent(Object* o);
 
     inline std::string GetName() { return name; }
+    inline Inventory* GetInventory() { return inventory; }
   private:
     void Send(sf::Packet& p);
     void HandleSocketData();
@@ -34,7 +36,6 @@ class Player {
     // ID vars
     sf::Uint16 id;
     sf::String name;
-    Object* agent;
 
     // Network vars
     sf::TcpSocket* connection;
@@ -42,6 +43,10 @@ class Player {
     bool half_open;
     std::list<sf::Packet*> send_buffer;
     std::list<sf::Packet*> recv_buffer;
+
+    // Character vars
+    Object* agent;
+    Inventory* inventory;
 };
 
 #endif // PLAYER_H_INCLUDED

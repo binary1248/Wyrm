@@ -42,18 +42,18 @@ void Star::CreateParticleSystem() {
   part->SetVelocity(sf::Vector2f(10,0));
   part->SetColorStart(sf::Color(255,255,255,255));
   part->SetColorEnd(sf::Color(255,200,0,0));
-  part->SetLifetime(10);
-  part->SetSizeStart(sf::Vector2f(2.5,2.5));
-  part->SetSizeEnd(sf::Vector2f(2.5,2.5));
+  part->SetLifetime(12);
+  part->SetSizeStart(sf::Vector2f(2.7,2.7));
+  part->SetSizeEnd(sf::Vector2f(2.7,2.7));
 
   ParticleEmitter* pe = new ParticleEmitter(ps);
   pe->SetPrototype(part);
-  pe->SetRate(20);
+  pe->SetRate(24);
   pe->SetSpread(180);
 
   ps->SetPosition(position);
   ps->AddEmitter(pe);
-  ps->Start(10);
+  ps->Start(12);
 }
 
 void Star::Update(float time) {

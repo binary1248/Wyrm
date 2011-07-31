@@ -2,6 +2,7 @@
 #define PLAYER_H_INCLUDED
 
 #include <SFML/System.hpp>
+#include "inventory.h"
 
 class Player{
   public:
@@ -12,10 +13,14 @@ class Player{
 
     void SetShip(sf::Uint16 id_);
 
+    inline Inventory* GetInventory() { return inventory; }
+
     sf::Uint16 id;
     sf::String name;
   private:
     sf::Uint16 tentativeAgentId;
+
+    Inventory* inventory;
 };
 
 #endif // PLAYER_H_INCLUDED

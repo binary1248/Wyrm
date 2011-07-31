@@ -6,29 +6,39 @@
 #include "game.h"
 #include "events.h"
 
-sf::Uint16 keymap[sf::Event::Count][sf::Key::Count];
+#define DOWN true
+#define UP false
+
+sf::Uint16 keymap[sf::Event::Count][sf::Keyboard::KeyCount];
+bool keystate[sf::Keyboard::KeyCount];
 
 int HandleEvents(sf::RenderWindow& app) {
   sf::Event Event;
-  while (app.GetEvent(Event))
+  while( app.PollEvent(Event) )
   {
-    if (Event.Type == sf::Event::Resized) {
+    if( Event.Type == sf::Event::Resized ) {
       glViewport(0, 0, Event.Size.Width, Event.Size.Height);
     } else if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) ) {
       sf::Uint16 code = 1337;
 
       // Window closed
-      if (Event.Type == sf::Event::Closed) {
+      if( Event.Type == sf::Event::Closed ) {
         return 1;
       }
 
-      if (Event.Type == sf::Event::KeyPressed || Event.Type == sf::Event::KeyReleased) {
-        if( Event.Key.Code == sf::Key::Escape ) {
+      if( (Event.Type == sf::Event::KeyPressed) && (keystate[Event.Key.Code] != DOWN) ) {
+        if( Event.Key.Code == sf::Keyboard::Escape ) {
           // Escape key pressed
           return 1;
         } else {
           code = keymap[Event.Type][Event.Key.Code];
         }
+        keystate[Event.Key.Code] = DOWN;
+      }
+
+      if( (Event.Type == sf::Event::KeyReleased) && (keystate[Event.Key.Code] != UP) ) {
+        code = keymap[Event.Type][Event.Key.Code];
+        keystate[Event.Key.Code] = UP;
       }
 
       if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && code != 1337) {
@@ -45,17 +55,21 @@ int HandleEvents(sf::RenderWindow& app) {
 void LoadKeymap() {
 
   for( size_t i = 0; i < sf::Event::Count; i++ ) {
-    for( size_t j = 0; j < sf::Key::Count; j++ ) {
+    for( size_t j = 0; j < sf::Keyboard::KeyCount; j++ ) {
       keymap[i][j] = 1337;
     }
   }
 
-  keymap[sf::Event::KeyPressed][sf::Key::W] = 0;
-  keymap[sf::Event::KeyReleased][sf::Key::W] = 1;
-  keymap[sf::Event::KeyPressed][sf::Key::A] = 2;
-  keymap[sf::Event::KeyReleased][sf::Key::A] = 3;
-  keymap[sf::Event::KeyPressed][sf::Key::S] = 4;
-  keymap[sf::Event::KeyReleased][sf::Key::S] = 5;
-  keymap[sf::Event::KeyPressed][sf::Key::D] = 6;
-  keymap[sf::Event::KeyReleased][sf::Key::D] = 7;
+  for( size_t i = 0; i < sf::Keyboard::KeyCount; i++ ) {
+    keystate[i] = UP;
+  }
+
+  keymap[sf::Event::KeyPressed][sf::Keyboard::W] = 0;
+  keymap[sf::Event::KeyReleased][sf::Keyboard::W] = 1;
+  keymap[sf::Event::KeyPressed][sf::Keyboard::A] = 2;
+  keymap[sf::Event::KeyReleased][sf::Keyboard::A] = 3;
+  keymap[sf::Event::KeyPressed][sf::Keyboard::S] = 4;
+  keymap[sf::Event::KeyReleased][sf::Keyboard::S] = 5;
+  keymap[sf::Event::KeyPressed][sf::Keyboard::D] = 6;
+  keymap[sf::Event::KeyReleased][sf::Keyboard::D] = 7;
 }
