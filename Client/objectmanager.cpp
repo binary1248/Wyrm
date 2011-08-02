@@ -90,7 +90,7 @@ void ObjectManager::DispatchPacket(sf::Packet p) {
   sf::Uint16 type1;
   p >> type1;
 
-  if( type1 != STATE ) {
+  if( type1 != OBJECT_STATE ) {
     std::cout << "Can't update non-existant object: " << id << std::endl;
     return;
   }

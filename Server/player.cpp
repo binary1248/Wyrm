@@ -3,6 +3,8 @@
 #include "game.h"
 #include "player.h"
 #include "utility.h"
+#include "inventory.h"
+#include "items/item.h"
 #include "networkmanager.h"
 #include "auth.h"
 
@@ -22,6 +24,13 @@ Player::Player(Object* o) {
   SetAgent(o);
 
   inventory = new Inventory();
+
+  Item* item = new Item("Some Item", "Some Type");
+  Item* item2 = new Item("Another Item", "Another Type");
+
+  inventory->AddItem( item, 3 );
+  inventory->AddItem( item2, 1 );
+  inventory->RemoveItem( item, 1 );
 }
 
 Player::~Player() {
@@ -125,7 +134,7 @@ void Player::HandlePacket(sf::Packet& p) {
   p >> type0;
 
   switch( type0 ) {
-    case COMMAND:
+    case CLIENT_COMMAND:
       agent->HandlePacket(p);
       break;
     default:
@@ -164,6 +173,6 @@ void Player::SetAgent(Object* o) {
   agent = o;
   o->SetName( GetName() );
   sf::Packet packet;
-  packet << (sf::Uint16)SET_ID << o->GetId();
+  packet << (sf::Uint16)SERVER_SET_ID << o->GetId();
   SendPacket(packet);
 }

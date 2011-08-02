@@ -57,4 +57,10 @@ class Object {
     float rotational_velocity;
 };
 
+enum packet_server_object{
+  OBJECT_UPDATE = 0,
+  OBJECT_STATE,
+  OBJECT_REMOVE
+};
+
 #endif // OBJECT_H_INCLUDED

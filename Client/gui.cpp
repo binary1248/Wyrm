@@ -89,7 +89,6 @@ void GUI::Draw(sf::RenderWindow& w) {
 }
 
 bool GUI::HandleEvent(sf::Event& e) {
-
   for( std::vector<sfg::Window::Ptr>::iterator i = windows.begin(); i != windows.end(); i++ ) {
     if( !(*i)->IsVisible() ) {
       continue;

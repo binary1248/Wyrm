@@ -8,11 +8,14 @@
 
 Game* Game::instance;
 
+#define DEFAULT_WIDTH 1024
+#define DEFAULT_HEIGHT 768
+
 Game::Game() {
   // Create the main rendering window
-  App = new sf::RenderWindow(sf::VideoMode(1024, 768, 32),
+  App = new sf::RenderWindow(sf::VideoMode(DEFAULT_WIDTH, DEFAULT_HEIGHT, 32),
                              "WYRM",
-                             sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize ,
+                             sf::Style::Titlebar | sf::Style::Close,
                              sf::ContextSettings(24,    // Depth buffer
                                                   8,    // Stencil buffer
                                                   8) ); // AA level
@@ -174,6 +177,20 @@ Backdrop* Game::GetBackdrop() {
   } else {
     return NULL;
   }
+}
+
+void Game::Resize( float width, float height ) {
+  sf::View view( sf::FloatRect(0, 0, width, height) );
+  App->SetView( view );
+}
+
+sf::Vector2f Game::GetDefaultResolution() {
+  return sf::Vector2f( DEFAULT_WIDTH, DEFAULT_HEIGHT );
+}
+
+sf::Vector2f Game::GetCurrentResolution() {
+  sf::View view = App->GetView();
+  return view.GetSize();
 }
 
 void Game::Tick(float t) {

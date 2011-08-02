@@ -2,6 +2,7 @@
 #include <SFGUI/Button.hpp>
 #include <SFGUI/Box.hpp>
 #include <SFGUI/TextBox.hpp>
+#include <SFGUI/ListBox.hpp>
 #include <SFGUI/Label.hpp>
 #include <SFGUI/Context.hpp>
 
@@ -27,7 +28,7 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& w ) {
 	sfg::TextBox::Ptr password( sfg::TextBox::Create(100) );
 	password->SetProperty( "TextBox.Normal.CursorColor", sf::Color( 0xFF, 0xFF, 0xFF ) );
 	gui->AddWidget(password,"login_password_text");
-	//password->HideText("#");
+	password->HideText('#');
 
 	sfg::Box::Ptr login_text_box( sfg::Box::Create( sfg::Box::Vertical ) );
 	login_text_box->SetSpacing(20.0f);
@@ -62,12 +63,10 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& w ) {
   login_window->Show(true);
 
 
-
-
 	sfg::Window::Ptr inventory_window( gui->CreateWindow("Inventory") );
-	sfg::Label::Ptr inventory_test_item( sfg::Label::Create("Inventory Item") );
-	gui->AddWidget(inventory_test_item,"inventory_test_item");
-	inventory_window->Add( inventory_test_item );
+	sfg::ListBox::Ptr inventory_list( sfg::ListBox::Create(6, 200) );
+	gui->AddWidget( inventory_list,"inventory_list" );
+	inventory_window->Add( inventory_list );
   inventory_window->Show(false);
 
 }

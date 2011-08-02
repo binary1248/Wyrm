@@ -3,28 +3,6 @@
 
 #include <SFML/Network.hpp>
 
-#define PROTOCOL_VER_MAJOR 0.1f
-#define PROTOCOL_VER_MINOR 0.7f
-
-enum server_packet_t0{
-  OBJECT = 0,
-  SET_ID
-};
-
-enum client_packet_t0{
-  COMMAND = 0
-};
-
-enum server_packet_t1{
-  UPDATE = 0,
-  STATE,
-  REMOVE
-};
-
-enum client_packet_t1{
-  CONTROL = 0
-};
-
 class NetworkHandler {
   public:
     NetworkHandler();
@@ -47,6 +25,19 @@ class NetworkHandler {
 
     bool connected;
     bool authenticated;
+};
+
+#define PROTOCOL_VER_MAJOR 0.1f
+#define PROTOCOL_VER_MINOR 0.8f
+
+enum packet_server {
+  SERVER_OBJECT = 0,
+  SERVER_SET_ID,
+  SERVER_INVENTORY
+};
+
+enum packet_client {
+  CLIENT_COMMAND = 0
 };
 
 #endif // NETWORK_H_INCLUDED

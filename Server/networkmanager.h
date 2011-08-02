@@ -3,9 +3,9 @@
 
 #include <map>
 #include <SFML/Network.hpp>
-#include "player.h"
 
 class Game;
+class Player;
 
 class NetworkManager {
   public:
@@ -33,25 +33,16 @@ class NetworkManager {
 };
 
 #define PROTOCOL_VER_MAJOR 0.1f
-#define PROTOCOL_VER_MINOR 0.7f
+#define PROTOCOL_VER_MINOR 0.8f
 
-enum server_packet_t0{
-  OBJECT = 0,
-  SET_ID
+enum packet_server {
+  SERVER_OBJECT = 0,
+  SERVER_SET_ID,
+  SERVER_INVENTORY
 };
 
-enum client_packet_t0{
-  COMMAND = 0
-};
-
-enum server_packet_t1{
-  UPDATE = 0,
-  STATE,
-  REMOVE
-};
-
-enum client_packet_t1{
-  CONTROL = 0
+enum packet_client {
+  CLIENT_COMMAND = 0
 };
 
 #endif // NETWORK_H_INCLUDED

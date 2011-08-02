@@ -3,6 +3,7 @@
 #include <SFML/Network.hpp>
 
 #include "game.h"
+#include "player.h"
 #include "utility.h"
 #include "networkmanager.h"
 

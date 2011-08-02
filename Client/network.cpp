@@ -77,7 +77,6 @@ void NetworkHandler::Disconnect() {
 
 void NetworkHandler::Send(sf::Packet p) {
   Client.Send(p);
-  std::cout << "Sent" << std::endl;
 }
 
 void NetworkHandler::HandlePacket(sf::Packet p) {
@@ -86,12 +85,12 @@ void NetworkHandler::HandlePacket(sf::Packet p) {
   p >> type0;
 
   switch(type0) {
-    case OBJECT:
+    case SERVER_OBJECT:
     {
       Game::GetGame()->GetObjectManager()->DispatchPacket(p);
       break;
     }
-    case SET_ID:
+    case SERVER_SET_ID:
     {
       sf::Uint16 id;
       p >> id;
@@ -101,6 +100,13 @@ void NetworkHandler::HandlePacket(sf::Packet p) {
       }
       player->SetShip(id);
       break;
+    }
+    case SERVER_INVENTORY:
+    {
+      Player* player = Game::GetGame()->GetPlayer();
+      if(player) {
+        player->GetInventory()->HandlePacket(p);
+      }
     }
     default:
       break;

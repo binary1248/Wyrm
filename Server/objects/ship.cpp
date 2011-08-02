@@ -47,7 +47,7 @@ void Ship::HandlePacket(sf::Packet& p) {
 
   p >> type1;
   switch(type1) {
-    case CONTROL: {
+    case COMMAND_CONTROL: {
       sf::Uint16 code = 1337;
       p >> code;
       switch(code) {

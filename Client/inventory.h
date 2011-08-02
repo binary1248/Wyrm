@@ -20,4 +20,10 @@ class Inventory {
     std::list< std::pair<Item*, size_t> > items;
 };
 
+enum packet_server_inventory {
+  INVENTORY_ADD = 0,
+  INVENTORY_REMOVE,
+  INVENTORY_CHANGE
+};
+
 #endif // INVENTORY_H_INCLUDED

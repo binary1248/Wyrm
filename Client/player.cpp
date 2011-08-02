@@ -16,8 +16,6 @@ Player::Player(sf::Uint16 id_, sf::String name_) {
   tentativeAgentId = 0xffff;
 
   inventory = new Inventory();
-
-  inventory->AddItem( new Item("Some Item", "Some Type"), 2 );
 }
 
 Player::~Player() {

@@ -7,6 +7,9 @@ class Item {
   public:
     Item(std::string n, std::string t);
     ~Item();
+
+    inline std::string GetName() { return name; }
+    inline std::string GetType() { return type; }
   private:
     bool equipable;
 

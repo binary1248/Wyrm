@@ -79,7 +79,7 @@ void Planet::HandlePacket(sf::Packet p) {
   p >> type1;
 
   switch(type1) {
-    case UPDATE:
+    case OBJECT_UPDATE:
     {
       sf::Vector2f pos;
       sf::Vector2f vel;
@@ -88,7 +88,7 @@ void Planet::HandlePacket(sf::Packet p) {
       velocity = vel;
       break;
     }
-    case STATE:
+    case OBJECT_STATE:
     {
       sf::Uint16 type;
       sf::Vector2f pos;
@@ -98,7 +98,7 @@ void Planet::HandlePacket(sf::Packet p) {
       velocity = vel;
       break;
     }
-    case REMOVE:
+    case OBJECT_REMOVE:
     {
       Delete();
       break;

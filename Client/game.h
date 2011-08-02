@@ -24,6 +24,9 @@ class Game {
     ObjectManager* GetObjectManager();
     ResourceManager* GetResourceManager();
     Backdrop* GetBackdrop();
+    void Resize( float width, float height );
+    sf::Vector2f GetDefaultResolution();
+    sf::Vector2f GetCurrentResolution();
   private:
     Game();
     void Tick(float t);

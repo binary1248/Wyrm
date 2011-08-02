@@ -17,6 +17,7 @@ int HandleEvents(sf::RenderWindow& app) {
   while( app.PollEvent(Event) )
   {
     if( Event.Type == sf::Event::Resized ) {
+      Game::GetGame()->Resize( Event.Size.Width, Event.Size.Height );
       glViewport(0, 0, Event.Size.Width, Event.Size.Height);
     } else if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) ) {
       sf::Uint16 code = 1337;
@@ -43,7 +44,7 @@ int HandleEvents(sf::RenderWindow& app) {
 
       if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && code != 1337) {
         sf::Packet packet;
-        packet << (sf::Uint16)COMMAND << (sf::Uint16)CONTROL << code;
+        packet << (sf::Uint16)CLIENT_COMMAND << (sf::Uint16)COMMAND_CONTROL << code;
         Game::GetGame()->GetNetworkHandler()->Send(packet);
       }
     }

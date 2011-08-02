@@ -23,4 +23,8 @@ class Player{
     Inventory* inventory;
 };
 
+enum packet_client_command {
+  COMMAND_CONTROL = 0
+};
+
 #endif // PLAYER_H_INCLUDED

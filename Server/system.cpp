@@ -100,7 +100,7 @@ void System::Tick(float time) {
         objects[i].first->ClearFresh();
         break;
       case DELETED:
-        p << (sf::Uint16)OBJECT << objects[i].first->GetId() << (sf::Uint16)REMOVE;
+        p << (sf::Uint16)SERVER_OBJECT << objects[i].first->GetId() << (sf::Uint16)OBJECT_REMOVE;
 
         for( size_t j = 0; j < players.size(); j++ ) {
           players[j]->SendPacket(p);

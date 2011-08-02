@@ -43,13 +43,13 @@ void Object::Update(float time) {
 }
 
 void Object::FillPartialPacket(sf::Packet& p) {
-  p << (sf::Uint16)OBJECT << id << (sf::Uint16)UPDATE
+  p << (sf::Uint16)SERVER_OBJECT << id << (sf::Uint16)OBJECT_UPDATE
     << position.x << position.y << rotation
     << velocity.x << velocity.y << rotational_velocity;
 }
 
 void Object::FillFullPacket(sf::Packet& p) {
-  p << (sf::Uint16)OBJECT << (sf::Uint16)id << (sf::Uint16)STATE
+  p << (sf::Uint16)SERVER_OBJECT << (sf::Uint16)id << (sf::Uint16)OBJECT_STATE
     << type       << name
     << position.x << position.y
     << velocity.x << velocity.y

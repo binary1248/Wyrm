@@ -17,8 +17,9 @@
 					<Add option="-O0" />
 				</Compiler>
 				<Linker>
-					<Add library="opengl32" />
 					<Add library="glu32" />
+					<Add library="opengl32" />
+					<Add library="pthread" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -33,8 +34,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="opengl32" />
 					<Add library="glu32" />
+					<Add library="opengl32" />
+					<Add library="pthread" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -50,6 +52,7 @@
 				<Linker>
 					<Add library="openal" />
 					<Add library="Xrandr" />
+					<Add library="pthread" />
 				</Linker>
 			</Target>
 			<Target title="Release Linux">
@@ -66,6 +69,7 @@
 					<Add option="-s" />
 					<Add library="openal" />
 					<Add library="Xrandr" />
+					<Add library="pthread" />
 				</Linker>
 			</Target>
 		</Build>
@@ -84,11 +88,6 @@
 			<Add library="sfml-graphics-s" />
 			<Add library="sfml-window-s" />
 			<Add library="sfml-system-s" />
-			<Add library="pthread" />
-			<Add library="freetype" />
-			<Add library="jpeg" />
-			<Add library="GLEW" />
-			<Add library="sndfile" />
 		</Linker>
 		<Unit filename="backdrop.cpp" />
 		<Unit filename="backdrop.h" />
