@@ -26,7 +26,6 @@ inline float Noise(unsigned int x) {
 
 inline float Noise(int x, int y) {
   return noise_vals_2d[y][x];
-  //return Noise(x+y*8997587);
 
   //return gen();
 }
