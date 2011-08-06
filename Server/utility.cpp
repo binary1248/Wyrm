@@ -6,7 +6,7 @@
 sf::Clock sfclock;
 
 std::string GetTimeString() {
-  float time = (float)( sfclock.GetElapsedTime() ) / 1000.0f;
+  float time = (float)(sfclock.GetElapsedTime()) / 1000.0f;
   std::stringstream ss;
   ss.setf( std::ios::fixed, std::ios::floatfield );
   ss.fill('0');
