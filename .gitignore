@@ -1,0 +1,9 @@
+wyrm-client*
+wyrm-server*
+*Makefile
+*.o
+*.out
+CMakeCache.txt
+cmake_install.cmake
+/Client/CMakeFiles/
+/Server/CMakeFiles/
