@@ -21,14 +21,14 @@ class Object {
 
     // Network Handlers
     virtual void FillPartialPacket( PacketPtr packet );
-    virtual void FillFullPacket( PacketPtr packet );
+    virtual void FillFullPacket( PacketPtr packet ) = 0;
     virtual void HandlePacket( PacketPtr packet ) = 0;
 
     // ID Handlers
     sf::Uint16 GetId();
     sf::Uint16 GetType();
     void SetName( sf::String name );
-    std::string GetName();
+    sf::String GetName();
 
     // Dirty flag Handlers
     bool IsDirty();

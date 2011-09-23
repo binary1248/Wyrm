@@ -3,6 +3,7 @@ wyrm-server*
 *Makefile
 *.o
 *.out
+gmon*
 CMakeCache.txt
 cmake_install.cmake
 /Client/CMakeFiles/

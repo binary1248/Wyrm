@@ -11,7 +11,7 @@
 #include "utility.h"
 #include "objectmanager.h"
 
-FactoryMap* ObjectManager::m_factories;
+FactoryMap* ObjectManager::m_factories = 0;
 
 ObjectManager::ObjectManager() :
 	m_lastObjectId( 0 ),
@@ -100,7 +100,7 @@ sf::Uint16 ObjectManager::NewID() {
 
 void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
 	if( !m_factories ) {
-		m_factories = new std::map<sf::Uint16, ObjectFactory>;
+		m_factories = new FactoryMap;
 	}
 
   m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );

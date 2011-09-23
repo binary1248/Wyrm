@@ -26,7 +26,7 @@ void System::AddPlayer( PlayerPtr player ) {
 
 	BOOST_FOREACH( ObjectWeakPtr object, m_objects ) {
 		ObjectPtr shared_object( object.lock() );
-		if( shared_object && !shared_object->IsDeleted() ) {
+		if( shared_object && !( shared_object->IsDeleted() ) ) {
       PacketPtr packet = boost::make_shared<sf::Packet>();
       shared_object->FillFullPacket( packet );
       player->SendPacket( packet );

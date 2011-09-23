@@ -57,7 +57,7 @@ sf::Uint16 Object::GetType() {
 void Object::SetName( sf::String name ) {
 	m_name = name;
 }
-std::string Object::GetName() {
+sf::String Object::GetName() {
 	return m_name;
 }
 
