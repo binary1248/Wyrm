@@ -46,7 +46,8 @@ something out ;). Any help is of course greatly appreciated.
 
 Credits
 -------
-- [SFML](http://www.sfml-dev.org/) ( Awesome 2D Graphics, Sound, Network etc. library ) 
+- [SFML](http://www.sfml-dev.org/) ( Awesome 2D Graphics, Sound, Network etc. library )
 - [SFGUI](https://github.com/TankOs/SFGUI) ( Just as awesome GUI library for SFML )
-- [boost](http://www.boost.org/) ( high quality C++ utility libraries )
-- and all the others libraries I used but forgot to mention here...
+- [boost](http://www.boost.org/) ( I don't use boost directly anymore, but their features made it into C++11 )
+- [libnoise](http://libnoise.sourceforge.net/) ( Neat noise generation library for procedural generation )
+- and all the other libraries I used but forgot to mention here...
