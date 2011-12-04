@@ -1,37 +1,36 @@
 #include <cmath>
-#include <boost/random.hpp>
-#include "perlin.h"
+#include <random>
+#include <perlin.hpp>
 
 float noise_vals_2d[512][512];
 
-boost::lagged_fibonacci607 rng;
-boost::uniform_real<float> u(0.0f, 1.0f);
-boost::variate_generator<boost::lagged_fibonacci607&, boost::uniform_real<float> > gen(rng, u);
+std::mt19937 rng;
+std::uniform_real_distribution<float> u(0.0f, 1.0f);
 
-inline float InterpolateCosine(float a, float b, float x) {
-	float f = (1 - cos(x * M_PI)) * 0.5f;
-	return (1 - f)* a + f * b;
+inline float InterpolateCosine( float a, float b, float x ) {
+	float f = ( 1 - cos( x * static_cast<float>( M_PI ) ) ) * 0.5f;
+	return ( 1 - f ) * a + f * b;
 }
 
 inline float Noise(unsigned int x) {
-	x -= (x<<6);
-  x ^= (x>>17);
-  x -= (x<<9);
-  x ^= (x<<4);
-  x -= (x<<3);
-  x ^= (x<<10);
-  x ^= (x>>15);
-	return x;
+	x -= ( x << 6  );
+  x ^= ( x >> 17 );
+  x -= ( x << 9  );
+  x ^= ( x << 4  );
+  x -= ( x << 3  );
+  x ^= ( x << 10 );
+  x ^= ( x >> 15 );
+	return static_cast<float>( x );
 }
 
 inline float Noise(int x, int y) {
   return noise_vals_2d[y][x];
 
-  //return gen();
+  //return u( rng );
 }
 
 inline float Noise(int x, int y, int z) {
-  return Noise(x+(y*89213)+(z*8997587)) / (float)(0xffffffff);
+  return Noise( x + ( y * 89213 ) + ( z * 8997587 ) ) / static_cast<float>( 0xffffffff );
 }
 
 void PreparePerlinNoise() {
@@ -39,7 +38,7 @@ void PreparePerlinNoise() {
     for( int x = 0; x < 512; x++ ) {
       unsigned int a = x + y * 1024;
 
-      float c = (float)Noise(a) / (float)(0xffffffff);
+      float c = Noise( a ) / static_cast<float>( 0xffffffff );
 
       noise_vals_2d[y][x] = c;
     }
@@ -47,9 +46,9 @@ void PreparePerlinNoise() {
 }
 
 float SmoothedNoise2D(int x, int y) {
-  float corners = ( Noise(x-1, y-1) + Noise(x+1, y-1) + Noise(x-1, y+1) + Noise(x+1, y+1) ) / 16;
-  float sides   = ( Noise(x-1, y  ) + Noise(x+1, y  ) + Noise(x,   y-1) + Noise(x,   y+1) ) /  8;
-  float center  =   Noise(x, y) / 4;
+  float corners = ( Noise( x - 1, y - 1 ) + Noise( x + 1, y - 1 ) + Noise( x - 1, y + 1 ) + Noise( x + 1, y + 1 ) ) / 16;
+  float sides   = ( Noise( x - 1, y     ) + Noise( x + 1, y     ) + Noise( x,     y - 1 ) + Noise( x,     y + 1 ) ) /  8;
+  float center  =   Noise( x, y ) / 4;
   return corners + sides + center;
 }
 
@@ -67,13 +66,13 @@ float InterpolatedNoise2D(float x, float y) {
   int int_x = (int)(x);
   int int_y = (int)(y);
 
-  float frac_x = x - int_x;
-  float frac_y = y - int_y;
+  float frac_x = static_cast<float>( x - int_x );
+  float frac_y = static_cast<float>( y - int_y );
 
-  float v1 = SmoothedNoise2D(int_x,     int_y    );
-  float v2 = SmoothedNoise2D(int_x + 1, int_y    );
-  float v3 = SmoothedNoise2D(int_x,     int_y + 1);
-  float v4 = SmoothedNoise2D(int_x + 1, int_y + 1);
+  float v1 = SmoothedNoise2D( int_x,     int_y     );
+  float v2 = SmoothedNoise2D( int_x + 1, int_y     );
+  float v3 = SmoothedNoise2D( int_x,     int_y + 1 );
+  float v4 = SmoothedNoise2D( int_x + 1, int_y + 1 );
 
   float i1 = InterpolateCosine(v1, v2, frac_x);
   float i2 = InterpolateCosine(v3, v4, frac_x);
@@ -86,9 +85,9 @@ float InterpolatedNoise3D(float x, float y, float z) {
   int int_y = (int)(y);
   int int_z = (int)(z);
 
-  float frac_x = x - int_x;
-  float frac_y = y - int_y;
-  float frac_z = z - int_z;
+  float frac_x = static_cast<float>( x - int_x );
+  float frac_y = static_cast<float>( y - int_y );
+  float frac_z = static_cast<float>( z - int_z );
 
   float v1 = SmoothedNoise3D(int_x,     int_y    , int_z );
   float v2 = SmoothedNoise3D(int_x + 1, int_y    , int_z );
@@ -114,11 +113,11 @@ float InterpolatedNoise3D(float x, float y, float z) {
 float PerlinNoise2D(float x, float y, int seed, float wavelength) {
   float freq = 1 / wavelength;
 
-  return InterpolatedNoise2D( x * freq + seed, y * freq + seed );
+  return InterpolatedNoise2D( static_cast<float>( x * freq + seed ), static_cast<float>( y * freq + seed ) );
 }
 
 float PerlinNoise3D(float x, float y, float z, int seed, float wavelength) {
   float freq = 1 / wavelength;
 
-  return InterpolatedNoise3D( x * freq + seed, y * freq + seed, z * freq + seed );
+  return InterpolatedNoise3D( static_cast<float>( x * freq + seed ), static_cast<float>( y * freq + seed ), static_cast<float>( z * freq + seed ) );
 }

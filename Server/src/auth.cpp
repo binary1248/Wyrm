@@ -1,7 +1,7 @@
 #include <SFML/Network.hpp>
 
-#include "auth.h"
+#include <auth.hpp>
 
-bool CheckAuth( PacketPtr packet ) {
+bool CheckAuth( PacketPtr /*packet*/ ) {
   return true;
 }

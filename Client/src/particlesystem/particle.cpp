@@ -1,96 +1,149 @@
-#include "../game.h"
-#include "../resourcemanager.h"
-#include "particle.h"
+#include <game.hpp>
+#include <resourcemanager.hpp>
+#include <particlesystem/particle.hpp>
 
-Particle::Particle(TexturePtr i) {
-  alive = true;
-  visible = true;
-  life = 0.0f;
-  lifetime = 1.0f;
-  texture = i;
-
-  sprite.SetTexture(*texture);
+Particle::Particle( TexturePtr texture ) :
+	m_texture( texture ),
+	m_life( 0.0f ),
+	m_lifetime( 1.0f ),
+	m_visible( true ) {
+  m_sprite.SetTexture( *m_texture );
 }
 
-Particle::Particle( const ParticlePtr p ) {
-  alive = true;
-  life = 0.0f;
+Particle::Particle( const ParticlePtr& particle ) :
+	m_life( 0.0f ) {
+	SetLifetime( particle->m_lifetime );
 
-  visible = p->visible;
-  lifetime = p->lifetime;
-  size_start = p->size_start;
-  size_end = p->size_end;
-  color_start = p->color_start;
-  color_end = p->color_end;
-  position = p->position;
-  velocity = p->velocity;
-  acceleration = p->acceleration;
+  SetSizeStart( particle->m_size_start );
+  SetSizeEnd( particle->m_size_end );
 
-  texture = p->texture;
+  SetColorStart( particle->m_color_start );
+  SetColorEnd( particle->m_color_end );
 
-  sprite.SetTexture(*texture);
-  sprite.SetOrigin(texture->GetWidth()/2,texture->GetHeight()/2);
+  SetPosition( particle->m_position );
+  SetVelocity( particle->m_velocity );
+  SetAcceleration( particle->m_acceleration );
+
+  SetVisible( particle->m_visible );
+
+  SetTexture( particle->m_texture );
+
+  m_sprite.SetOrigin( static_cast<float>( m_texture->GetWidth() ) / 2.f, static_cast<float>( m_texture->GetHeight() ) / 2.f );
+}
+
+Particle& Particle::operator=( const Particle& particle ) {
+	m_life = 0.0f;
+	SetLifetime( particle.m_lifetime );
+
+  SetSizeStart( particle.m_size_start );
+  SetSizeEnd( particle.m_size_end );
+
+  SetColorStart( particle.m_color_start );
+  SetColorEnd( particle.m_color_end );
+
+  SetPosition( particle.m_position );
+  SetVelocity( particle.m_velocity );
+  SetAcceleration( particle.m_acceleration );
+
+  SetVisible( particle.m_visible );
+
+  SetTexture( particle.m_texture );
+
+  m_sprite.SetOrigin( static_cast<float>( m_texture->GetWidth() ) / 2.f, static_cast<float>( m_texture->GetHeight() ) / 2.f );
+
+  return *this;
 }
 
 Particle::~Particle() {
 
 }
 
-void Particle::SetLifetime(float l) {
-	lifetime = l;
-	lifetime = lifetime > 0.f ? lifetime : 1.f;
-	size_step = ( size_end - size_start ) / lifetime;
+float Particle::GetLifetime() const {
+	return m_lifetime;
 }
 
-void Particle::SetSizeStart(sf::Vector2f s) {
-	size_start = s;
-	size_step = ( size_end - size_start ) / lifetime;
+void Particle::SetLifetime( float lifetime ) {
+	m_lifetime = lifetime;
+	m_lifetime = m_lifetime > 0.f ? m_lifetime : 1.f;
+	m_size_step = ( m_size_end - m_size_start ) / m_lifetime;
 }
 
-void Particle::SetSizeEnd(sf::Vector2f s) {
-	size_end = s;
-	size_step = ( size_end - size_start ) / lifetime;
+void Particle::SetSizeStart( const sf::Vector2f& size ) {
+	m_size_start = size;
+	m_size_step = ( m_size_end - m_size_start ) / m_lifetime;
 }
 
-void Particle::SetColorStart(sf::Color c) {
-	color_start = c;
+void Particle::SetSizeEnd( const sf::Vector2f& size ) {
+	m_size_end = size;
+	m_size_step = ( m_size_end - m_size_start ) / m_lifetime;
 }
 
-void Particle::SetColorEnd(sf::Color c) {
-	color_end = c;
+void Particle::SetColorStart( const sf::Color& color ) {
+	m_color_start = color;
 }
 
-void Particle::SetTexture(TexturePtr i) {
-  texture = i;
-  sprite.SetTexture(*texture);
+void Particle::SetColorEnd( const sf::Color& color ) {
+	m_color_end = color;
 }
 
-void Particle::Tick(float secs) {
-  life += secs;
+void Particle::SetTexture( const TexturePtr& texture ) {
+  m_texture = texture;
+  m_sprite.SetTexture( *m_texture );
+}
 
-  if( life > lifetime ) {
-    Kill();
+void Particle::Tick( float time ) {
+  m_life += time;
+
+  if( !IsAlive() ) {
     return;
   }
 
-  velocity += (acceleration * secs);
-  sprite.Move( velocity * secs );
+  m_velocity += ( m_acceleration * time );
+  m_sprite.Move( m_velocity * time );
 
-  float factor = life / ( lifetime > 0.f ? lifetime : 1.f );
+  float factor = m_life / ( m_lifetime > 0.f ? m_lifetime : 1.f );
 
-  sf::Uint8 factor_start = static_cast<unsigned char>( (1-factor) * 255.f );
+  sf::Uint8 factor_start = static_cast<unsigned char>( ( 1 - factor ) * 255.f );
   sf::Uint8 factor_end = static_cast<unsigned char>( factor * 255.f );
 
-  color = color_start * sf::Color( factor_start, factor_start, factor_start, factor_start );
-  color += color_end * sf::Color( factor_end, factor_end, factor_end, factor_end );
+  m_color = m_color_start * sf::Color( factor_start, factor_start, factor_start, factor_start );
+  m_color += m_color_end * sf::Color( factor_end, factor_end, factor_end, factor_end );
 
-  sprite.SetColor( color );
-  sprite.Resize( size_start + life * size_step );
+  m_sprite.SetColor( m_color );
+  m_sprite.Resize( m_size_start + m_life * m_size_step );
 }
 
-void Particle::Draw(sf::RenderTarget& r)
+void Particle::Draw( sf::RenderTarget& target )
 {
-  if( alive && visible ) {
-    r.Draw(sprite);
+  if( IsAlive() && m_visible ) {
+    target.Draw( m_sprite );
   }
+}
+
+void Particle::SetVisible( bool visible ) {
+	m_visible = visible;
+}
+
+bool Particle::IsAlive() const {
+	return m_life <= m_lifetime;
+}
+
+void Particle::SetPosition( const sf::Vector2f& position ) {
+	m_position = position;
+}
+
+const sf::Vector2f& Particle::GetVelocity() const {
+	return m_velocity;
+}
+
+void Particle::SetVelocity( const sf::Vector2f& velocity ) {
+	m_velocity = velocity;
+}
+
+const sf::Vector2f& Particle::GetAcceleration() const {
+	return m_acceleration;
+}
+
+void Particle::SetAcceleration( const sf::Vector2f& acceleration ) {
+	m_acceleration = acceleration;
 }

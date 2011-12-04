@@ -1,20 +1,19 @@
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
 
-#include "../networkmanager.h"
-#include "../objectmanager.h"
-#include "../utility.h"
-#include "../player.h"
-#include "../game.h"
-#include "objects.h"
-#include "ship.h"
+#include <config.hpp>
+#include <utility.hpp>
+#include <networkmanager.hpp>
+#include <objectmanager.hpp>
+#include <utility.hpp>
+#include <player.hpp>
+#include <game.hpp>
+#include <objects/objects.hpp>
+#include <objects/ship.hpp>
 
-#define clean_angle(a) (((a+90)/180)*M_PI)
+REGISTER_FACTORY( SHIP, Ship );
 
-REGISTER_FACTORY( SHIP,Ship );
-
-Ship::Ship( sf::String name, sf::Vector2f position, sf::Vector2f velocity, float rotation, float rotational_velocity ) :
+Ship::Ship( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+	          float rotation, float rotational_velocity ) :
 	Object( SHIP, name, position, velocity, rotation, rotational_velocity ),
   m_is_player( false ),
   m_acceleration( sf::Vector2f( 0, 0 ) ),
@@ -25,31 +24,35 @@ Ship::~Ship() {
 }
 
 void Ship::Update( float time ) {
-  SetAcceleration( sf::Vector2f( -cos( clean_angle( GetRotation() ) ) * ( -GetThrust() ),
-																	sin( clean_angle( GetRotation() ) ) * ( -GetThrust() ) ) );
+  SetAcceleration( sf::Vector2f( static_cast<float>( -cos( clean_angle( GetRotation() ) ) ) * ( -GetThrust() ),
+																 static_cast<float>(  sin( clean_angle( GetRotation() ) ) ) * ( -GetThrust() ) ) );
+
   SetVelocity( GetVelocity() + ( GetAcceleration() * time ) );
+
   Object::Update( time );
 }
 
-void Ship::FillPartialPacket( PacketPtr packet ) {
+void Ship::FillPartialPacket( const PacketPtr& packet ) {
   Object::FillPartialPacket( packet );
   (*packet) << GetThrust();
 }
 
-void Ship::FillFullPacket( PacketPtr packet ) {
+void Ship::FillFullPacket( const PacketPtr& packet ) {
   Object::FillFullPacket( packet );
   (*packet) << GetThrust();
 }
 
-void Ship::HandlePacket( PacketPtr packet ) {
+void Ship::HandlePacket( const PacketPtr& packet ) {
   sf::Uint16 type1 = 1337;
 
-  (*packet) >> type1;
+  ( *packet ) >> type1;
+
   switch( type1 ) {
     case COMMAND_CONTROL: {
       sf::Uint16 code = 1337;
       (*packet) >> code;
-      switch(code) {
+
+      switch( code ) {
         case 0:
           SetThrust( 100 );
           break;
@@ -73,9 +76,10 @@ void Ship::HandlePacket( PacketPtr packet ) {
           SetRotationalVelocity( 0 );
           break;
         default:
-          LogConsole( STRING_CAST( GetId() ) + " sent bogus code" );
+          LogConsole( string_cast( GetId() ) + " sent bogus type1" );
           break;
       }
+
       break;
     }
     default:
@@ -85,19 +89,19 @@ void Ship::HandlePacket( PacketPtr packet ) {
   SetDirty();
 }
 
-bool Ship::IsPlayer() {
+bool Ship::IsPlayer() const {
 	return m_is_player;
 }
 
-sf::Vector2f Ship::GetAcceleration() {
+const sf::Vector2f& Ship::GetAcceleration() const {
 	return m_acceleration;
 }
 
-void Ship::SetAcceleration( sf::Vector2f acceleration ) {
+void Ship::SetAcceleration( const sf::Vector2f& acceleration ) {
 	m_acceleration = acceleration;
 }
 
-float Ship::GetThrust() {
+float Ship::GetThrust() const {
 	return m_thrust;
 }
 

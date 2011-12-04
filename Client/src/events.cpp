@@ -1,10 +1,10 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SFML/Network.hpp>
-#include "network.h"
-#include "gui.h"
-#include "game.h"
-#include "events.h"
+#include <network.hpp>
+#include <gui.hpp>
+#include <game.hpp>
+#include <events.hpp>
 
 #define DOWN true
 #define UP false
@@ -12,39 +12,42 @@
 sf::Uint16 keymap[sf::Event::Count][sf::Keyboard::KeyCount];
 bool keystate[sf::Keyboard::KeyCount];
 
-int HandleEvents(sf::RenderWindow& app) {
-  sf::Event Event;
-  while( app.PollEvent(Event) )
-  {
-    if( Event.Type == sf::Event::Resized ) {
-      Game::GetGame()->Resize( Event.Size.Width, Event.Size.Height );
-      glViewport(0, 0, Event.Size.Width, Event.Size.Height);
-    } else if( !Game::GetGame()->GetGUI()->HandleEvent( Event ) ) {
+int HandleEvents( sf::RenderWindow& window ) {
+  sf::Event event;
+
+  while( window.PollEvent( event ) ) {
+    if( event.Type == sf::Event::Resized ) {
+      Game::GetGame()->Resize( static_cast<float>( event.Size.Width ), static_cast<float>( event.Size.Height ) );
+      glViewport( 0, 0, event.Size.Width, event.Size.Height );
+    } else if( !Game::GetGame()->GetGUI()->HandleEvent( event ) ) {
       sf::Uint16 code = 1337;
 
       // Window closed
-      if( Event.Type == sf::Event::Closed ) {
+      if( event.Type == sf::Event::Closed ) {
         return 1;
       }
 
-      if( (Event.Type == sf::Event::KeyPressed) && (keystate[Event.Key.Code] != DOWN) ) {
-        if( Event.Key.Code == sf::Keyboard::Escape ) {
+      if( ( event.Type == sf::Event::KeyPressed ) && ( keystate[event.Key.Code] != DOWN ) ) {
+        if( event.Key.Code == sf::Keyboard::Escape ) {
           // Escape key pressed
           return 1;
         } else {
-          code = keymap[Event.Type][Event.Key.Code];
+          code = keymap[event.Type][event.Key.Code];
         }
-        keystate[Event.Key.Code] = DOWN;
+
+        keystate[event.Key.Code] = DOWN;
       }
 
-      if( (Event.Type == sf::Event::KeyReleased) && (keystate[Event.Key.Code] != UP) ) {
-        code = keymap[Event.Type][Event.Key.Code];
-        keystate[Event.Key.Code] = UP;
+      if( ( event.Type == sf::Event::KeyReleased ) && ( keystate[event.Key.Code] != UP ) ) {
+        code = keymap[event.Type][event.Key.Code];
+        keystate[event.Key.Code] = UP;
       }
 
-      if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && code != 1337) {
+      if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && ( code != 1337 ) ) {
         sf::Packet packet;
+
         packet << (sf::Uint16)CLIENT_COMMAND << (sf::Uint16)COMMAND_CONTROL << code;
+
         Game::GetGame()->GetNetworkHandler()->Send(packet);
       }
     }
@@ -54,7 +57,6 @@ int HandleEvents(sf::RenderWindow& app) {
 }
 
 void LoadKeymap() {
-
   for( size_t i = 0; i < sf::Event::Count; i++ ) {
     for( size_t j = 0; j < sf::Keyboard::KeyCount; j++ ) {
       keymap[i][j] = 1337;

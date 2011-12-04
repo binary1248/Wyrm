@@ -1,90 +1,92 @@
 #include <cstdlib>
-#include <iostream>
 
-#include <boost/random.hpp>
+#include <random>
 
 #include <SFML/Graphics.hpp>
 
-#include "game.h"
-#include "backdrop.h"
+#include <config.hpp>
+#include <game.hpp>
+#include <backdrop.hpp>
 
-Backdrop::Backdrop( boost::shared_ptr<sf::RenderWindow> w, std::size_t num_particles, std::size_t texture_size ) :
+Backdrop::Backdrop( std::shared_ptr<sf::RenderWindow> window, std::size_t num_particles, unsigned int texture_size ) :
 	m_texture_size( texture_size ),
 	m_num_particles( num_particles ) {
-  backdrop_velocity = sf::Vector2f(0,0);
+  m_backdrop_velocity = sf::Vector2f( 0.0f, 0.0f );
 
-  float amplitudes[] = {30,20,20,40,10,10,2,2};
+  float amplitudes[] = { 30, 20, 20, 40, 10, 10, 2, 2 };
 
-  texture = Game::GetGame()->GetResourceManager()->GetBackground(m_texture_size,
-																																 m_texture_size,
-																																 sf::Color(90,180,180,255),
-																																 4,
-																																 8,
-																																 (float*)amplitudes );
-  background_sprite.SetTexture(*texture);
+  m_texture = Game::GetGame()->GetResourceManager()->GetBackground( m_texture_size,
+	                                                                  m_texture_size,
+	                                                                  sf::Color( 90, 180, 180, 255 ),
+	                                                                  4,
+	                                                                  8,
+	                                                                  amplitudes );
+  m_background_sprite.SetTexture( *m_texture );
 
-  boost::lagged_fibonacci607 rng;
-  boost::uniform_real<float> u1(0.0f, (float)( w->GetWidth() ) - 1 );
-  boost::uniform_real<float> u2(0.0f, (float)( w->GetHeight() ) - 1 );
-  boost::uniform_real<float> u3(0.60f, 0.75f);
-  boost::variate_generator<boost::lagged_fibonacci607&, boost::uniform_real<float> > gen1(rng, u1);
-  boost::variate_generator<boost::lagged_fibonacci607&, boost::uniform_real<float> > gen2(rng, u2);
-  boost::variate_generator<boost::lagged_fibonacci607&, boost::uniform_real<float> > gen3(rng, u3);
+  std::mt19937 rng;
+  std::uniform_real_distribution<float> u1( 0.0f, static_cast<float>( window->GetWidth() ) - 1.0f );
+  std::uniform_real_distribution<float> u2( 0.0f, static_cast<float>( window->GetHeight() ) - 1.0f );
+  std::uniform_real_distribution<float> u3( 0.60f, 0.75f );
+  std::uniform_real_distribution<float> u4( 0.0f, 1.0f );
 
-  particles.reset( new BackdropParticle[m_num_particles] );
+	m_particles = new sf::Shape[ m_num_particles ];
+	m_particle_velocities = new float[ m_num_particles ];
 
-  for( unsigned int i = 0; i < NUM_BACKDROP_PARTICLES; i++) {
-    particles[i].position.x = gen1();
-    particles[i].position.y = gen2();
-    particles[i].size = gen3();
+  for( std::size_t index = 0; index < m_num_particles; ++index ) {
+    m_particles[ index ] = sf::Shape::Circle( 0.0f,
+                                              0.0f,
+                                              u3( rng ),
+                                              sf::Color(255, 255, 255, 85) );
+
+		m_particles[ index ].SetPosition( u1( rng ), u2( rng ) );
+
+		m_particle_velocities[ index ] = u4( rng );
   }
 }
 
 Backdrop::~Backdrop() {
+	delete[] m_particles;
+	delete[] m_particle_velocities;
 }
 
-void Backdrop::Draw(sf::RenderWindow& w) {
-  float width = (float)(w.GetWidth());
-  float height = (float)(w.GetHeight());
+void Backdrop::Draw( sf::RenderWindow& target, float time ) {
+  float width = static_cast<float>( target.GetWidth() );
+  float height = static_cast<float>( target.GetHeight() );
 
-  sf::View view = w.GetView();
-  w.SetView(w.GetDefaultView());
-  float x_scale = width / m_texture_size;
-  float y_scale = height / m_texture_size;
-  background_sprite.SetScale(x_scale, y_scale);
-  w.Draw(background_sprite);
+  float x_scale = static_cast<float>( width ) / static_cast<float>( m_texture_size );
+  float y_scale = static_cast<float>( height ) / static_cast<float>( m_texture_size );
 
-  for( unsigned int i = 0; i < NUM_BACKDROP_PARTICLES; i++) {
-    particles[i].position += (backdrop_velocity * (float)(LastDraw.GetElapsedTime()) / 1000.0f );
+	m_background_sprite.SetPosition( m_backdrop_position - sf::Vector2f( width / 2.0f, height / 2.0f ) );
+  m_background_sprite.SetScale( x_scale, y_scale );
 
-    while( particles[i].position.x < 0 ) {
-      particles[i].position.x += width;
+  target.Draw( m_background_sprite );
+
+  for( std::size_t index = 0; index < m_num_particles; ++index ) {
+  	m_particles[ index ].Move( -m_backdrop_velocity * m_particle_velocities[ index ] * time );
+
+		while( m_particles[ index ].GetPosition().x < m_backdrop_position.x - width / 2.0f ) {
+      m_particles[ index ].Move( width, 0.0f );
     }
 
-    while( particles[i].position.x >= width ) {
-      particles[i].position.x -= width;
+    while( m_particles[ index ].GetPosition().x >= m_backdrop_position.x + width / 2.0f ) {
+      m_particles[ index ].Move( -width, 0.0f );
     }
 
-    while( particles[i].position.y < 0 ) {
-      particles[i].position.y += height;
+    while( m_particles[ index ].GetPosition().y < m_backdrop_position.y - height / 2.0f ) {
+      m_particles[ index ].Move( 0.0f, height );
     }
 
-    while( particles[i].position.y >= height ) {
-      particles[i].position.y -= height;
+    while( m_particles[ index ].GetPosition().y >= m_backdrop_position.y + height / 2.0f ) {
+      m_particles[ index ].Move( 0.0f, -height );
     }
 
-    w.Draw( sf::Shape::Circle( particles[i].position.x,
-                               particles[i].position.y,
-                               particles[i].size,
-                               sf::Color(255, 255, 255, 85) ) );
-
+    target.Draw( m_particles[ index ] );
   }
 
-  LastDraw.Reset();
-
-  w.SetView(view);
+  m_last_draw.Reset();
 }
 
-void Backdrop::Update(sf::Vector2f v) {
-  backdrop_velocity = (-v);
+void Backdrop::Update( const sf::Vector2f& velocity, const sf::Vector2f& position ) {
+  m_backdrop_velocity = ( -velocity );
+  m_backdrop_position = position;
 }

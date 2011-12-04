@@ -1,21 +1,18 @@
-#include <iostream>
-
-#include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
+#include <config.hpp>
 
 #include <SFML/System.hpp>
 
-#include "player.h"
-#include "objects/objects.h"
-#include "game.h"
-#include "utility.h"
-#include "objectmanager.h"
+#include <player.hpp>
+#include <objects/objects.hpp>
+#include <game.hpp>
+#include <utility.hpp>
+#include <objectmanager.hpp>
 
 FactoryMap* ObjectManager::m_factories = 0;
 
 ObjectManager::ObjectManager() :
-	m_lastObjectId( 0 ),
 	m_lastSystemId( 0 ),
+	m_lastObjectId( 0 ),
 	m_objects_loaded( false ),
 	m_factories_auto_delete( m_factories ) {
 }
@@ -23,19 +20,22 @@ ObjectManager::ObjectManager() :
 ObjectManager::~ObjectManager() {
 }
 
-ObjectPtr ObjectManager::GetObjectById( sf::Uint16 id ) const {
-	BOOST_FOREACH( ObjectPtr object, m_objects ) {
-		if( object->GetId() == id ) {
-      return object;
+const ObjectPtr ObjectManager::GetObjectById( sf::Uint16 id ) const {
+	std::list<ObjectPtr>::const_iterator iter( m_objects.begin() );
+	std::list<ObjectPtr>::const_iterator end( m_objects.end() );
+
+	for( ; iter != end; ++iter ) {
+		if( (*iter)->GetId() == id ) {
+      return (*iter);
     }
 	}
 
-  LogConsole( "Couldn't find object with id " + STRING_CAST( id ) );
+  LogConsole( "Couldn't find object with id " + string_cast( id ) );
 
   return ObjectPtr();
 }
 
-ObjectPtr ObjectManager::CreateObject( sf::Uint16 type ) {
+const ObjectPtr ObjectManager::CreateObject( sf::Uint16 type ) {
   if( !m_factories ) {
     Die( "Tried to create object without factories." );
   }
@@ -48,27 +48,30 @@ ObjectPtr ObjectManager::CreateObject( sf::Uint16 type ) {
   } else {
     ObjectPtr object = ( iter->second )();
     m_objects.push_back( object );
-		GetSystemById( 0 )->AddObject( object );
+		GetSystemById( 1 )->AddObject( object );
     return object;
   }
 }
 
-SystemPtr ObjectManager::GetSystemById( sf::Uint16 id ) const {
-	BOOST_FOREACH( SystemPtr system, m_systems ) {
-		if( system->GetId() == id ) {
-      return system;
+const SystemPtr ObjectManager::GetSystemById( sf::Uint16 id ) const {
+	std::list<SystemPtr>::const_iterator iter( m_systems.begin() );
+	std::list<SystemPtr>::const_iterator end( m_systems.end() );
+
+	for( ; iter != end; ++iter ) {
+		if( (*iter)->GetId() == id ) {
+      return (*iter);
     }
 	}
 
-  LogConsole( "Couldn't find systems with id " + STRING_CAST( id ) );
+  LogConsole( "Couldn't find system with id " + string_cast( id ) );
 
   return SystemPtr();
 }
 
 void ObjectManager::CreateSystem( std::string name ) {
-  SystemPtr system = boost::make_shared<System>( m_lastSystemId++, name );
+  SystemPtr system = std::make_shared<System>( ++m_lastSystemId, name );
 
-  LogConsole( "Created new system: " + system->GetName() + " (id: " + STRING_CAST( system->GetId() ) + ")" );
+  LogConsole( "Created new system: " + system->GetName() + " (id: " + string_cast( system->GetId() ) + ")" );
 
   m_systems.push_back( system );
 }
@@ -78,24 +81,30 @@ void ObjectManager::Tick( float time ) {
     LoadObjects();
   }
 
-  BOOST_FOREACH( SystemPtr system, m_systems ) {
-		system->Tick( time );
+  std::list<SystemPtr>::const_iterator system_iter( m_systems.begin() );
+	std::list<SystemPtr>::const_iterator system_end( m_systems.end() );
+
+  for( ; system_iter != system_end; ++system_iter ) {
+		(*system_iter)->Tick( time );
   }
 
-  for( std::list<ObjectPtr>::iterator iter = m_objects.begin(); iter != m_objects.end(); ) {
-    if( (*iter)->IsDeleted() ) {
-      iter = m_objects.erase( iter );
+  std::list<ObjectPtr>::iterator object_iter( m_objects.begin() );
+  std::list<ObjectPtr>::iterator object_end( m_objects.end() );
+
+  while( object_iter != object_end ) {
+    if( (*object_iter)->IsDeleted() ) {
+      object_iter = m_objects.erase( object_iter );
       continue;
     }
 
-    (*iter)->Update( time );
+    (*object_iter)->Update( time );
 
-    iter++;
+    ++object_iter;
   }
 }
 
 sf::Uint16 ObjectManager::NewID() {
-	return m_lastObjectId++;
+	return ++m_lastObjectId;
 }
 
 void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
@@ -105,19 +114,19 @@ void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
 
   m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
 
-  LogStartup( "Registered object factory type " + STRING_CAST( type ) );
+  LogStartup( "Registered object factory type " + string_cast( type ) );
 }
 
 void ObjectManager::LoadObjects() {
   CreateSystem( "System 1" );
 
-  PlanetPtr p( boost::static_pointer_cast<Planet, Object>( CreateObject( PLANET ) ) );
+  PlanetPtr p( std::static_pointer_cast<Planet, Object>( CreateObject( PLANET ) ) );
   p->SetOrbit( 2, 400 );
   p->SetRotationalVelocity( 2 );
   p->SetAnchor( 0, 0 );
   p->SetName( "Planet 1" );
 
-  StarPtr s( boost::static_pointer_cast<Star, Object>( CreateObject( STAR ) ) );
+  StarPtr s( std::static_pointer_cast<Star, Object>( CreateObject( STAR ) ) );
   s->SetOrbit( 0, 0 );
   s->SetRotationalVelocity( 0 );
   s->SetAnchor( 0, 0 );

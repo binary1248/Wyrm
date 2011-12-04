@@ -1,35 +1,32 @@
 #include <cmath>
 #include <queue>
-#include <iostream>
 
-#include <boost/foreach.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/scoped_array.hpp>
+#include <noise/noise.h>
+#include <noise/noiseutils.h>
 
-#include "perlin.h"
-#include "resourcemanager.h"
+#include <config.hpp>
+#include <perlin.hpp>
+#include <resourcemanager.hpp>
 
 struct thread_params {
   int x;
   int y;
   size_t step_size;
-  int width;
-  int height;
+  unsigned int width;
+  unsigned int height;
   sf::Color color;
   int seed;
   size_t octaves;
   float* amplitudes;
-  boost::shared_array<sf::Uint8> pixels;
+  sf::Uint8* pixels;
 };
 
-typedef boost::shared_ptr<struct thread_params> ThreadParamsPtr;
-typedef boost::shared_ptr<sf::Thread> ThreadPtr;
+typedef std::shared_ptr<struct thread_params> ThreadParamsPtr;
+typedef std::shared_ptr<sf::Thread> ThreadPtr;
 
 inline float InterpolateCosine(float a, float b, float x) {
-	float f = (1 - cos(x * M_PI)) * 0.5f;
-	return (1 - f)* a + f * b;
+	float f = ( 1 - cos(x * static_cast<float>( M_PI ) ) ) * 0.5f;
+	return (1 - f) * a + f * b;
 }
 
 ResourceManager::ResourceManager() {
@@ -39,56 +36,59 @@ ResourceManager::ResourceManager() {
 ResourceManager::~ResourceManager() {
 }
 
-TexturePtr ResourceManager::OpenImage(std::string file) {
-  std::map<std::string, TexturePtr>::iterator i;
-  i = textures.find(file);
+const TexturePtr ResourceManager::OpenImage( std::string filename ) {
+  std::map<std::string, TexturePtr>::iterator i = m_textures.find( filename );
 
-  if( i != textures.end() ) {
+  if( i != m_textures.end() ) {
     return i->second;
   }
 
   sf::Image image;
-  image.LoadFromFile(file);
+  image.LoadFromFile( filename );
 
-  TexturePtr texture = boost::make_shared<sf::Texture>();
+  TexturePtr texture = std::make_shared<sf::Texture>();
   texture->LoadFromImage( image );
 
-  textures.insert( std::make_pair<std::string, TexturePtr>(file, texture) );
+  m_textures.insert( std::pair<std::string, TexturePtr>( filename, texture ) );
 
   return texture;
 }
 
-SoundBufferPtr ResourceManager::OpenSound(std::string file) {
-  std::map<std::string, SoundBufferPtr>::iterator i;
-  i = sounds.find(file);
+const SoundBufferPtr ResourceManager::OpenSound( std::string filename ) {
+  std::map<std::string, SoundBufferPtr>::iterator i = m_sounds.find( filename );
 
-  if( i != sounds.end() ) {
+  if( i != m_sounds.end() ) {
     return i->second;
   }
 
-  SoundBufferPtr sound = boost::make_shared<sf::SoundBuffer>();
+  SoundBufferPtr sound = std::make_shared<sf::SoundBuffer>();
 
-  sound->LoadFromFile(file);
+  sound->LoadFromFile( filename );
 
-  sounds.insert( std::make_pair<std::string, SoundBufferPtr>(file, sound) );
+  m_sounds.insert( std::pair<std::string, SoundBufferPtr>( filename, sound ) );
 
   return sound;
 }
 
-TexturePtr ResourceManager::GetParticle(int size, float max, float exp) {
-  BOOST_FOREACH( ParticleTexturePair particle_texture_pair, particles ) {
-		if( particle_texture_pair.first.size == size &&
-				particle_texture_pair.first.max == max &&
-				particle_texture_pair.first.exp == exp ) {
-      return particle_texture_pair.second;
+const TexturePtr ResourceManager::GetParticle(int size, float max, float exp) {
+	std::vector<ParticleTexturePair>::const_iterator particle_texture_pair( m_particles.begin() );
+	std::vector<ParticleTexturePair>::const_iterator end( m_particles.end() );
+
+  for( ; particle_texture_pair != end; ++particle_texture_pair ) {
+		if( particle_texture_pair->first.size == size &&
+				particle_texture_pair->first.max == max &&
+				particle_texture_pair->first.exp == exp ) {
+      return particle_texture_pair->second;
     }
   }
 
-  boost::scoped_array<sf::Uint8> pixels( new sf::Uint8[size*size*4] );
+  sf::Uint8* pixels = new sf::Uint8[size*size*4];
 
 	for( int i = 0; i < size; i++ ) {
     for( int j = 0; j < size; j++ ) {
-      float val = size/2 - std::sqrt( std::pow( (size/2 - i), 2 ) + std::pow( (size/2 - j), 2 ) );
+      float val = static_cast<float>( size ) / 2.f -
+                  std::sqrt( std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( i ) ), 2 ) +
+			                       std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( j ) ), 2 ) );
 
 			// Clamp value
 			val = std::max( 0.f, val - 1 );
@@ -102,27 +102,29 @@ TexturePtr ResourceManager::GetParticle(int size, float max, float exp) {
     }
   }
 
-  TexturePtr texture = boost::make_shared<sf::Texture>();
+  TexturePtr texture = std::make_shared<sf::Texture>();
   texture->Create( size, size );
-  texture->Update( pixels.get() );
+  texture->Update( pixels );
+
+  delete[] pixels;
 
   struct particle_id id;
   id.size = size;
   id.max = max;
   id.exp = exp;
 
-  particles.push_back( std::make_pair<struct particle_id, TexturePtr>(id, texture) );
+  m_particles.push_back( std::pair<struct particle_id, TexturePtr>(id, texture) );
 
   return texture;
 }
 
 void PerlinThreadFunction2D( void* thread_param ) {
-  struct thread_params* params = static_cast<ThreadParamsPtr*>( thread_param )->get();
+  struct thread_params* params = static_cast<thread_params*>( thread_param );
 
-  int start_y = params->y;
+  std::size_t start_y = params->y;
 
-  for( int y = start_y; y < params->height; y += params->step_size ) {
-    for( int x = 0; x < params->width; x++ ) {
+  for( std::size_t y = start_y; y < params->height; y += params->step_size ) {
+    for( std::size_t x = 0; x < params->width; x++ ) {
       float val = 0;
 
       for( size_t i = 0; i < params->octaves; i++ ) {
@@ -146,7 +148,7 @@ void PerlinThreadFunction2D( void* thread_param ) {
 }
 
 void PerlinThreadFunction3D( void* thread_param ) {
-  struct thread_params* params = static_cast<ThreadParamsPtr*>( thread_param )->get();
+  struct thread_params* params = static_cast<thread_params*>( thread_param );
 
   int start_y = params->y;
 
@@ -182,26 +184,26 @@ void PerlinThreadFunction3D( void* thread_param ) {
         val += PerlinNoise3D(a, b, c, params->seed, pow(2,params->octaves-i) ) * params->amplitudes[i];
       }
 
-      int cr = val*((float)(params->color.r)/255.0f);
-      int cg = val*((float)(params->color.g)/255.0f);
-      int cb = val*((float)(params->color.b)/255.0f);
+      sf::Uint8 cr = static_cast<sf::Uint8>( val * ( static_cast<float>( params->color.r ) / 255.f ) );
+      sf::Uint8 cg = static_cast<sf::Uint8>( val * ( static_cast<float>( params->color.g ) / 255.f ) );
+      sf::Uint8 cb = static_cast<sf::Uint8>( val * ( static_cast<float>( params->color.b ) / 255.f ) );
 
       params->pixels[(y*params->width+x)*4+0] = cr;
       params->pixels[(y*params->width+x)*4+1] = cg;
       params->pixels[(y*params->width+x)*4+2] = cb;
 
-      float dist = sqrt( (x-params->width/2)*(x-params->width/2) + (y-params->height/2)*(y-params->height/2) );
+      float dist = static_cast<float>( sqrt( (x-params->width/2)*(x-params->width/2) + (y-params->height/2)*(y-params->height/2) ) );
 
 
 
-      if( dist <= (float)(radius-8) ) {
+      if( dist <= static_cast<float>( radius-8 ) ) {
         params->pixels[(y*params->width+x)*4+3] = 255;
       } else if( dist <= (float)(radius-4) ) {
-        float border = radius - dist;
-        params->pixels[(y*params->width+x)*4+0] = (int)InterpolateCosine( params->pixels[(y*params->width+x)*4+0], 255, (10-border)/15);
-        params->pixels[(y*params->width+x)*4+1] = (int)InterpolateCosine( params->pixels[(y*params->width+x)*4+1], 255, (10-border)/15);
-        params->pixels[(y*params->width+x)*4+2] = (int)InterpolateCosine( params->pixels[(y*params->width+x)*4+2], 255, (10-border)/15);
-        params->pixels[(y*params->width+x)*4+3] = (int)(border * 64);
+        float border = radius - static_cast<float>( dist );
+        params->pixels[(y*params->width+x)*4+0] = static_cast<sf::Uint8>( InterpolateCosine( params->pixels[(y*params->width+x)*4+0], 255, (10-border)/15 ) );
+        params->pixels[(y*params->width+x)*4+1] = static_cast<sf::Uint8>( InterpolateCosine( params->pixels[(y*params->width+x)*4+1], 255, (10-border)/15 ) );
+        params->pixels[(y*params->width+x)*4+2] = static_cast<sf::Uint8>( InterpolateCosine( params->pixels[(y*params->width+x)*4+2], 255, (10-border)/15 ) );
+        params->pixels[(y*params->width+x)*4+3] = static_cast<sf::Uint8>(border * 64);
       } else {
         params->pixels[(y*params->width+x)*4+3] = 0;
       }
@@ -209,28 +211,27 @@ void PerlinThreadFunction3D( void* thread_param ) {
   }
 }
 
-TexturePtr ResourceManager::GetBackground(int width, int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes ) {
-  boost::shared_array<sf::Uint8> pixels( new sf::Uint8[height*width*4] );
+const TexturePtr ResourceManager::GetBackground( unsigned int width, unsigned int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes ) {
+  sf::Uint8* pixels = new sf::Uint8[height*width*4];
 
-  size_t num_threads = 4;
+  int num_threads = 4;
   std::queue<ThreadPtr> threads;
 
-  boost::shared_ptr<struct thread_params> params[ num_threads ];
+  struct thread_params* params = new struct thread_params[ num_threads ];
 
-  for( size_t i = 0; i < num_threads; i++ ) {
-    params[i] = boost::make_shared<struct thread_params>();
-    params[i]->width = width;
-		params[i]->height = height;
-		params[i]->step_size = num_threads;
-		params[i]->color = base_color;
-		params[i]->seed = seed;
-		params[i]->octaves = num_octaves;
-		params[i]->amplitudes = amplitudes;
-		params[i]->pixels = pixels;
-    params[i]->x = i;
-    params[i]->y = i;
+  for( int i = 0; i < num_threads; i++ ) {
+    params[i].width = width;
+		params[i].height = height;
+		params[i].step_size = num_threads;
+		params[i].color = base_color;
+		params[i].seed = seed;
+		params[i].octaves = num_octaves;
+		params[i].amplitudes = amplitudes;
+		params[i].pixels = pixels;
+    params[i].x = i;
+    params[i].y = i;
 
-    ThreadPtr thread = boost::make_shared<sf::Thread>( &PerlinThreadFunction2D, &params[i] );
+    ThreadPtr thread = std::make_shared<sf::Thread>( &PerlinThreadFunction2D, &params[i] );
     thread->Launch();
     threads.push( thread );
   }
@@ -240,35 +241,38 @@ TexturePtr ResourceManager::GetBackground(int width, int height, const sf::Color
     threads.pop();
   }
 
-  TexturePtr texture = boost::make_shared<sf::Texture>();
+  delete[] params;
+
+  TexturePtr texture = std::make_shared<sf::Texture>();
   texture->Create( width, height );
-  texture->Update( pixels.get() );
+  texture->Update( pixels );
+
+  delete[] pixels;
 
   return texture;
 }
 
-TexturePtr ResourceManager::GetPlanet(int width, int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes ) {
-  boost::shared_array<sf::Uint8> pixels( new sf::Uint8[height*width*4] );
+const TexturePtr ResourceManager::GetPlanet( unsigned int width, unsigned int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes ) {
+  sf::Uint8* pixels = new sf::Uint8[height*width*4];
 
-  size_t num_threads = 4;
+  int num_threads = 4;
   std::queue<ThreadPtr> threads;
 
-  boost::shared_ptr<struct thread_params> params[ num_threads ];
+  struct thread_params* params = new struct thread_params[ num_threads ];
 
-  for( size_t i = 0; i < num_threads; i++ ) {
-    params[i] = boost::make_shared<struct thread_params>();
-    params[i]->width = width;
-		params[i]->height = height;
-		params[i]->step_size = num_threads;
-		params[i]->color = base_color;
-		params[i]->seed = seed;
-		params[i]->octaves = num_octaves;
-		params[i]->amplitudes = amplitudes;
-		params[i]->pixels = pixels;
-    params[i]->x = i;
-    params[i]->y = i;
+  for( int i = 0; i < num_threads; i++ ) {
+    params[i].width = width;
+		params[i].height = height;
+		params[i].step_size = num_threads;
+		params[i].color = base_color;
+		params[i].seed = seed;
+		params[i].octaves = num_octaves;
+		params[i].amplitudes = amplitudes;
+		params[i].pixels = pixels;
+    params[i].x = i;
+    params[i].y = i;
 
-    ThreadPtr thread = boost::make_shared<sf::Thread>( &PerlinThreadFunction3D, &params[i] );
+    ThreadPtr thread = std::make_shared<sf::Thread>( &PerlinThreadFunction3D, &params[i] );
     thread->Launch();
     threads.push( thread );
   }
@@ -278,9 +282,49 @@ TexturePtr ResourceManager::GetPlanet(int width, int height, const sf::Color& ba
     threads.pop();
   }
 
-  TexturePtr texture = boost::make_shared<sf::Texture>();
+  delete[] params;
+/*
+	noise::module::Perlin perlin_module;
+	noise::utils::NoiseMap noise_map;
+	noise::utils::NoiseMapBuilderPlane plane_builder;
+  plane_builder.SetSourceModule( perlin_module );
+  plane_builder.SetDestNoiseMap( noise_map );
+  plane_builder.SetDestSize( width, height );
+  plane_builder.SetBounds( 0.0, 4.0, 0.0, 4.0 );
+  plane_builder.Build();
+
+	noise::utils::RendererImage renderer;
+  noise::utils::Image image;
+  renderer.SetSourceNoiseMap( noise_map );
+  renderer.SetDestImage( image );
+  renderer.ClearGradient ();
+  renderer.AddGradientPoint(-1.0000, utils::Color (  0,   0, 128, 255)); // deeps
+  renderer.AddGradientPoint(-0.2500, utils::Color (  0,   0, 255, 255)); // shallow
+  renderer.AddGradientPoint( 0.0000, utils::Color (  0, 128, 255, 255)); // shore
+  renderer.AddGradientPoint( 0.0625, utils::Color (240, 240,  64, 255)); // sand
+  renderer.AddGradientPoint( 0.1250, utils::Color ( 32, 160,   0, 255)); // grass
+  renderer.AddGradientPoint( 0.3750, utils::Color (224, 224,   0, 255)); // dirt
+  renderer.AddGradientPoint( 0.7500, utils::Color (128, 128, 128, 255)); // rock
+  renderer.AddGradientPoint( 1.0000, utils::Color (255, 255, 255, 255)); // snow
+  renderer.EnableLight();
+  renderer.SetLightContrast(1.0);
+  renderer.SetLightBrightness(1.0);
+  renderer.Render();
+
+	for( std::size_t index_h = 0; index_h < height; ++index_h ) {
+		for( std::size_t index_w = 0; index_w < width; ++index_w ) {
+			pixels[ ( index_h * width + index_w ) * 4 + 0 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).red );
+			pixels[ ( index_h * width + index_w ) * 4 + 1 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).green );
+			pixels[ ( index_h * width + index_w ) * 4 + 2 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).blue );
+			pixels[ ( index_h * width + index_w ) * 4 + 3 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).alpha );
+		}
+	}
+*/
+  TexturePtr texture = std::make_shared<sf::Texture>();
   texture->Create( width, height );
-  texture->Update( pixels.get() );
+  texture->Update( pixels );
+
+  delete[] pixels;
 
   return texture;
 }

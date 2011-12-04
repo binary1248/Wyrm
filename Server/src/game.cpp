@@ -1,25 +1,22 @@
-#include <iostream>
+#include <config.hpp>
+#include <utility.hpp>
+#include <game.hpp>
 
-#include <boost/make_shared.hpp>
-
-#include "utility.h"
-#include "game.h"
-
-GamePtr Game::instance;
+GamePtr Game::m_instance;
 
 GamePtr Game::GetGame() {
-  if( !Game::instance ) {
-    instance.reset( new Game() );
+  if( !Game::m_instance ) {
+    m_instance.reset( new Game() );
   }
 
-  return instance;
+  return m_instance;
 }
 
 Game::Game() :
-	m_running( false ),
-	m_objectmanager( boost::make_shared<ObjectManager>() ),
-	m_playermanager( boost::make_shared<PlayerManager>() ),
-	m_networkmanager( boost::make_shared<NetworkManager>() ) {
+	m_objectmanager( std::make_shared<ObjectManager>() ),
+	m_playermanager( std::make_shared<PlayerManager>() ),
+	m_networkmanager( std::make_shared<NetworkManager>() ),
+	m_running( false ) {
 }
 
 Game::~Game() {
@@ -28,7 +25,7 @@ Game::~Game() {
 int Game::Run() {
   m_running = true;
 
-  sf::Clock Clock;
+  sf::Clock clock;
 
   if( !m_networkmanager->IsListening() ) {
     return EXIT_FAILURE;
@@ -37,12 +34,12 @@ int Game::Run() {
   LogConsole( "Running..." );
 
   while ( m_running ) {
-    float ElapsedTime = static_cast<float>( Clock.GetElapsedTime() ) / 1000.0f;
-    Clock.Reset();
+    float ElapsedTime = static_cast<float>( clock.GetElapsedTime() ) / 1000.0f;
+    clock.Reset();
 
     Tick( ElapsedTime );
 
-    int sleepTime = 10 - Clock.GetElapsedTime();
+    int sleepTime = 10 - clock.GetElapsedTime();
     sleepTime = ( sleepTime > 0 ) ? sleepTime : 0;
     sf::Sleep( sleepTime ); // Limit 100 FPS
   }
@@ -62,14 +59,14 @@ void Game::Tick( float time ) {
   m_playermanager->Tick( time );
 }
 
-PlayerManagerPtr Game::GetPlayerManager() const {
+const PlayerManagerPtr& Game::GetPlayerManager() const {
 	return m_playermanager;
 }
 
-ObjectManagerPtr Game::GetObjectManager() const {
+const ObjectManagerPtr& Game::GetObjectManager() const {
 	return m_objectmanager;
 }
 
-NetworkManagerPtr Game::GetNetworkManager() const {
+const NetworkManagerPtr& Game::GetNetworkManager() const {
 	return m_networkmanager;
 }

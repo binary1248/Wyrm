@@ -1,29 +1,26 @@
-#include <iostream>
-
-#include <boost/make_shared.hpp>
-
-#include "game.h"
-#include "utility.h"
-#include "inventory.h"
-#include "items/item.h"
-#include "networkmanager.h"
-#include "auth.h"
-#include "player.h"
+#include <config.hpp>
+#include <game.hpp>
+#include <utility.hpp>
+#include <inventory.hpp>
+#include <items/item.hpp>
+#include <networkmanager.hpp>
+#include <auth.hpp>
+#include <player.hpp>
 
 Player::Player( ObjectPtr agent ) :
 	m_id( Game::GetGame()->GetPlayerManager()->NewID() ),
-	m_agent(),
 	m_delete_me( false ),
 	m_half_open( true ),
-	m_inventory( boost::make_shared<Inventory>() ) {
+	m_agent(),
+	m_inventory( std::make_shared<Inventory>() ) {
 
-  LogConsole( "Player " + STRING_CAST( m_id ) + " created" );
+  LogConsole( "Player " + string_cast( m_id ) + " created" );
 
   // Set agent
   SetAgent( agent );
 
-  ItemPtr some_item = boost::make_shared<Item>( "Some Item", "Some Type" );
-  ItemPtr another_item = boost::make_shared<Item>( "Another Item", "Another Type" );
+  ItemPtr some_item = std::make_shared<Item>( "Some Item", "Some Type" );
+  ItemPtr another_item = std::make_shared<Item>( "Another Item", "Another Type" );
 
   m_inventory->AddItem( some_item, 3 );
   m_inventory->AddItem( another_item, 1 );
@@ -36,7 +33,7 @@ Player::~Player() {
 		agent->Delete();
 	}
 
-  LogConsole( "Player " + STRING_CAST( m_id ) + " destroyed" );
+  LogConsole( "Player " + string_cast( m_id ) + " destroyed" );
 }
 
 void Player::Update() {
@@ -91,7 +88,7 @@ void Player::HandleSocketData() {
 		if( !m_half_open ) {
 			HandlePacket( packet );
 		} else {
-			LogConsole( "Client " + STRING_CAST( m_id ) + " sent auth data" );
+			LogConsole( "Client " + string_cast( m_id ) + " sent auth data" );
 
 			Auth( packet );
 		}
@@ -121,13 +118,13 @@ void Player::HandlePacket( PacketPtr packet ) {
       agent->HandlePacket( packet );
       break;
     default:
-      LogConsole( "Player sent packet with type0=" + STRING_CAST( type0 ) );
+      LogConsole( "Player sent packet with type0=" + string_cast( type0 ) );
       break;
   }
 }
 
 void Player::Auth( PacketPtr packet ) {
-	PacketPtr reply = boost::make_shared<sf::Packet>();
+	PacketPtr reply = std::make_shared<sf::Packet>();
 
   if( CheckAuth( packet ) ) {
     (*reply) << sf::String("Authentication successful");
@@ -156,7 +153,7 @@ sf::Uint16 Player::GetId() const {
 	return m_id;
 }
 
-ObjectWeakPtr Player::GetAgent() const {
+const ObjectWeakPtr& Player::GetAgent() const {
 	return m_agent;
 }
 
@@ -169,7 +166,7 @@ void Player::SetAgent( ObjectPtr agent ) {
 
   m_agent = ObjectWeakPtr( agent );
   agent->SetName( GetName() );
-  PacketPtr packet = boost::make_shared<sf::Packet>();
+  PacketPtr packet = std::make_shared<sf::Packet>();
   (*packet) << static_cast<sf::Uint16>( SERVER_SET_ID ) << agent->GetId();
   SendPacket( packet );
 }

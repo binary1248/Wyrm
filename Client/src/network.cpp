@@ -1,48 +1,47 @@
-#include <iostream>
 #include <SFML/Network.hpp>
 
-#include "network.h"
-#include "player.h"
-#include "objectmanager.h"
-#include "game.h"
+#include <config.hpp>
+#include <network.hpp>
+#include <player.hpp>
+#include <objectmanager.hpp>
+#include <game.hpp>
 
 NetworkHandler::NetworkHandler() {
-  connected = false;
-  authenticated = false;
+  m_connected = false;
+  m_authenticated = false;
 }
 
 NetworkHandler::~NetworkHandler() {
   Disconnect();
 }
 
-int NetworkHandler::Connect(sf::String username, sf::String password) {
-  if (Client.Connect("localhost", 1337) != sf::Socket::Done)
-  {
+int NetworkHandler::Connect( sf::String username, sf::String password ) {
+  if ( m_socket.Connect( "localhost", 1337 ) != sf::Socket::Done ) {
     // Error...
-    std::cout << "Can't connect to server..." << std::endl;
+    std::cout << "Can't connect to server...\n";
     return -1;
   }
 
-  connected = true;
+  m_connected = true;
 
-  Selector.Add(Client);
+  m_selector.Add( m_socket );
 
   {
     sf::Packet packet;
-    Client.Receive(packet);
+    m_socket.Receive( packet );
     sf::String string;
     float version_major;
     float version_minor;
     packet >> string >> version_major >> version_minor;
-    std::cout << string.ToAnsiString() << version_major << " " << version_minor << std::endl;
-    if( !(string.ToAnsiString().compare("Wyrm protocol version ")) &&
-         (version_major == PROTOCOL_VER_MAJOR) &&
-         (version_minor == PROTOCOL_VER_MINOR) ) {
-      sf::Packet packet;
-      packet << username << password;
-      Client.Send(packet);
+    std::cout << string.ToAnsiString() << version_major << " " << version_minor << "\n";
+    if( !(string.ToAnsiString().compare( "Wyrm protocol version " )) &&
+         ( version_major == PROTOCOL_VER_MAJOR ) &&
+         ( version_minor == PROTOCOL_VER_MINOR ) ) {
+      sf::Packet response;
+      response << username << password;
+      m_socket.Send( response );
     } else {
-      std::cout << "Protocol mismatch" << std::endl;
+      std::cout << "Protocol mismatch\n";
       Disconnect();
       return -1;
     }
@@ -50,18 +49,18 @@ int NetworkHandler::Connect(sf::String username, sf::String password) {
 
   {
     sf::Packet packet;
-    if( Client.Receive(packet) != sf::TcpSocket::Done ) {
-      std::cout << "Error while receiving." << std::endl;
+    if( m_socket.Receive(packet) != sf::TcpSocket::Done ) {
+      std::cout << "Error while receiving.\n";
       Disconnect();
       return -1;
     }
     sf::String s;
     packet >> s;
-    if(!s.ToAnsiString().compare("Authentication successful")) {
-      std::cout << "Authentication successful" << std::endl;
-      authenticated = true;
+    if( !s.ToAnsiString().compare("Authentication successful") ) {
+      std::cout << "Authentication successful\n";
+      m_authenticated = true;
     } else {
-      std::cout << "Authentication failed: " << s.ToAnsiString() << std::endl;
+      std::cout << "Authentication failed: " << s.ToAnsiString() << "\n";
       Disconnect();
       return -1;
     }
@@ -71,41 +70,38 @@ int NetworkHandler::Connect(sf::String username, sf::String password) {
 }
 
 void NetworkHandler::Disconnect() {
-  Selector.Remove(Client);
-  Client.Disconnect();
+  m_selector.Remove( m_socket );
+  m_socket.Disconnect();
 }
 
-void NetworkHandler::Send(sf::Packet p) {
-  Client.Send(p);
+void NetworkHandler::Send( sf::Packet packet ) {
+  m_socket.Send( packet );
 }
 
-void NetworkHandler::HandlePacket(sf::Packet p) {
+void NetworkHandler::HandlePacket( sf::Packet packet ) {
 
   sf::Uint16 type0;
-  p >> type0;
+  packet >> type0;
 
-  switch(type0) {
-    case SERVER_OBJECT:
-    {
-      Game::GetGame()->GetObjectManager()->DispatchPacket(p);
+  switch( type0 ) {
+    case SERVER_OBJECT: {
+      Game::GetGame()->GetObjectManager()->DispatchPacket( packet );
       break;
     }
-    case SERVER_SET_ID:
-    {
+    case SERVER_SET_ID: {
       sf::Uint16 id;
-      p >> id;
+      packet >> id;
       PlayerPtr player = Game::GetGame()->GetPlayer();
-      if(!player) {
-        player = Game::GetGame()->CreatePlayer(0,"");
+      if( !player ) {
+        player = Game::GetGame()->CreatePlayer( 0, "" );
       }
-      player->SetShip(id);
+      player->SetShip( id );
       break;
     }
-    case SERVER_INVENTORY:
-    {
+    case SERVER_INVENTORY: {
       PlayerPtr player = Game::GetGame()->GetPlayer();
-      if(player) {
-        player->GetInventory()->HandlePacket(p);
+      if( player ) {
+        player->GetInventory()->HandlePacket( packet );
       }
     }
     default:
@@ -114,21 +110,21 @@ void NetworkHandler::HandlePacket(sf::Packet p) {
 }
 
 void NetworkHandler::Tick() {
-  if( !connected ) {
+  if( !m_connected ) {
     return;
   }
 
-  while( Selector.Wait(1) ) {
+  while( m_selector.Wait( 1 ) ) {
     sf::Packet packet;
-    Client.Receive(packet);
-    HandlePacket(packet);
+    m_socket.Receive( packet );
+    HandlePacket( packet );
   }
 }
 
 bool NetworkHandler::IsAuthenticated() {
-  return (connected && authenticated);
+  return ( m_connected && m_authenticated );
 }
 
 bool NetworkHandler::IsConnected() {
-  return connected;
+  return m_connected;
 }

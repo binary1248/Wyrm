@@ -1,35 +1,27 @@
-#include <iostream>
+#include <GL/glu.h>
+
 #include <SFML/Graphics.hpp>
 
-#include "../game.h"
-#include "../network.h"
-#include "objects.h"
-#include "../objectmanager.h"
-#include "planet.h"
-
-#define clean_angle(a) (((a+90)/180)*M_PI)
+#include <config.hpp>
+#include <game.hpp>
+#include <network.hpp>
+#include <objects/objects.hpp>
+#include <objectmanager.hpp>
+#include <utility.hpp>
+#include <objects/planet.hpp>
 
 REGISTER_FACTORY( PLANET, Planet );
 
-Planet::Planet(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
-Object(PLANET, id_, name_, pos_, vel_, rot_, rot_vel_) {
-  id = id_;
-  name = name_;
-  angle = 0;
-
+Planet::Planet( sf::Uint16 id, sf::String name, sf::Vector2f position,
+                sf::Vector2f velocity, float rotation, float rotational_velocity ) :
+	Object( PLANET, id, name, position, velocity, rotation, rotational_velocity ),
+	m_angle( 0.0f ) {
   Init();
 }
 
-Planet::Planet( sf::Uint16 id_, sf::Packet p ) :
-	Object(PLANET, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
-	sf::Vector2f pos;
-  p >> name;
-  p >> pos.x >> pos.y;
-  p >> velocity.x >> velocity.y
-    >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
-
-	position.x = pos.x;
-	position.y = pos.y;
+Planet::Planet( sf::Uint16 id, sf::Packet& packet ) :
+	Object( PLANET, id, packet ) {
+  packet >> m_angle >> m_anchor.x >> m_anchor.y;
 
   Init();
 }
@@ -38,71 +30,91 @@ Planet::~Planet() {
 }
 
 void Planet::Init() {
-  float amplitudes[] = {100,60,10,80,0,10,30,40};
+  float amplitudes[] = { 100.0f, 60.0f, 10.0f, 80.0f, 0.0f, 10.0f, 30.0f, 40.0f };
 
-  texture = Game::GetGame()->GetResourceManager()->GetPlanet(100,
-                                                           100,
-                                                           sf::Color(0xDB,0x99,0x00,255),
-                                                           4,
-                                                           8,
-                                                           (float*)amplitudes );
+  m_texture = Game::GetGame()->GetResourceManager()->GetPlanet( 100,
+	                                                              100,
+                                                                sf::Color( 0xDB, 0x99, 0x00, 255 ),
+                                                                4,
+                                                                8,
+                                                                amplitudes );
 
-  Sprite.SetTexture(*texture);
-  Sprite.SetOrigin(texture->GetWidth()/2,texture->GetHeight()/2);
-  Sprite.SetScale(1.6,1.6);
+  m_sprite.SetTexture( *m_texture );
+  m_sprite.SetOrigin( static_cast<float>( m_texture->GetWidth() ) / 2.f, static_cast<float>( m_texture->GetHeight() ) / 2.f );
+  m_sprite.SetScale( 1.6f, 1.6f );
 }
 
-void Planet::Update(float time) {
-  angle += velocity.x * time;
+void Planet::Update( float time ) {
+  m_angle += GetVelocity().x * time;
 
-  while( angle > 360 ) {
-    angle -= 360;
+  while( m_angle > 360 ) {
+    m_angle -= 360;
   }
-  while( angle < (-360) ) {
-    angle += 360;
+  while( m_angle < (-360) ) {
+    m_angle += 360;
   }
 
-  position.x = cos( clean_angle(angle) ) * velocity.y;
-  position.y = sin( clean_angle(angle) ) * velocity.y;
+	Object::Update( time );
 
-  position += anchor;
+	sf::Vector2f position;
 
-  rotation += rotational_velocity * time;
+  position.x = static_cast<float>( cos( clean_angle( m_angle ) ) ) * GetVelocity().y;
+  position.y = static_cast<float>( sin( clean_angle( m_angle ) ) ) * GetVelocity().y;
 
-  Sprite.SetPosition(position);
-  Sprite.SetRotation(rotation);
+  position += m_anchor;
+  SetPosition( position );
+
+  m_sprite.SetPosition( position );
+  m_sprite.SetRotation( GetRotation() );
 }
 
-void Planet::Draw(sf::RenderWindow& w) {
-  w.Draw(Sprite);
+void Planet::Draw( sf::RenderWindow& target ) {
+  target.Draw( m_sprite );
+/*
+  target.SaveGLStates();
+
+	gluPerspective( 90.f, 1.f, 0.f, 100.f );
+	//glMatrixMode( GL_PROJECTION );
+	//glOrtho( 0, target.GetWidth(), 0, target.GetHeight(), 0, 100 );
+	//glMatrixMode( GL_MODELVIEW );
+	m_texture->Bind();
+	glColor4f( 1.f, 1.f, 1.f, 1.f );
+
+	GLUquadricObj *sphere = NULL;
+	sphere = gluNewQuadric();
+	gluQuadricTexture(sphere, GL_TRUE);
+	glPushMatrix();
+	//glLoadIdentity();
+	//glTranslatef( ( GetPosition().x - target.GetView().GetCenter().x ) / 100, ( GetPosition().y - target.GetView().GetCenter().y ) / 100, -20.0f );
+	glTranslatef( 0, 0, -20 );
+	gluSphere( sphere, 2.0, 10, 10 );
+	glPopMatrix();
+	gluDeleteQuadric(sphere);
+
+	target.RestoreGLStates();*/
 }
 
-void Planet::HandlePacket(sf::Packet p) {
+void Planet::HandlePacket( sf::Packet& packet ) {
   sf::Uint16 type1;
-  p >> type1;
+  packet >> type1;
 
   switch(type1) {
-    case OBJECT_UPDATE:
-    {
-      sf::Vector2f pos;
-      sf::Vector2f vel;
-      p >> pos.x >> pos.y >> rotation >> vel.x >> vel.y >> rotational_velocity >> angle;
-      position = pos;
-      velocity = vel;
+    case OBJECT_UPDATE: {
+      Object::HandlePacket( packet );
+      packet >> m_angle;
       break;
     }
-    case OBJECT_STATE:
-    {
+    case OBJECT_STATE: {
       sf::Uint16 type;
-      sf::Vector2f pos;
-      sf::Vector2f vel;
-      p >> type >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
-      position = pos;
-      velocity = vel;
+      sf::String name;
+      packet >> type >> name;
+      assert( type == GetType() );
+      SetName( name );
+      Object::HandlePacket( packet );
+      packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_REMOVE:
-    {
+    case OBJECT_REMOVE: {
       Delete();
       break;
     }

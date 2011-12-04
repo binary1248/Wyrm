@@ -1,100 +1,116 @@
-#include <iostream>
-
-#include <boost/foreach.hpp>
-
 #include <SFGUI/Window.hpp>
 #include <SFGUI/Button.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "gui.h"
-#include "guievents.h"
-#include "network.h"
-#include "game.h"
+#include <config.hpp>
+#include <guievents.hpp>
+#include <network.hpp>
+#include <game.hpp>
+#include <gui.hpp>
 
-sf::FloatRect GUI::CenterRect(sf::RenderWindow& w, float width, float height) {
-  unsigned int margin_h = (w.GetWidth() - width) / 2;
-  unsigned int margin_v = (w.GetHeight() - height) / 2;
-  return sf::FloatRect(static_cast<float>(margin_h), static_cast<float>(margin_v), width, height);
+sf::FloatRect GUI::CenterRect( sf::RenderWindow& window, float width, float height ) {
+  float margin_h = ( static_cast<float>( window.GetWidth() ) - width ) / 2.f;
+  float margin_v = ( static_cast<float>( window.GetHeight() ) - height ) / 2.f;
+  return sf::FloatRect( static_cast<float>( margin_h ), static_cast<float>( margin_v ), width, height );
 }
 
-void GUI::Hide(const std::string& id) {
-  BOOST_FOREACH( sfg::Window::Ptr window, windows ) {
-		if( window->GetName() == id ) {
-      window->Show(false);
+void GUI::Hide( const std::string& id ) {
+	std::vector<sfg::Window::Ptr>::const_iterator window( windows.begin() );
+	std::vector<sfg::Window::Ptr>::const_iterator end( windows.end() );
+
+  for( ; window != end; ++window ) {
+		if( (*window)->GetId() == id ) {
+      (*window)->Show( false );
       return;
     }
   }
 }
 
-void GUI::Show(const std::string& id) {
-  BOOST_FOREACH( sfg::Window::Ptr window, windows ) {
-		if( window->GetName() == id ) {
-      window->Show(true);
+void GUI::Show( const std::string& id ) {
+	std::vector<sfg::Window::Ptr>::const_iterator window( windows.begin() );
+	std::vector<sfg::Window::Ptr>::const_iterator end( windows.end() );
+
+  for( ; window != end; ++window ) {
+		if( (*window)->GetId() == id ) {
+      (*window)->Show( true );
       return;
     }
   }
 }
 
-void GUI::AddWidget(sfg::Widget::Ptr w, std::string name) {
-  w->SetName(name);
-  widgets.push_back( w );
+void GUI::AddWidget( sfg::Widget::Ptr widget, std::string name ) {
+  widget->SetId(name);
+  widgets.push_back( widget );
 }
 
-sfg::Widget::Ptr GUI::FindWidget(const std::string& id) {
-  BOOST_FOREACH( sfg::Widget::Ptr widget, widgets ) {
-		if( widget->GetName() == id ) {
-      return widget;
+sfg::Widget::Ptr GUI::FindWidget( const std::string& id ) {
+	std::vector<sfg::Widget::Ptr>::const_iterator widget( widgets.begin() );
+	std::vector<sfg::Widget::Ptr>::const_iterator end( widgets.end() );
+
+  for( ; widget != end; ++widget ) {
+		if( (*widget)->GetId() == id ) {
+      return (*widget);
     }
   }
 
   return sfg::Widget::Ptr();
 }
 
-sfg::Window::Ptr GUI::CreateWindow(const std::string& name) {
-  BOOST_FOREACH( sfg::Window::Ptr window, windows ) {
-		if( window->GetName() == name ) {
-      window->Show(false);
-      std::cout << "Window already exists." << std::endl;
+sfg::Window::Ptr GUI::CreateWindow( const std::string& name ) {
+	std::vector<sfg::Window::Ptr>::const_iterator window( windows.begin() );
+	std::vector<sfg::Window::Ptr>::const_iterator end( windows.end() );
+
+  for( ; window != end; ++window ) {
+		if( (*window)->GetId() == name ) {
+      (*window)->Show( false );
+      std::cout << "Window already exists.\n";
       return sfg::Window::Ptr();
     }
   }
 
-  sfg::Window::Ptr window( sfg::Window::Create() );
-  window->SetName( name );
-  window->SetTitle( name );
-  window->SetBorderWidth( 10.f );
-  //window->SetStyle(sfg::Window::Titlebar | sfg::Window::Background );
-  windows.push_back( window );
-  return window;
+  sfg::Window::Ptr new_window( sfg::Window::Create() );
+
+  new_window->SetId( name );
+  new_window->SetTitle( name );
+  new_window->SetBorderWidth( 10.f );
+  //new_window->SetStyle(sfg::Window::Titlebar | sfg::Window::Background );
+
+  windows.push_back( new_window );
+
+  return new_window;
 }
 
-GUI::GUI( boost::shared_ptr<sf::RenderWindow> w ) {
-  OnLoadGUI( this, *w );
+GUI::GUI( std::shared_ptr<sf::RenderWindow> window ) {
+  OnLoadGUI( this, *window );
 }
 
 GUI::~GUI() {
 }
 
-void GUI::Draw(sf::RenderWindow& w) {
-  sf::View view = w.GetView();
-  w.SetView(w.GetDefaultView());
+void GUI::Draw( sf::RenderWindow& target ) {
+  sf::View view = target.GetView();
+  target.SetView( target.GetDefaultView() );
 
-  BOOST_FOREACH( sfg::Window::Ptr window, windows ) {
-    window->Expose(w);
+  std::vector<sfg::Window::Ptr>::const_iterator window( windows.begin() );
+	std::vector<sfg::Window::Ptr>::const_iterator end( windows.end() );
+
+  for( ; window != end; ++window ) {
+    ( *window )->Expose( target );
   }
 
-  w.SetView(view);
+  target.SetView( view );
 }
 
-bool GUI::HandleEvent(sf::Event& e) {
-  BOOST_FOREACH( sfg::Window::Ptr window, windows ) {
-    if( !window->IsVisible() ) {
+bool GUI::HandleEvent( sf::Event& event ) {
+	std::vector<sfg::Window::Ptr>::const_iterator window( windows.begin() );
+	std::vector<sfg::Window::Ptr>::const_iterator end( windows.end() );
+
+  for( ; window != end; ++window ) {
+    if( !( *window )->IsVisible() ) {
       continue;
     }
 
-    if( window->HandleEvent( e ) == sfg::Widget::EatEvent ) {
-      return true;
-    }
+    ( *window )->HandleEvent( event );
   }
 
   return false;

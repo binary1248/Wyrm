@@ -1,0 +1,67 @@
+#ifndef PLAYER_HPP_INCLUDED
+#define PLAYER_HPP_INCLUDED
+
+#include <queue>
+#include <memory>
+
+#include <SFML/Network.hpp>
+
+#include <inventory.hpp>
+#include <objects/object.hpp>
+
+class Player : public std::enable_shared_from_this<Player> {
+  public:
+    Player( ObjectPtr agent );
+    ~Player();
+
+    // Network Handlers
+    void Update();
+    void SendPacket( PacketPtr packet, bool prio = false );
+    void ReceivePacket( PacketPtr packet );
+
+    void Delete();
+    bool IsDeleted() const;
+
+    // ID Handlers
+    sf::Uint16 GetId() const;
+    const ObjectWeakPtr& GetAgent() const;
+    void SetAgent( ObjectPtr agent );
+
+    const sf::String& GetName() const;
+    void SetName( std::string name );
+
+    InventoryWeakPtr GetInventory() const;
+  private:
+    void Send( PacketPtr p );
+    void HandleSocketData();
+    void FlushBuffer();
+    void HandlePacket( PacketPtr packet );
+
+    void Auth( PacketPtr packet );
+
+    // ID vars
+    sf::Uint16 m_id;
+    sf::String m_name;
+
+    // Network vars
+    SocketWeakPtr m_connection;
+
+    bool m_delete_me;
+    bool m_half_open;
+
+    std::queue<PacketPtr> m_send_buffer;
+    std::queue<PacketPtr> m_recv_buffer;
+
+    // Character vars
+    ObjectWeakPtr m_agent;
+    InventoryPtr m_inventory;
+};
+
+typedef std::shared_ptr<Player> PlayerPtr;
+typedef std::weak_ptr<Player> PlayerWeakPtr;
+
+enum packet_client_command {
+  COMMAND_CONTROL = 0
+};
+
+#endif // PLAYER_HPP_INCLUDED

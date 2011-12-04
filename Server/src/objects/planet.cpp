@@ -1,15 +1,15 @@
-#include <iostream>
+#include <config.hpp>
 #include <cmath>
 
-#include "../objectmanager.h"
-#include "objects.h"
-#include "planet.h"
+#include <utility.hpp>
+#include <objectmanager.hpp>
+#include <objects/objects.hpp>
+#include <objects/planet.hpp>
 
-#define clean_angle(a) (((a+90)/180)*M_PI)
+REGISTER_FACTORY( PLANET, Planet );
 
-REGISTER_FACTORY( PLANET,Planet );
-
-Planet::Planet( sf::String name, sf::Vector2f position, sf::Vector2f velocity, float rotation, float rotational_velocity ) :
+Planet::Planet( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+	              float rotation, float rotational_velocity ) :
 	Object( PLANET, name, position, velocity, rotation, rotational_velocity ),
 	m_angle( 0 ) {
 }
@@ -23,12 +23,13 @@ void Planet::Update( float time ) {
   while( m_angle > 360 ) {
     m_angle -= 360;
   }
+
   while( m_angle < (-360) ) {
     m_angle += 360;
   }
 
-  SetPosition( sf::Vector2f( cos( clean_angle(m_angle) ) * GetVelocity().y,
-														 sin( clean_angle(m_angle) ) * GetVelocity().y ) );
+  SetPosition( sf::Vector2f( static_cast<float>( cos( clean_angle( m_angle ) ) ) * GetVelocity().y,
+														 static_cast<float>( sin( clean_angle( m_angle ) ) ) * GetVelocity().y ) );
 
   SetPosition( GetPosition() + m_anchor );
 
@@ -40,17 +41,17 @@ void Planet::Update( float time ) {
   }
 }
 
-void Planet::FillPartialPacket( PacketPtr packet ) {
+void Planet::FillPartialPacket( const PacketPtr& packet ) {
   Object::FillPartialPacket( packet );
   (*packet) << m_angle;
 }
 
-void Planet::FillFullPacket( PacketPtr packet ) {
+void Planet::FillFullPacket( const PacketPtr& packet ) {
   Object::FillFullPacket( packet );
   (*packet) << m_angle << m_anchor.x << m_anchor.y;
 }
 
-void Planet::HandlePacket( PacketPtr packet ) {
+void Planet::HandlePacket( const PacketPtr& /*packet*/ ) {
 
 }
 

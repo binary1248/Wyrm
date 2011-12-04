@@ -1,11 +1,8 @@
-#include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
-
 #include <SFML/Network.hpp>
 
-#include "networkmanager.h"
-#include "utility.h"
-#include "system.h"
+#include <networkmanager.hpp>
+#include <utility.hpp>
+#include <system.hpp>
 
 System::System( sf::Uint16 id, std::string name ) :
 	m_id( id ),
@@ -16,18 +13,25 @@ System::~System() {
 }
 
 void System::AddPlayer( PlayerPtr player ) {
-  BOOST_FOREACH( PlayerWeakPtr weak_player, m_players ) {
-		if( weak_player.lock() == player ) {
+	std::list<PlayerWeakPtr>::const_iterator player_iter( m_players.begin() );
+	std::list<PlayerWeakPtr>::const_iterator player_end( m_players.end() );
+
+  for( ; player_iter != player_end; ++player_iter ) {
+		if( player_iter->lock() == player ) {
 			return;
 		}
   }
 
   m_players.push_back( PlayerWeakPtr( player ) );
 
-	BOOST_FOREACH( ObjectWeakPtr object, m_objects ) {
-		ObjectPtr shared_object( object.lock() );
+  std::list<ObjectWeakPtr>::const_iterator object_iter( m_objects.begin() );
+	std::list<ObjectWeakPtr>::const_iterator object_end( m_objects.end() );
+
+	for( ; object_iter != object_end; ++object_iter ) {
+		ObjectPtr shared_object( object_iter->lock() );
+
 		if( shared_object && !( shared_object->IsDeleted() ) ) {
-      PacketPtr packet = boost::make_shared<sf::Packet>();
+      PacketPtr packet = std::make_shared<sf::Packet>();
       shared_object->FillFullPacket( packet );
       player->SendPacket( packet );
     }
@@ -35,8 +39,11 @@ void System::AddPlayer( PlayerPtr player ) {
 }
 
 void System::AddObject( ObjectPtr object ) {
-  BOOST_FOREACH( ObjectWeakPtr weak_object, m_objects ) {
-  	if( weak_object.lock() == object ) {
+	std::list<ObjectWeakPtr>::const_iterator iter( m_objects.begin() );
+	std::list<ObjectWeakPtr>::const_iterator end( m_objects.end() );
+
+  for( ; iter != end; ++iter ) {
+  	if( iter->lock() == object ) {
       return;
     }
   }
@@ -44,8 +51,11 @@ void System::AddObject( ObjectPtr object ) {
   m_objects.push_back( ObjectWeakPtr( object ) );
 }
 
-void System::Tick( float time ) {
-  for( std::list<ObjectWeakPtr>::iterator object_iter = m_objects.begin(); object_iter != m_objects.end(); ) {
+void System::Tick( float /*time*/ ) {
+	std::list<ObjectWeakPtr>::iterator object_iter( m_objects.begin() );
+	std::list<ObjectWeakPtr>::iterator object_end( m_objects.end() );
+
+  while( object_iter != object_end ) {
   	ObjectPtr shared_object( object_iter->lock() );
   	if( shared_object ) {
 			char state = CLEAN;
@@ -61,10 +71,14 @@ void System::Tick( float time ) {
 				shared_object->ClearDirty();
 			}
 
-			for( std::list<PlayerWeakPtr>::iterator player_iter = m_players.begin(); player_iter != m_players.end(); ) {
+			std::list<PlayerWeakPtr>::iterator player_iter( m_players.begin() );
+			std::list<PlayerWeakPtr>::iterator player_end( m_players.end() );
+
+			while( player_iter != player_end ) {
 				PlayerPtr shared_player( player_iter->lock() );
 				if( shared_player ) {
-					PacketPtr packet = boost::make_shared<sf::Packet>();
+					PacketPtr packet = std::make_shared<sf::Packet>();
+
 					switch( state ) {
 						case DIRTY_PARTIAL:
 							shared_object->FillPartialPacket( packet );
@@ -88,7 +102,7 @@ void System::Tick( float time ) {
 					continue;
 				}
 
-				player_iter++;
+				++player_iter;
 			}
 
 			if( state == DELETED ) {
@@ -99,7 +113,8 @@ void System::Tick( float time ) {
 			object_iter = m_objects.erase( object_iter );
 			continue;
   	}
-  	object_iter++;
+
+  	++object_iter;
 	}
 }
 

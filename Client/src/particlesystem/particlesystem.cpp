@@ -1,14 +1,10 @@
-#include <iostream>
-
-#include <boost/foreach.hpp>
-#include <boost/enable_shared_from_this.hpp>
-
-#include "particle.h"
-#include "particleemitter.h"
-#include "particlesystem.h"
+#include <config.hpp>
+#include <particlesystem/particle.hpp>
+#include <particlesystem/particleemitter.hpp>
+#include <particlesystem/particlesystem.hpp>
 
 ParticleSystem::ParticleSystem() {
-  running = false;
+  m_running = false;
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -16,44 +12,77 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::Draw( sf::RenderTarget& target ) {
-	BOOST_FOREACH( ParticlePtr particle, particles ) {
-		particle->Draw( target );
+	std::deque<ParticlePtr>::const_iterator particle( m_particles.begin() );
+	std::deque<ParticlePtr>::const_iterator end( m_particles.end() );
+
+	for( ; particle != end; ++particle ) {
+		(*particle)->Draw( target );
 	}
 }
 
-void ParticleSystem::Tick( float secs ) {
-  if( !running ) {
+void ParticleSystem::Tick( float time ) {
+  if( !m_running ) {
     return;
   }
 
-	BOOST_FOREACH( ParticleEmitterPtr emitter, emitters ) {
-		emitter->Tick( shared_from_this(), secs );
-	}
+  std::deque<ParticleEmitterPtr>::const_iterator emitter_iter( m_emitters.begin() );
+	std::deque<ParticleEmitterPtr>::const_iterator emitter_end( m_emitters.end() );
 
-  for( std::vector<ParticlePtr>::iterator iter = particles.begin(); iter != particles.end(); ) {
-    if( !(*iter)->IsAlive() ) {
-      iter = particles.erase( iter );
+	std::deque<ParticlePtr>::iterator particle_iter( m_particles.begin() );
+	std::deque<ParticlePtr>::iterator particle_end( m_particles.end() );
+
+  while( particle_iter != particle_end ) {
+    if( !(*particle_iter)->IsAlive() ) {
+			m_particle_pool.push_back( (*particle_iter) );
+			particle_iter = m_particles.erase( particle_iter );
+			continue;
     }
 
-    (*iter)->Tick(secs);
-    iter++;
+    (*particle_iter)->Tick( time );
+    ++particle_iter;
   }
+
+  for( ; emitter_iter != emitter_end; ++emitter_iter ) {
+		(*emitter_iter)->Tick( shared_from_this(), time );
+	}
+
+	m_particle_pool.clear();
 }
 
-void ParticleSystem::Start( float secs ) {
-  running = true;
+void ParticleSystem::Start( float time ) {
+  m_running = true;
 
-  if( secs <= 0.f ) {
+  if( time <= 0.f ) {
     return;
   }
 
-  for( float f = 0; f < secs; f+=1 ) {
-    Tick(1);
+  for( float f = 0; f < time; f += 0.1f ) {
+    Tick( 0.1f );
   }
 }
 
 void ParticleSystem::Stop() {
-  running = false;
+  m_running = false;
 
-  particles.clear();
+  m_particles.clear();
+}
+
+void ParticleSystem::AddEmitter( const ParticleEmitterPtr& emitter ) {
+	m_emitters.push_back( emitter );
+}
+
+void ParticleSystem::AddParticle( const ParticlePtr& particle ) {
+	m_particles.push_back( particle );
+}
+
+const sf::Vector2f& ParticleSystem::GetPosition() const {
+	return m_position;
+}
+
+void ParticleSystem::SetPosition( const sf::Vector2f& position ) {
+	m_position = position;
+}
+
+const std::deque<ParticlePtr>& ParticleSystem::GetPool() const {
+	return m_particle_pool;
 }

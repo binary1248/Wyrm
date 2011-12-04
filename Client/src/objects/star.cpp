@@ -1,33 +1,26 @@
-#include <iostream>
-
-#include <boost/make_shared.hpp>
-
 #include <SFML/Graphics.hpp>
 
-#include "../game.h"
-#include "../network.h"
-#include "../objectmanager.h"
-#include "../particlesystem/particlesystem.h"
-#include "objects.h"
-#include "star.h"
-
-#define clean_angle(a) (((a+90)/180)*M_PI)
+#include <config.hpp>
+#include <game.hpp>
+#include <network.hpp>
+#include <objectmanager.hpp>
+#include <particlesystem/particlesystem.hpp>
+#include <objects/objects.hpp>
+#include <utility.hpp>
+#include <objects/star.hpp>
 
 REGISTER_FACTORY( STAR, Star );
 
-Star::Star(sf::Uint16 id_, sf::String name_, sf::Vector2f pos_, sf::Vector2f vel_, float rot_, float rot_vel_) :
-Object(STAR, id_, name_, pos_, vel_, rot_, rot_vel_) {
-  id = id_;
-  name = name_;
-  angle = 0;
-
+Star::Star( sf::Uint16 id, sf::String name, sf::Vector2f position,
+            sf::Vector2f velocity, float rotation, float rotational_velocity ) :
+	Object( STAR, id, name, position, velocity, rotation, rotational_velocity ),
+	m_angle( 0.0f ) {
   CreateParticleSystem();
 }
 
-Star::Star( sf::Uint16 id_, sf::Packet p ) :
-Object(STAR, id_, "", sf::Vector2f(0,0), sf::Vector2f(0,0), 0, 0) {
-  p >> name >> position.x >> position.y >> velocity.x >> velocity.y
-    >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
+Star::Star( sf::Uint16 id, sf::Packet& packet ) :
+	Object( STAR, id, packet ) {
+  packet >> m_angle >> m_anchor.x >> m_anchor.y;
 
   CreateParticleSystem();
 }
@@ -36,78 +29,76 @@ Star::~Star() {
 }
 
 void Star::CreateParticleSystem() {
-  ps = boost::make_shared<ParticleSystem>();
+  m_particle_system = std::make_shared<ParticleSystem>();
 
-  ParticlePtr part = boost::make_shared<Particle>( Game::GetGame()->GetResourceManager()->GetParticle(64, 255, 1.8) );
-  part->SetVelocity(sf::Vector2f(8,0));
-  part->SetColorStart(sf::Color(255,255,220,255));
-  part->SetColorEnd(sf::Color(255,200,0,0));
-  part->SetLifetime(10);
-  part->SetSizeStart(sf::Vector2f(200,200));
-  part->SetSizeEnd(sf::Vector2f(200,200));
+  ParticlePtr particle = std::make_shared<Particle>( Game::GetGame()->GetResourceManager()->GetParticle( 64, 255.0f, 1.8f ) );
+  particle->SetVelocity( sf::Vector2f( 8.0f, 0.0f ) );
+  particle->SetColorStart( sf::Color( 255, 255, 220, 255 ) );
+  particle->SetColorEnd( sf::Color( 255, 200, 0, 0 ) );
+  particle->SetLifetime( 10.0f );
+  particle->SetSizeStart( sf::Vector2f( 200.0f, 200.0f ) );
+  particle->SetSizeEnd( sf::Vector2f( 200.0f, 200.0f ) );
 
-  ParticleEmitterPtr pe = boost::make_shared<ParticleEmitter>();
-  pe->SetPrototype(part);
-  pe->SetRate(5);
-  pe->SetSpread(180);
+  ParticleEmitterPtr emitter = std::make_shared<ParticleEmitter>();
+  emitter->SetPrototype( particle );
+  emitter->SetRate( 5.0f );
+  emitter->SetSpread( 180.0f );
 
-  ps->SetPosition(position);
-  ps->AddEmitter(pe);
-  ps->Start(12);
+  m_particle_system->SetPosition( GetPosition() );
+  m_particle_system->AddEmitter( emitter );
+  m_particle_system->Start( 12.0f );
 }
 
-void Star::Update(float time) {
-  angle += velocity.x * time;
+void Star::Update( float time ) {
+  m_angle += GetVelocity().x * time;
 
-  while( angle > 360 ) {
-    angle -= 360;
+  while( m_angle > 360 ) {
+    m_angle -= 360;
   }
-  while( angle < (-360) ) {
-    angle += 360;
+  while( m_angle < (-360) ) {
+    m_angle += 360;
   }
 
-  position.x = cos( clean_angle(angle) ) * velocity.y;
-  position.y = sin( clean_angle(angle) ) * velocity.y;
+  Object::Update( time );
 
-  position += anchor;
+	sf::Vector2f position;
 
-  rotation += rotational_velocity * time;
+  position.x = static_cast<float>( cos( clean_angle( m_angle ) ) ) * GetVelocity().y;
+  position.y = static_cast<float>( sin( clean_angle( m_angle ) ) ) * GetVelocity().y;
 
-  ps->SetPosition(position);
+  position += m_anchor;
+  SetPosition( position );
 
-  ps->Tick(time);
+  m_particle_system->SetPosition( position );
+
+  m_particle_system->Tick( time );
 }
 
-void Star::Draw(sf::RenderWindow& w) {
-  ps->Draw(w);
+void Star::Draw( sf::RenderWindow& target ) {
+  m_particle_system->Draw( target );
 }
 
-void Star::HandlePacket(sf::Packet p) {
+void Star::HandlePacket( sf::Packet& packet ) {
   sf::Uint16 type1;
-  p >> type1;
+  packet >> type1;
 
   switch(type1) {
-    case OBJECT_UPDATE:
-    {
-      sf::Vector2f pos;
-      sf::Vector2f vel;
-      p >> pos.x >> pos.y >> rotation >> vel.x >> vel.y >> rotational_velocity >> angle >> anchor.x >> anchor.y;
-      position = pos;
-      velocity = vel;
+    case OBJECT_UPDATE: {
+      Object::HandlePacket( packet );
+      packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_STATE:
-    {
+    case OBJECT_STATE: {
       sf::Uint16 type;
-      sf::Vector2f pos;
-      sf::Vector2f vel;
-      p >> type >> name >> pos.x >> pos.y >> vel.x >> vel.y >> rotation >> rotational_velocity >> angle >> anchor.x >> anchor.y;
-      position = pos;
-      velocity = vel;
+      sf::String name;
+      packet >> type >> name;
+      assert( type == GetType() );
+      SetName( name );
+      Object::HandlePacket( packet );
+			packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_REMOVE:
-    {
+    case OBJECT_REMOVE: {
       Delete();
       break;
     }

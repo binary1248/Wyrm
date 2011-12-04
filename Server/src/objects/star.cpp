@@ -1,15 +1,15 @@
-#include <iostream>
 #include <cmath>
 
-#include "../objectmanager.h"
-#include "objects.h"
-#include "star.h"
-
-#define clean_angle(a) (((a+90)/180)*M_PI)
+#include <config.hpp>
+#include <utility.hpp>
+#include <objectmanager.hpp>
+#include <objects/objects.hpp>
+#include <objects/star.hpp>
 
 REGISTER_FACTORY( STAR, Star );
 
-Star::Star( sf::String name, sf::Vector2f position, sf::Vector2f velocity, float rotation, float rotational_velocity ) :
+Star::Star( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+	          float rotation, float rotational_velocity ) :
 	Object( STAR, name, position, velocity, rotation, rotational_velocity ),
   m_angle( 0 )  {
 }
@@ -27,8 +27,8 @@ void Star::Update( float time ) {
     m_angle += 360;
   }
 
-  SetPosition( sf::Vector2f( cos( clean_angle(m_angle) ) * GetVelocity().y,
-														 sin( clean_angle(m_angle) ) * GetVelocity().y ) );
+  SetPosition( sf::Vector2f( static_cast<float>( cos( clean_angle(m_angle) ) ) * GetVelocity().y,
+														 static_cast<float>( sin( clean_angle(m_angle) ) ) * GetVelocity().y ) );
 
   SetPosition( GetPosition() + m_anchor );
 
@@ -40,17 +40,17 @@ void Star::Update( float time ) {
   }
 }
 
-void Star::FillPartialPacket( PacketPtr packet ) {
+void Star::FillPartialPacket( const PacketPtr& packet ) {
   Object::FillPartialPacket( packet );
   (*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation();
 }
 
-void Star::FillFullPacket( PacketPtr packet ) {
+void Star::FillFullPacket( const PacketPtr& packet ) {
   Object::FillFullPacket( packet );
   (*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation() << m_anchor.x << m_anchor.y;
 }
 
-void Star::HandlePacket( PacketPtr packet ) {
+void Star::HandlePacket( const PacketPtr& /*packet*/ ) {
 
 }
 
@@ -63,5 +63,6 @@ void Star::SetAngle( float angle ) {
 }
 
 void Star::SetAnchor( float x, float y ) {
-	m_anchor.x = x; m_anchor.y = y;
+	m_anchor.x = x;
+	m_anchor.y = y;
 }

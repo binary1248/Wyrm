@@ -1,9 +1,9 @@
 #include <sstream>
-#include <iostream>
+#include <config.hpp>
 
 #include <SFML/System.hpp>
 
-#include "utility.h"
+#include <utility.hpp>
 
 sf::Clock sfclock;
 
@@ -18,7 +18,7 @@ const std::string GetTimeString() {
   return "[" + ss.str() + "]";
 }
 
-float GetTime() {
+unsigned int GetTime() {
   return sfclock.GetElapsedTime();
 }
 

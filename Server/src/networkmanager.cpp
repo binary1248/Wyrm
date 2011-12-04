@@ -1,15 +1,12 @@
-#include <iostream>
-
-#include <boost/make_shared.hpp>
-
 #include <SFML/Network.hpp>
 
-#include "game.h"
-#include "player.h"
-#include "utility.h"
-#include "networkmanager.h"
+#include <config.hpp>
+#include <game.hpp>
+#include <player.hpp>
+#include <utility.hpp>
+#include <networkmanager.hpp>
 
-std::string ErrCode( sf::Socket::Status status ) {
+std::string NetworkManager::ErrCode( sf::Socket::Status status ) {
   switch( status ) {
     case sf::TcpSocket::Disconnected:
       return "Disconnected";
@@ -39,13 +36,13 @@ NetworkManager::NetworkManager() :
 NetworkManager::~NetworkManager() {
 }
 
-void NetworkManager::Tick( float time ) {
+void NetworkManager::Tick( float /*time*/ ) {
   if( m_selector.Wait( 1 ) ) {
     if( m_selector.IsReady( m_sock_listener ) ) {
       AcceptSocket();
     }
 
-    for( std::map<PlayerWeakPtr, SocketPtr>::iterator iter = m_players.begin(); iter != m_players.end(); ) {
+    for( PlayerMap::iterator iter = m_players.begin(); iter != m_players.end(); ) {
     	PlayerPtr shared_player( ( iter->first ).lock() );
 			SocketPtr shared_socket( iter->second );
 
@@ -61,25 +58,25 @@ void NetworkManager::Tick( float time ) {
 				continue;
     	}
 
-    	iter++;
+    	++iter;
     }
   }
 }
 
 void NetworkManager::ReceiveData( PlayerPtr player, SocketPtr socket ) {
-  PacketPtr packet = boost::make_shared<sf::Packet>();
+  PacketPtr packet = std::make_shared<sf::Packet>();
   sf::Socket::Status status = socket->Receive( *packet );
 
   switch( status ) {
     case sf::Socket::Disconnected:
-      LogConsole( "Client " + STRING_CAST( player->GetId() ) + " connection reset" );
+      LogConsole( "Client " + string_cast( player->GetId() ) + " connection reset" );
       player->Delete();
       break;
     case sf::Socket::Done:
       player->ReceivePacket( packet );
       break;
     default:
-      LogConsole( "Player socket status: " + ErrCode(status) + "..." );
+      LogConsole( "Player socket status: " + ErrCode( status ) + "..." );
       break;
   }
 }
@@ -89,7 +86,7 @@ void NetworkManager::SendData( PlayerPtr player, PacketPtr packet ) {
   sf::Socket::Status status = socket->Send( *packet );
 
   if( status != sf::TcpSocket::Done ) {
-    LogConsole( "Failed sending data to client " + STRING_CAST( player->GetId() ) + ": " + ErrCode( status ) );
+    LogConsole( "Failed sending data to client " + string_cast( player->GetId() ) + ": " + ErrCode( status ) );
   }
 }
 
@@ -105,22 +102,22 @@ void NetworkManager::AddPlayer( PlayerPtr player, SocketPtr socket ) {
     return;
   }
 
-  m_players.insert( std::make_pair<PlayerWeakPtr, SocketPtr>( weak_player, socket ) );
+  m_players.insert( std::pair<PlayerWeakPtr, SocketPtr>( weak_player, socket ) );
   m_selector.Add( *socket );
 
   LogConsole( player->GetName() + " (" + socket->GetRemoteAddress().ToString() + ") connected.." );
 }
 
 void NetworkManager::AcceptSocket() {
-  SocketPtr Client = boost::make_shared<sf::TcpSocket>();
+  SocketPtr client = std::make_shared<sf::TcpSocket>();
 
-  if ( m_sock_listener.Accept( *Client ) != sf::Socket::Done ) {
+  if ( m_sock_listener.Accept( *client ) != sf::Socket::Done ) {
     LogConsole( "NetworkManager Accept error..." );
   } else {
     // Send protocol info
     sf::Packet packet;
     packet << sf::String( "Wyrm protocol version " ) << static_cast<float>( PROTOCOL_VER_MAJOR ) << static_cast<float>( PROTOCOL_VER_MINOR );
-    sf::Socket::Status status = Client->Send( packet );
+    sf::Socket::Status status = client->Send( packet );
 
     if( status != sf::TcpSocket::Done ) {
       LogConsole( "Failed sending protocol version: " + ErrCode( status ) );
@@ -128,10 +125,10 @@ void NetworkManager::AcceptSocket() {
 			PlayerPtr player = Game::GetGame()->GetPlayerManager()->CreatePlayer();
 
 			if( player ) {
-				AddPlayer( player, Client );
+				AddPlayer( player, client );
 			} else {
 				LogConsole( "Couldn't create new player, disconnecting." );
-				Client->Disconnect();
+				client->Disconnect();
 			}
     }
   }

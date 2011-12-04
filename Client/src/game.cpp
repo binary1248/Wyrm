@@ -2,156 +2,154 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include <boost/make_shared.hpp>
-
 #include <SFML/Window.hpp>
 
-#include "game.h"
-#include "backdrop.h"
-#include "events.h"
+#include <backdrop.hpp>
+#include <events.hpp>
+#include <utility.hpp>
+#include <game.hpp>
 
-GamePtr Game::instance;
+GamePtr Game::m_instance;
 
 #define DEFAULT_WIDTH 1024
 #define DEFAULT_HEIGHT 768
 
 Game::Game() {
   // Create the main rendering window
-  App = boost::make_shared<sf::RenderWindow>( sf::VideoMode(DEFAULT_WIDTH, DEFAULT_HEIGHT, 32),
-																						  "WYRM",
-																						  sf::Style::Titlebar | sf::Style::Close,
-																						  sf::ContextSettings(24,    // Depth buffer
-																																	8,    // Stencil buffer
-																																	8) ); // AA level
+  m_window = std::make_shared<sf::RenderWindow>( sf::VideoMode(DEFAULT_WIDTH, DEFAULT_HEIGHT, 32),
+	                                               "WYRM",
+	                                               sf::Style::Titlebar | sf::Style::Close,
+	                                               sf::ContextSettings(24,    // Depth buffer
+	                                                                    8,    // Stencil buffer
+	                                                                    8) ); // AA level
 
-	App->EnableVerticalSync( true );
-
-  srand( time(NULL) );
+	//m_window->EnableVerticalSync( true );
 
   LoadKeymap();
-  App->EnableKeyRepeat(true);
 
-  gui = boost::make_shared<GUI>( App );
+  m_window->EnableKeyRepeat( true );
 
-  resourcemanager = boost::make_shared<ResourceManager>();
-  objectmanager = boost::make_shared<ObjectManager>();
-  networkhandler = boost::make_shared<NetworkHandler>();
+  m_gui = std::make_shared<GUI>( m_window );
 
-  bRunning = true;
+  m_resourcemanager = std::make_shared<ResourceManager>();
+  m_objectmanager = std::make_shared<ObjectManager>();
+  m_networkhandler = std::make_shared<NetworkHandler>();
+
+  m_running = true;
 }
 
 Game::~Game() {
 }
 
-GamePtr Game::GetGame() {
-  if( !instance ) {
-    instance.reset( new Game() );
+const GamePtr& Game::GetGame() {
+  if( !m_instance ) {
+    m_instance.reset( new Game() );
   }
 
-  return instance;
+  return m_instance;
 }
 
 void Game::Run() {
   static unsigned int counter = 0;
   static sf::Clock fps_timer;
-  while ( bRunning && App->IsOpened() ) {
-    float ElapsedTime = (float)(App->GetFrameTime()) / 1000.0f;
-    Tick(ElapsedTime);
+
+  while ( m_running && m_window->IsOpened() ) {
+    float elapsed_time = static_cast<float>( m_window->GetFrameTime() ) / 1000.0f;
+
+    Tick( elapsed_time );
 
     counter++;
 
     if( fps_timer.GetElapsedTime() > 1000 ) {
       fps_timer.Reset();
-      std::stringstream ss;
-      ss << "WYRM - " << counter << " FPS";
+      m_window->SetTitle( "WYRM - " + string_cast( counter ) + " FPS" );
       counter = 0;
-      App->SetTitle( ss.str() );
     }
 
-    App->SetFramerateLimit(200);
+    m_window->SetFramerateLimit(200);
   }
 }
 
 void Game::Stop() {
-  bRunning = false;
+  m_running = false;
 }
 
-GUIPtr Game::GetGUI() {
-  return gui;
+const GUIPtr& Game::GetGUI() const {
+  return m_gui;
 }
 
-PlayerPtr Game::GetPlayer() {
-  return player;
+const PlayerPtr& Game::GetPlayer() const {
+  return m_player;
 }
 
-PlayerPtr Game::CreatePlayer( sf::Uint16 id, std::string name ) {
-  if( !player ) {
-    player = boost::make_shared<Player>( id , name );
+const PlayerPtr& Game::CreatePlayer( sf::Uint16 id, std::string name ) {
+  if( !m_player ) {
+    m_player = std::make_shared<Player>( id , name );
   }
 
-  return player;
+  return m_player;
 }
 
-NetworkHandlerPtr Game::GetNetworkHandler() {
-  return networkhandler;
+const NetworkHandlerPtr& Game::GetNetworkHandler() const {
+  return m_networkhandler;
 }
 
-ObjectManagerPtr Game::GetObjectManager() {
-  return objectmanager;
+const ObjectManagerPtr& Game::GetObjectManager() const {
+  return m_objectmanager;
 }
 
-ResourceManagerPtr Game::GetResourceManager() {
-  return resourcemanager;
+const ResourceManagerPtr& Game::GetResourceManager() const {
+  return m_resourcemanager;
 }
 
-BackdropPtr Game::GetBackdrop() {
-  return backdrop;
+const BackdropPtr& Game::GetBackdrop() const {
+  return m_backdrop;
 }
 
 void Game::Resize( float width, float height ) {
-  sf::View view( sf::FloatRect(0, 0, width, height) );
-  App->SetView( view );
+  sf::View view( sf::FloatRect( 0, 0, width, height ) );
+  m_window->SetView( view );
 }
 
-sf::Vector2f Game::GetDefaultResolution() {
+const sf::Vector2f Game::GetDefaultResolution() {
   return sf::Vector2f( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 }
 
-sf::Vector2f Game::GetCurrentResolution() {
-  sf::View view = App->GetView();
+const sf::Vector2f Game::GetCurrentResolution() {
+  sf::View view = m_window->GetView();
   return view.GetSize();
 }
 
-void Game::Tick(float t) {
-
-  if( HandleEvents(*App) ) {
-    bRunning = false;
+void Game::Tick( float time ) {
+  if( HandleEvents( *m_window ) ) {
+    m_running = false;
   }
 
-  networkhandler->Tick();
+  m_networkhandler->Tick();
 
   // Clear the screen (fill it with black color)
-  App->Clear(sf::Color(0, 0, 0));
+  m_window->Clear( sf::Color( 0, 0, 0, 255 ) );
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  if( networkhandler->IsAuthenticated() ) {
-    if( !backdrop ) {
-      backdrop = boost::make_shared<Backdrop>( App );
+  if( m_networkhandler->IsAuthenticated() ) {
+    if( !m_backdrop ) {
+      m_backdrop = std::make_shared<Backdrop>( m_window );
     }
 
-    objectmanager->Tick(t);
-    if( player ) {
-      player->Tick(t);
+    m_objectmanager->Tick( time );
+
+    if( m_player ) {
+      m_player->Tick( time );
     }
 
-    backdrop->Draw(*App);
+    m_backdrop->Draw( *m_window, time );
 
-    objectmanager->DrawAll(*App);
+    m_objectmanager->DrawAll( *m_window );
   }
 
-  gui->Draw(*App);
+  m_gui->Draw( *m_window );
 
   // Display window contents on screen
-  App->Display();
+  m_window->Display();
 }
