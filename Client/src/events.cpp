@@ -28,12 +28,12 @@ int HandleEvents( sf::RenderWindow& window ) {
       }
 
       if( ( event.Type == sf::Event::KeyPressed ) && ( keystate[event.Key.Code] != DOWN ) ) {
-        if( event.Key.Code == sf::Keyboard::Escape ) {
+        //if( event.Key.Code == sf::Keyboard::Escape ) {
           // Escape key pressed
-          return 1;
-        } else {
+        //  return 1;
+        //} else {
           code = keymap[event.Type][event.Key.Code];
-        }
+        //}
 
         keystate[event.Key.Code] = DOWN;
       }

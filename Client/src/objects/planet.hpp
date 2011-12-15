@@ -1,6 +1,8 @@
 #ifndef PLANET_HPP_INCLUDED
 #define PLANET_HPP_INCLUDED
 
+#include <GL/glu.h>
+
 #include <resourcemanager.hpp>
 #include <objects/object.hpp>
 
@@ -25,8 +27,10 @@ class Planet : public Object {
     float m_angle;
     sf::Vector2f m_anchor;
 
-    sf::Sprite m_sprite;
     TexturePtr m_texture;
+
+    GLUquadricObj *m_sphere;
+    GLuint m_sphere_list_id;
 };
 
 typedef std::shared_ptr<Planet> PlanetPtr;

@@ -14,6 +14,12 @@ struct particle_id {
   float exp;
 };
 
+struct GradientPoint {
+	float position;
+
+	unsigned char r, g, b, a;
+};
+
 typedef std::shared_ptr<sf::Texture> TexturePtr;
 typedef std::shared_ptr<sf::SoundBuffer> SoundBufferPtr;
 
@@ -28,8 +34,14 @@ class ResourceManager {
     const SoundBufferPtr OpenSound( std::string filename );
 
     const TexturePtr GetParticle( int size, float sigma2, float exp );
-    const TexturePtr GetBackground( unsigned int width, unsigned int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes );
-    const TexturePtr GetPlanet( unsigned int width, unsigned int height, const sf::Color& base_color, int seed, size_t num_octaves, float* amplitudes );
+
+    const TexturePtr GetBackground( int width, int height, int octaves, float frequency, float persistence,
+		                                float contrast, float brightness,
+		                                GradientPoint* gradient, std::size_t num_gradient_points );
+
+    const TexturePtr GetPlanet( int size, int octaves, float frequency, float persistence,
+		                            float contrast, float brightness,
+		                            GradientPoint* gradient, std::size_t num_gradient_points );
 
   private:
     std::map<std::string, TexturePtr> m_textures;

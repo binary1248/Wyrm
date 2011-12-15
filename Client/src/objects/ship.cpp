@@ -59,7 +59,7 @@ void Ship::Update( float time ) {
   m_text.SetPosition( GetPosition() + sf::Vector2f( -rect.Width / 2 , m_image_height / 3 ) );
 
   if( m_is_player ) {
-    Game::GetGame()->GetBackdrop()->Update( GetVelocity(), GetPosition() );
+    Game::GetGame()->GetBackdrop()->Update( GetVelocity() );
   }
 }
 

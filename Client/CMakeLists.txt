@@ -67,8 +67,6 @@ set(
 	${SRC_DIR}/network.hpp
 	${SRC_DIR}/objectmanager.cpp
 	${SRC_DIR}/objectmanager.hpp
-	${SRC_DIR}/perlin.cpp
-	${SRC_DIR}/perlin.hpp
 	${SRC_DIR}/player.cpp
 	${SRC_DIR}/player.hpp
 	${SRC_DIR}/utility.cpp

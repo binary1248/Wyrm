@@ -15,7 +15,9 @@ REGISTER_FACTORY( PLANET, Planet );
 Planet::Planet( sf::Uint16 id, sf::String name, sf::Vector2f position,
                 sf::Vector2f velocity, float rotation, float rotational_velocity ) :
 	Object( PLANET, id, name, position, velocity, rotation, rotational_velocity ),
-	m_angle( 0.0f ) {
+	m_angle( 0.0f ),
+	m_sphere( 0 ),
+	m_sphere_list_id( 0 ) {
   Init();
 }
 
@@ -27,21 +29,45 @@ Planet::Planet( sf::Uint16 id, sf::Packet& packet ) :
 }
 
 Planet::~Planet() {
+	if( m_sphere ) {
+		gluDeleteQuadric( m_sphere );
+	}
+
+	glDeleteLists( m_sphere_list_id, 1 );
 }
 
 void Planet::Init() {
-  float amplitudes[] = { 100.0f, 60.0f, 10.0f, 80.0f, 0.0f, 10.0f, 30.0f, 40.0f };
+  GradientPoint points[8] = {
+		{ -1.0000f,   0,   0, 128, 255 }, // deeps
+		{ -0.2500f,   0,   0, 255, 255 }, // shallow
+		{  0.0000f,   0, 128, 255, 255 }, // shore
+		{  0.0625f, 240, 240,  64, 255 }, // sand
+		{  0.1250f,  32, 160,   0, 255 }, // grass
+		{  0.3750f, 224, 224,   0, 255 }, // dirt
+		{  0.7500f, 128, 128, 128, 255 }, // rock
+		{  1.0000f, 255, 255, 255, 255 }  // snow
+  };
 
-  m_texture = Game::GetGame()->GetResourceManager()->GetPlanet( 100,
-	                                                              100,
-                                                                sf::Color( 0xDB, 0x99, 0x00, 255 ),
-                                                                4,
+  m_texture = Game::GetGame()->GetResourceManager()->GetPlanet( 256,
                                                                 8,
-                                                                amplitudes );
+                                                                1.0f,
+                                                                0.5f,
+                                                                1.0f,
+                                                                1.0f,
+                                                                points,
+                                                                8 );
 
-  m_sprite.SetTexture( *m_texture );
-  m_sprite.SetOrigin( static_cast<float>( m_texture->GetWidth() ) / 2.f, static_cast<float>( m_texture->GetHeight() ) / 2.f );
-  m_sprite.SetScale( 1.6f, 1.6f );
+	m_sphere = gluNewQuadric();
+	gluQuadricTexture( m_sphere, GL_TRUE );
+
+	m_sphere_list_id = glGenLists( 1 );
+
+	glNewList( m_sphere_list_id, GL_COMPILE );
+
+	glColor4f( 1.f, 1.f, 1.f, 1.f );
+	gluSphere( m_sphere, 100.0, 64, 64 );
+
+	glEndList();
 }
 
 void Planet::Update( float time ) {
@@ -63,35 +89,34 @@ void Planet::Update( float time ) {
 
   position += m_anchor;
   SetPosition( position );
-
-  m_sprite.SetPosition( position );
-  m_sprite.SetRotation( GetRotation() );
 }
 
 void Planet::Draw( sf::RenderWindow& target ) {
-  target.Draw( m_sprite );
-/*
-  target.SaveGLStates();
-
-	gluPerspective( 90.f, 1.f, 0.f, 100.f );
-	//glMatrixMode( GL_PROJECTION );
-	//glOrtho( 0, target.GetWidth(), 0, target.GetHeight(), 0, 100 );
-	//glMatrixMode( GL_MODELVIEW );
-	m_texture->Bind();
-	glColor4f( 1.f, 1.f, 1.f, 1.f );
-
-	GLUquadricObj *sphere = NULL;
-	sphere = gluNewQuadric();
-	gluQuadricTexture(sphere, GL_TRUE);
+	glMatrixMode( GL_PROJECTION );
 	glPushMatrix();
-	//glLoadIdentity();
-	//glTranslatef( ( GetPosition().x - target.GetView().GetCenter().x ) / 100, ( GetPosition().y - target.GetView().GetCenter().y ) / 100, -20.0f );
-	glTranslatef( 0, 0, -20 );
-	gluSphere( sphere, 2.0, 10, 10 );
-	glPopMatrix();
-	gluDeleteQuadric(sphere);
+	glLoadIdentity();
 
-	target.RestoreGLStates();*/
+	glViewport( 0, 0, target.GetWidth(), target.GetHeight() );
+	glOrtho( 0.0f, target.GetWidth(), target.GetHeight(), 0.0f, -1000.0f, 1000.0f );
+
+	glMatrixMode( GL_MODELVIEW );
+	glPushMatrix();
+	glLoadIdentity();
+
+	m_texture->Bind();
+
+	glTranslatef( ( GetPosition().x + static_cast<float>( target.GetWidth() ) / 2 - target.GetView().GetCenter().x ),
+								( GetPosition().y + static_cast<float>( target.GetHeight() ) / 2 - target.GetView().GetCenter().y ), 0.0f );
+
+	glRotatef( GetRotation(), 0.0f, 0.0f, 1.0f );
+
+	glCallList( m_sphere_list_id );
+
+	glPopMatrix();
+
+	glMatrixMode( GL_PROJECTION );
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
 }
 
 void Planet::HandlePacket( sf::Packet& packet ) {
