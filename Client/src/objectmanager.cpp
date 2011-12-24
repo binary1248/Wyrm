@@ -2,6 +2,7 @@
 #include <SFML/Network.hpp>
 
 #include <config.hpp>
+#include <utility.hpp>
 #include <network.hpp>
 #include <player.hpp>
 #include <game.hpp>
@@ -41,14 +42,14 @@ void ObjectManager::CreateObject( sf::Packet packet, sf::Uint16 id ) {
   }
 
   if( !m_factories ) {
-    std::cout << "No factories\n";
+    LogConsole( "No factories" );
     return;
   }
 
   std::map<sf::Uint16, ObjectFactory>::iterator i = m_factories->find( type );
 
   if( i == m_factories->end() ) {
-    std::cout << "Invalid object type.\n";
+    LogConsole( "Invalid object type." );
     return;
   } else {
     object = ( i->second )( id, packet );
@@ -74,8 +75,8 @@ void ObjectManager::DispatchPacket( sf::Packet packet ) {
   sf::Uint16 type1;
   packet >> type1;
 
-  if( type1 != OBJECT_STATE ) {
-    std::cout << "Can't update non-existant object: " << id << "\n";
+  if( type1 != ServerToClientObject::OBJECT_STATE ) {
+    LogConsole( "Can't update non-existant object: " + string_cast( id ) );
     return;
   }
 
@@ -104,7 +105,7 @@ void ObjectManager::DrawAll( sf::RenderWindow& target ) {
 	std::list<ObjectPtr>::iterator end( m_objects.end() );
 
   for( ; iter != end; ++iter ) {
-    if( ( *iter )->GetType() == SHIP && std::static_pointer_cast<Ship>( ( *iter ) )->IsPlayer() ) {
+    if( ( *iter )->GetType() == ObjectType::SHIP && std::static_pointer_cast<Ship>( ( *iter ) )->IsPlayer() ) {
       agent = ( *iter );
       continue;
     }
@@ -124,5 +125,5 @@ void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
 
   ObjectManager::m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
 
-  std::cout << "Registered object factory type " << type << "\n";
+  LogStartup( "Registered object factory type " + string_cast( type ) );
 }

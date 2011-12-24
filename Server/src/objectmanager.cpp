@@ -68,8 +68,8 @@ const SystemPtr ObjectManager::GetSystemById( sf::Uint16 id ) const {
   return SystemPtr();
 }
 
-void ObjectManager::CreateSystem( std::string name ) {
-  SystemPtr system = std::make_shared<System>( ++m_lastSystemId, name );
+void ObjectManager::CreateSystem( std::string name, sf::Uint32 background_resource_id ) {
+  SystemPtr system = std::make_shared<System>( ++m_lastSystemId, name, background_resource_id );
 
   LogConsole( "Created new system: " + system->GetName() + " (id: " + string_cast( system->GetId() ) + ")" );
 
@@ -118,19 +118,26 @@ void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
 }
 
 void ObjectManager::LoadObjects() {
-  CreateSystem( "System 1" );
+	LogConsole( "Loading objects..." );
 
-  PlanetPtr p( std::static_pointer_cast<Planet, Object>( CreateObject( PLANET ) ) );
+  CreateSystem( "System 1", 1 );
+
+  PlanetPtr p( std::static_pointer_cast<Planet, Object>( CreateObject( ObjectType::PLANET ) ) );
+  p->SetSize( sf::Vector2f( 80.0f, 80.0f ) );
   p->SetOrbit( 2, 400 );
   p->SetRotationalVelocity( 2 );
   p->SetAnchor( 0, 0 );
   p->SetName( "Planet 1" );
+  p->SetResourceId( 2 );
 
-  StarPtr s( std::static_pointer_cast<Star, Object>( CreateObject( STAR ) ) );
+  StarPtr s( std::static_pointer_cast<Star, Object>( CreateObject( ObjectType::STAR ) ) );
   s->SetOrbit( 0, 0 );
   s->SetRotationalVelocity( 0 );
   s->SetAnchor( 0, 0 );
   s->SetName( "Star 1" );
+  s->SetResourceId( 4 );
 
   m_objects_loaded = true;
+
+  LogConsole( "Objects loaded" );
 }

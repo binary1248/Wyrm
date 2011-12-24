@@ -7,33 +7,40 @@
 
 #include <resourcemanager.hpp>
 
-#define NUM_BACKDROP_PARTICLES 200
-#define TEX_SIZE 512
+#define NUM_BACKDROP_PARTICLES 300
 
-class Backdrop {
+class System {
   public:
-    Backdrop( std::shared_ptr<sf::RenderWindow> window,
+    System( std::shared_ptr<sf::RenderWindow> window, sf::Packet& packet,
 							std::size_t num_particles = NUM_BACKDROP_PARTICLES );
-    ~Backdrop();
+    ~System();
 
     void Draw( sf::RenderWindow& target, float time );
-    void Update( const sf::Vector2f& velocity );
 
   private:
-    sf::Sprite m_background_sprite;
+		sf::Uint16 m_id;
+		sf::String m_name;
+
+		sf::Uint32 m_background_resource_id;
+
     sf::Vector2f m_backdrop_velocity;
     sf::Clock m_last_draw;
 
     TexturePtr m_texture;
 
-    sf::Shape* m_particles;
+    sf::Vector2f* m_particle_positions;
+    GLfloat* m_particle_vertices;
     float* m_particle_velocities;
+
     std::size_t m_num_particles;
+
+    GLuint m_particle_vbo;
+    GLuint m_background_vbo;
 
     int m_width;
     int m_height;
 };
 
-typedef std::shared_ptr<Backdrop> BackdropPtr;
+typedef std::shared_ptr<System> SystemPtr;
 
 #endif // BACKDROP_HPP_INCLUDED

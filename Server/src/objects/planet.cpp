@@ -6,11 +6,11 @@
 #include <objects/objects.hpp>
 #include <objects/planet.hpp>
 
-REGISTER_FACTORY( PLANET, Planet );
+REGISTER_FACTORY( ObjectType::PLANET, Planet );
 
-Planet::Planet( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+Planet::Planet( sf::String name, const sf::Vector2f& size, const sf::Vector2f& position, const sf::Vector2f& velocity,
 	              float rotation, float rotational_velocity ) :
-	Object( PLANET, name, position, velocity, rotation, rotational_velocity ),
+	Object( ObjectType::PLANET, name, size, position, velocity, rotation, rotational_velocity ),
 	m_angle( 0 ) {
 }
 

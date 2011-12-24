@@ -48,15 +48,17 @@ class NetworkManager {
 typedef std::shared_ptr<NetworkManager> NetworkManagerPtr;
 
 #define PROTOCOL_VER_MAJOR 0.1f
-#define PROTOCOL_VER_MINOR 0.8f
+#define PROTOCOL_VER_MINOR 0.9f
 
-enum packet_server {
+enum ServerToClient {
   SERVER_OBJECT = 0,
   SERVER_SET_ID,
-  SERVER_INVENTORY
+  SERVER_INVENTORY,
+  SERVER_RESOURCE,
+  SERVER_SYSTEM
 };
 
-enum packet_client {
+enum ClientToServer {
   CLIENT_COMMAND = 0
 };
 

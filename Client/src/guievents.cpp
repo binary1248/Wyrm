@@ -13,17 +13,18 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
   login_window->SetTitle( "Login" );
   login_window->SetId( "Login" );
   login_window->SetStyle( sfg::Window::Titlebar | sfg::Window::Background );
-  login_window->SetBorderWidth( 10.0f );
 
   sfg::Label::Ptr username_label( sfg::Label::Create("Username:") );
 	sfg::Label::Ptr password_label( sfg::Label::Create("Password:") );
+	sfg::Label::Ptr address_label( sfg::Label::Create("Server Address:") );
 
 	sfg::Table::Ptr login_table( sfg::Table::Create() );
 	login_table->SetColumnSpacings( 10.0f );
 	login_table->SetRowSpacings( 10.0f );
 
-	login_table->Attach( username_label, sf::Rect<sf::Uint32>( 0, 0, 1, 1 ) );
-	login_table->Attach( password_label, sf::Rect<sf::Uint32>( 0, 1, 1, 1 ) );
+	login_table->Attach( username_label, sf::Rect<sf::Uint32>( 0, 0, 1, 1 ), 0 );
+	login_table->Attach( password_label, sf::Rect<sf::Uint32>( 0, 1, 1, 1 ), 0 );
+	login_table->Attach( address_label, sf::Rect<sf::Uint32>( 0, 2, 1, 1 ), 0 );
 
 	sfg::Entry::Ptr username( sfg::Entry::Create() );
 	username->SetRequisition( sf::Vector2f( 100.0f, 0.0f ) );
@@ -38,8 +39,15 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
 	gui->AddWidget( password );
 	password->HideText( '#' );
 
+	sfg::Entry::Ptr address( sfg::Entry::Create() );
+	address->SetRequisition( sf::Vector2f( 100.0f, 0.0f ) );
+	//address->SetProperty( "Entry.Normal.CursorColor", sf::Color( 0xFF, 0xFF, 0xFF ) );
+	address->SetId( "login_server_address_text" );
+	gui->AddWidget( address );
+
 	login_table->Attach( username, sf::Rect<sf::Uint32>( 1, 0, 1, 1 ) );
 	login_table->Attach( password, sf::Rect<sf::Uint32>( 1, 1, 1, 1 ) );
+	login_table->Attach( address, sf::Rect<sf::Uint32>( 1, 2, 1, 1 ) );
 
 	sfg::Button::Ptr quit( sfg::Button::Create( "Quit" ) );
 	quit->OnClick.Connect( &OnQuitClicked );
@@ -69,13 +77,14 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
 
   gui->AddWidget( login_window );
 
+  address->SetText( "localhost" );
+
 ////////////////////////////////////////////////////////////////////////////////
 // Loading Window
 ////////////////////////////////////////////////////////////////////////////////
 	sfg::Window::Ptr loading_window( sfg::Window::Create() );
   loading_window->SetStyle( sfg::Window::Background );
   loading_window->SetId( "Loading" );
-  loading_window->SetBorderWidth( 10.0f );
   loading_window->Show( false );
 
 	sfg::Box::Ptr loading_box( sfg::Box::Create( sfg::Box::VERTICAL, 10.0f ) );
@@ -99,30 +108,39 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
 ////////////////////////////////////////////////////////////////////////////////
 // Main HUD Window
 ////////////////////////////////////////////////////////////////////////////////
-	sfg::Window::Ptr hud_window( sfg::Window::Create() );
-  hud_window->SetStyle( sfg::Window::NoStyle );
-  hud_window->SetId( "HUD" );
-  hud_window->SetBorderWidth( 10.0f );
-  hud_window->Show( false );
+	sfg::Window::Ptr hud_menu_bar_window( sfg::Window::Create() );
+  hud_menu_bar_window->SetStyle( sfg::Window::NoStyle );
+  hud_menu_bar_window->SetId( "HUD_Menu_Bar" );
+  hud_menu_bar_window->Show( false );
 
-	sfg::Box::Ptr hud_vertical_box( sfg::Box::Create( sfg::Box::VERTICAL ) );
 	sfg::Box::Ptr hud_menu_bar( sfg::Box::Create( sfg::Box::HORIZONTAL, 10.0f ) );
-
-	hud_vertical_box->Pack( hud_menu_bar, false );
 
 	sfg::Button::Ptr menu_button( sfg::Button::Create("Menu") );
 	menu_button->OnClick.Connect( &OnMenuClicked );
 	menu_button->SetRequisition( sf::Vector2f( 40.0f, 30.0f ) );
 	hud_menu_bar->Pack( menu_button, false );
 
+	hud_menu_bar_window->Add( hud_menu_bar );
+
+  gui->AddWidget( hud_menu_bar_window );
+
+	sfg::Window::Ptr hud_quick_access_window( sfg::Window::Create() );
+  hud_quick_access_window->SetStyle( sfg::Window::NoStyle );
+  hud_quick_access_window->SetId( "HUD_Quick_Access_Bar" );
+  hud_quick_access_window->Show( false );
+
+	sfg::Box::Ptr hud_quick_access_bar( sfg::Box::Create( sfg::Box::HORIZONTAL, 10.0f ) );
+
 	sfg::Button::Ptr ship_button( sfg::Button::Create("Ship") );
 	ship_button->OnClick.Connect( &OnShipClicked );
 	ship_button->SetRequisition( sf::Vector2f( 40.0f, 30.0f ) );
-	hud_menu_bar->Pack( ship_button, false );
+	hud_quick_access_bar->Pack( ship_button, false );
 
-	hud_window->Add( hud_vertical_box );
+	hud_quick_access_window->Add( hud_quick_access_bar );
+	sf::Vector2f requisition = hud_quick_access_window->GetRequisition();
+	hud_quick_access_window->SetPosition( sf::Vector2f( 0.0f, static_cast<float>( window.GetHeight() ) - requisition.y ) );
 
-  gui->AddWidget( hud_window );
+  gui->AddWidget( hud_quick_access_window );
 
 ////////////////////////////////////////////////////////////////////////////////
 // Menu Window
@@ -130,7 +148,6 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
 	sfg::Window::Ptr menu_window( sfg::Window::Create() );
   menu_window->SetStyle( sfg::Window::Background );
   menu_window->SetId( "Menu" );
-  menu_window->SetBorderWidth( 10.0f );
   menu_window->Show( false );
 	menu_window->SetRequisition( sf::Vector2f( 80.0f, 100.0f ) );
 
@@ -165,7 +182,6 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
   options_window->SetStyle( sfg::Window::Titlebar | sfg::Window::Background );
   options_window->SetTitle( "Game Options" );
   options_window->SetId( "Options" );
-  options_window->SetBorderWidth( 10.0f );
   options_window->Show( false );
 
 	sfg::Box::Ptr options_box( sfg::Box::Create( sfg::Box::VERTICAL ) );
@@ -203,7 +219,6 @@ void OnLoadGUI( GUI* gui, sf::RenderWindow& window ) {
 	sfg::Window::Ptr ship_window( sfg::Window::Create() );
   ship_window->SetTitle( "Ship Data" );
   ship_window->SetId( "Ship" );
-  ship_window->SetBorderWidth( 10.0f );
   ship_window->Show( false );
 
 	sfg::Box::Ptr ship_box( sfg::Box::Create( sfg::Box::VERTICAL ) );
@@ -240,15 +255,18 @@ void OnQuitClicked() {
 void OnLoginClicked() {
   sfg::Widget::Ptr username = Game::GetGame()->GetGUI()->FindWidget( "login_username_text" );
   sfg::Widget::Ptr password = Game::GetGame()->GetGUI()->FindWidget( "login_password_text" );
+  sfg::Widget::Ptr address = Game::GetGame()->GetGUI()->FindWidget( "login_server_address_text" );
 
-  if( !username || !password ) {
+  if( !username || !password || !address ) {
     return;
   }
 
-  if( !Game::GetGame()->GetNetworkHandler()->Connect(((sfg::Entry*)username.get())->GetText(),
-                                                     ((sfg::Entry*)password.get())->GetText())) {
+  if( !Game::GetGame()->GetNetworkHandler()->Connect( sfg::StaticPointerCast<sfg::Entry>( username )->GetText(),
+                                                      sfg::StaticPointerCast<sfg::Entry>( password )->GetText(),
+		                                                  sfg::StaticPointerCast<sfg::Entry>( address )->GetText() ) ) {
     Game::GetGame()->GetGUI()->FindWidget( "Login" )->Show( false );
-    Game::GetGame()->GetGUI()->FindWidget( "HUD" )->Show( true );
+    Game::GetGame()->GetGUI()->FindWidget( "HUD_Menu_Bar" )->Show( true );
+    Game::GetGame()->GetGUI()->FindWidget( "HUD_Quick_Access_Bar" )->Show( true );
   }
 }
 

@@ -1,23 +1,12 @@
 #include <config.hpp>
 #include <objects/object.hpp>
 
-Object::Object( sf::Uint16 type, sf::Uint16 id, sf::String name, sf::Vector2f position,
-                sf::Vector2f velocity, float rotation, float rotational_velocity ) :
-	m_type( type ),
-	m_id( id ),
-	m_name( name ),
-	m_position( position ),
-	m_velocity( velocity ),
-	m_rotation( rotation ),
-	m_rotational_velocity( rotational_velocity ),
-	m_delete_me( false ) {
-
-}
-
 Object::Object( sf::Uint16 type, sf::Uint16 id, sf::Packet& packet ) :
 	m_type( type ),
-	m_id( id ) {
-	packet >> m_name;
+	m_id( id ),
+	m_delete_me( false ) {
+	packet >> m_name >> m_resource_id;
+	packet >> m_size.x >> m_size.y;
   packet >> m_position.x >> m_position.y;
   packet >> m_velocity.x >> m_velocity.y;
   packet >> m_rotation >> m_rotational_velocity;
@@ -74,6 +63,14 @@ void Object::SetName( const sf::String& name ) {
 	m_name = name;
 }
 
+const sf::Vector2f& Object::GetSize() const {
+	return m_size;
+}
+
+void Object::SetSize( const sf::Vector2f& size ) {
+	m_size = size;
+}
+
 const sf::Vector2f& Object::GetPosition() const {
 	return m_position;
 }
@@ -104,4 +101,12 @@ float Object::GetRotationalVelocity() const {
 
 void Object::SetRotationalVelocity( float rotational_velocity ) {
 	m_rotational_velocity = rotational_velocity;
+}
+
+void Object::SetResourceId( sf::Uint32 id ) {
+	m_resource_id = id;
+}
+
+sf::Uint32 Object::GetResourceId() const {
+	return m_resource_id;
 }

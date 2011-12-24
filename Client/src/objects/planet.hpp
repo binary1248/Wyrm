@@ -8,9 +8,6 @@
 
 class Planet : public Object {
   public:
-    Planet( sf::Uint16 id, sf::String name, sf::Vector2f position,
-		        sf::Vector2f velocity, float rotation, float rotational_velocity );
-
     Planet( sf::Uint16 id, sf::Packet& packet );
 
     virtual ~Planet();
@@ -28,6 +25,7 @@ class Planet : public Object {
     sf::Vector2f m_anchor;
 
     TexturePtr m_texture;
+    TexturePtr m_texture_bump_map;
 
     GLUquadricObj *m_sphere;
     GLuint m_sphere_list_id;

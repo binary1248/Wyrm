@@ -4,6 +4,7 @@
 #include <SFML/Network.hpp>
 
 #include <config.hpp>
+#include <utility.hpp>
 #include <items/item.hpp>
 #include <objects/objects.hpp>
 #include <objectmanager.hpp>
@@ -22,11 +23,11 @@ Player::~Player() {
 
 void Player::Tick( float /*time*/ ) {
   if( m_tentative_agent_id != 0xffff ) {
-    SetShip( m_tentative_agent_id );
+    SetAgent( m_tentative_agent_id );
   }
 }
 
-void Player::SetShip( sf::Uint16 id ) {
+void Player::SetAgent( sf::Uint16 id ) {
   m_tentative_agent_id = id;
   ObjectPtr object = Game::GetGame()->GetObjectManager()->GetObjectById( id );
 
@@ -34,16 +35,24 @@ void Player::SetShip( sf::Uint16 id ) {
     return;
   }
 
-  if( object->GetType() != SHIP ) {
+  if( object->GetType() != ObjectType::SHIP ) {
     return;
   }
 
-  ShipPtr playerShip = std::static_pointer_cast<Ship>( Game::GetGame()->GetObjectManager()->GetObjectById( id ) );
-  playerShip->SetPlayer( true );
-  std::cout << "Set player ship to object: " << id << "\n";
+  ShipPtr agent = std::static_pointer_cast<Ship>( Game::GetGame()->GetObjectManager()->GetObjectById( id ) );
+  agent->SetPlayer( true );
+  LogConsole( "Set player ship to object: " + string_cast( id ) );
   m_tentative_agent_id = 0xffff;
+
+  m_agent = agent;
 }
 
 const InventoryPtr& Player::GetInventory() const {
 	return m_inventory;
+}
+
+const ObjectPtr Player::GetAgent() const {
+	ObjectPtr agent( m_agent.lock() );
+
+	return agent;
 }

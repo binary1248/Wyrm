@@ -1,6 +1,7 @@
 #include <SFML/Network.hpp>
 
 #include <config.hpp>
+#include <utility.hpp>
 #include <network.hpp>
 #include <player.hpp>
 #include <objectmanager.hpp>
@@ -15,10 +16,10 @@ NetworkHandler::~NetworkHandler() {
   Disconnect();
 }
 
-int NetworkHandler::Connect( sf::String username, sf::String password ) {
-  if ( m_socket.Connect( "localhost", 1337 ) != sf::Socket::Done ) {
+int NetworkHandler::Connect( sf::String username, sf::String password, sf::String address ) {
+  if ( m_socket.Connect( address.ToAnsiString(), 1337 ) != sf::Socket::Done ) {
     // Error...
-    std::cout << "Can't connect to server...\n";
+    LogConsole( "Can't connect to server at " + address.ToAnsiString() + "." );
     return -1;
   }
 
@@ -33,7 +34,7 @@ int NetworkHandler::Connect( sf::String username, sf::String password ) {
     float version_major;
     float version_minor;
     packet >> string >> version_major >> version_minor;
-    std::cout << string.ToAnsiString() << version_major << " " << version_minor << "\n";
+    LogConsole( string.ToAnsiString() + string_cast( version_major ) + " " + string_cast( version_minor ) );
     if( !(string.ToAnsiString().compare( "Wyrm protocol version " )) &&
          ( version_major == PROTOCOL_VER_MAJOR ) &&
          ( version_minor == PROTOCOL_VER_MINOR ) ) {
@@ -41,7 +42,7 @@ int NetworkHandler::Connect( sf::String username, sf::String password ) {
       response << username << password;
       m_socket.Send( response );
     } else {
-      std::cout << "Protocol mismatch\n";
+      LogConsole( "Protocol mismatch" );
       Disconnect();
       return -1;
     }
@@ -50,17 +51,17 @@ int NetworkHandler::Connect( sf::String username, sf::String password ) {
   {
     sf::Packet packet;
     if( m_socket.Receive(packet) != sf::TcpSocket::Done ) {
-      std::cout << "Error while receiving.\n";
+      LogConsole( "Error while receiving." );
       Disconnect();
       return -1;
     }
     sf::String s;
     packet >> s;
     if( !s.ToAnsiString().compare("Authentication successful") ) {
-      std::cout << "Authentication successful\n";
+      LogConsole( "Authentication successful" );
       m_authenticated = true;
     } else {
-      std::cout << "Authentication failed: " << s.ToAnsiString() << "\n";
+      LogConsole( "Authentication failed: " + s.ToAnsiString() );
       Disconnect();
       return -1;
     }
@@ -84,25 +85,47 @@ void NetworkHandler::HandlePacket( sf::Packet packet ) {
   packet >> type0;
 
   switch( type0 ) {
-    case SERVER_OBJECT: {
+    case ServerToClient::SERVER_OBJECT: {
       Game::GetGame()->GetObjectManager()->DispatchPacket( packet );
+
       break;
     }
-    case SERVER_SET_ID: {
+    case ServerToClient::SERVER_SET_ID: {
       sf::Uint16 id;
       packet >> id;
+
       PlayerPtr player = Game::GetGame()->GetPlayer();
+
       if( !player ) {
         player = Game::GetGame()->CreatePlayer( 0, "" );
       }
-      player->SetShip( id );
+
+      player->SetAgent( id );
+
       break;
     }
-    case SERVER_INVENTORY: {
+    case ServerToClient::SERVER_INVENTORY: {
       PlayerPtr player = Game::GetGame()->GetPlayer();
+
       if( player ) {
         player->GetInventory()->HandlePacket( packet );
       }
+
+      break;
+    }
+    case ServerToClient::SERVER_RESOURCE: {
+      ResourceManagerPtr resourcemanager = Game::GetGame()->GetResourceManager();
+
+      if( resourcemanager ) {
+        resourcemanager->GenerateResourceFromPacket( packet );
+      }
+
+      break;
+    }
+    case ServerToClient::SERVER_SYSTEM: {
+      Game::GetGame()->SetSystem( std::make_shared<System>( Game::GetGame()->GetWindow(), packet ) );
+
+      break;
     }
     default:
       break;

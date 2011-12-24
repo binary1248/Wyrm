@@ -1,12 +1,15 @@
+#include <iostream>
+
 #include <SFML/Network.hpp>
 
 #include <networkmanager.hpp>
 #include <utility.hpp>
 #include <system.hpp>
 
-System::System( sf::Uint16 id, std::string name ) :
+System::System( sf::Uint16 id, std::string name, sf::Uint32 background_resource_id ) :
 	m_id( id ),
-	m_name( name ) {
+	m_name( name ),
+	m_background_resource_id( background_resource_id ) {
 }
 
 System::~System() {
@@ -24,6 +27,13 @@ void System::AddPlayer( PlayerPtr player ) {
 
   m_players.push_back( PlayerWeakPtr( player ) );
 
+  player->LoadResource( m_background_resource_id );
+
+  PacketPtr system_packet = std::make_shared<sf::Packet>();
+  (*system_packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_SYSTEM )
+                   << GetId() << GetName() << m_background_resource_id;
+  player->SendPacket( system_packet );
+
   std::list<ObjectWeakPtr>::const_iterator object_iter( m_objects.begin() );
 	std::list<ObjectWeakPtr>::const_iterator object_end( m_objects.end() );
 
@@ -32,7 +42,9 @@ void System::AddPlayer( PlayerPtr player ) {
 
 		if( shared_object && !( shared_object->IsDeleted() ) ) {
       PacketPtr packet = std::make_shared<sf::Packet>();
+      sf::Uint32 resource_id = shared_object->GetResourceId();
       shared_object->FillFullPacket( packet );
+      player->LoadResource( resource_id );
       player->SendPacket( packet );
     }
 	}
@@ -58,16 +70,16 @@ void System::Tick( float /*time*/ ) {
   while( object_iter != object_end ) {
   	ObjectPtr shared_object( object_iter->lock() );
   	if( shared_object ) {
-			char state = CLEAN;
+			char state = ObjectState::CLEAN;
 
 			if( shared_object->IsDeleted() ) {
-				state = DELETED;
+				state = ObjectState::DELETED;
 			} else if( shared_object->IsFresh() ) {
-				state = DIRTY_FULL;
+				state = ObjectState::DIRTY_FULL;
 				shared_object->ClearFresh();
 				shared_object->ClearDirty();
 			} else if( shared_object->IsDirty() ) {
-				state = DIRTY_PARTIAL;
+				state = ObjectState::DIRTY_PARTIAL;
 				shared_object->ClearDirty();
 			}
 
@@ -80,19 +92,22 @@ void System::Tick( float /*time*/ ) {
 					PacketPtr packet = std::make_shared<sf::Packet>();
 
 					switch( state ) {
-						case DIRTY_PARTIAL:
+						case ObjectState::DIRTY_PARTIAL:
 							shared_object->FillPartialPacket( packet );
 							shared_player->SendPacket( packet );
 							break;
-						case DIRTY_FULL:
+						case ObjectState::DIRTY_FULL: {
+							sf::Uint32 resource_id = shared_object->GetResourceId();
 							shared_object->FillFullPacket( packet );
+							shared_player->LoadResource( resource_id );
 							shared_player->SendPacket( packet );
 							break;
-						case DELETED:
-							(*packet) << static_cast<sf::Uint16>( SERVER_OBJECT ) << shared_object->GetId() << static_cast<sf::Uint16>( OBJECT_REMOVE );
+						}
+						case ObjectState::DELETED:
+							(*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << shared_object->GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_REMOVE );
 							shared_player->SendPacket( packet );
 							break;
-						case CLEAN:
+						case ObjectState::CLEAN:
 							break;
 						default:
 							Die( "Unrecognized object state." );
@@ -105,7 +120,7 @@ void System::Tick( float /*time*/ ) {
 				++player_iter;
 			}
 
-			if( state == DELETED ) {
+			if( state == ObjectState::DELETED ) {
 				object_iter = m_objects.erase( object_iter );
 				continue;
 			}

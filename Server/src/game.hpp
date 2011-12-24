@@ -6,6 +6,7 @@
 #include <objectmanager.hpp>
 #include <playermanager.hpp>
 #include <networkmanager.hpp>
+#include <resourcemanager.hpp>
 
 class Game {
   public:
@@ -19,6 +20,7 @@ class Game {
     const PlayerManagerPtr& GetPlayerManager() const;
     const ObjectManagerPtr& GetObjectManager() const;
     const NetworkManagerPtr& GetNetworkManager() const;
+    const ResourceManagerPtr& GetResourceManager() const;
 
   private:
     Game();
@@ -30,6 +32,7 @@ class Game {
     ObjectManagerPtr m_objectmanager;
     PlayerManagerPtr m_playermanager;
     NetworkManagerPtr m_networkmanager;
+    ResourceManagerPtr m_resourcemanager;
 
     bool m_running;
 };

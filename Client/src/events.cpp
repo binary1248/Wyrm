@@ -46,7 +46,7 @@ int HandleEvents( sf::RenderWindow& window ) {
       if( Game::GetGame()->GetNetworkHandler()->IsAuthenticated() && ( code != 1337 ) ) {
         sf::Packet packet;
 
-        packet << (sf::Uint16)CLIENT_COMMAND << (sf::Uint16)COMMAND_CONTROL << code;
+        packet << (sf::Uint16)ClientToServer::CLIENT_COMMAND << (sf::Uint16)ClientToServerCommand::COMMAND_CONTROL << code;
 
         Game::GetGame()->GetNetworkHandler()->Send(packet);
       }

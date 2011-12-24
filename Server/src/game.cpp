@@ -16,6 +16,7 @@ Game::Game() :
 	m_objectmanager( std::make_shared<ObjectManager>() ),
 	m_playermanager( std::make_shared<PlayerManager>() ),
 	m_networkmanager( std::make_shared<NetworkManager>() ),
+	m_resourcemanager( std::make_shared<ResourceManager>() ),
 	m_running( false ) {
 }
 
@@ -55,6 +56,7 @@ void Game::Stop() {
 
 void Game::Tick( float time ) {
   m_networkmanager->Tick( time );
+  m_resourcemanager->Tick( time );
   m_objectmanager->Tick( time );
   m_playermanager->Tick( time );
 }
@@ -69,4 +71,8 @@ const ObjectManagerPtr& Game::GetObjectManager() const {
 
 const NetworkManagerPtr& Game::GetNetworkManager() const {
 	return m_networkmanager;
+}
+
+const ResourceManagerPtr& Game::GetResourceManager() const {
+	return m_resourcemanager;
 }

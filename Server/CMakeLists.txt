@@ -59,6 +59,8 @@ set(
 	${SRC_DIR}/player.hpp
 	${SRC_DIR}/playermanager.cpp
 	${SRC_DIR}/playermanager.hpp
+	${SRC_DIR}/resourcemanager.cpp
+	${SRC_DIR}/resourcemanager.hpp
 	${SRC_DIR}/system.cpp
 	${SRC_DIR}/system.hpp
 	${SRC_DIR}/utility.cpp
@@ -82,4 +84,4 @@ include_directories( ${SFML_INCLUDE_DIR} )
 
 add_executable( "wyrm-server" ${SOURCES} )
 
-target_link_libraries( "wyrm-server" ${SFML_SYSTEM_LIBRARY} ${SFML_NETWORK_LIBRARY} )
+target_link_libraries( "wyrm-server" ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} )

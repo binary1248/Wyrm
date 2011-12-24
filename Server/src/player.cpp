@@ -61,7 +61,7 @@ void Player::FlushBuffer() {
 
   while( !m_send_buffer.empty() ) {
     Send( m_send_buffer.front() );
-    m_send_buffer.pop();
+    m_send_buffer.pop_front();
   }
 }
 
@@ -70,15 +70,15 @@ void Player::SendPacket( PacketPtr packet, bool prio ) {
     return;
   }
 
-  if( prio ) {
-    Send( packet );
+  if( !prio ) {
+    m_send_buffer.push_back( packet );
   } else {
-    m_send_buffer.push( packet );
+    Send( packet );
   }
 }
 
 void Player::ReceivePacket( PacketPtr packet ) {
-  m_recv_buffer.push( packet );
+  m_recv_buffer.push_back( packet );
 }
 
 void Player::HandleSocketData() {
@@ -93,7 +93,7 @@ void Player::HandleSocketData() {
 			Auth( packet );
 		}
 
-		m_recv_buffer.pop();
+		m_recv_buffer.pop_front();
   }
 }
 
@@ -114,7 +114,7 @@ void Player::HandlePacket( PacketPtr packet ) {
   (*packet) >> type0;
 
   switch( type0 ) {
-    case CLIENT_COMMAND:
+    case ClientToServer::CLIENT_COMMAND:
       agent->HandlePacket( packet );
       break;
     default:
@@ -167,7 +167,7 @@ void Player::SetAgent( ObjectPtr agent ) {
   m_agent = ObjectWeakPtr( agent );
   agent->SetName( GetName() );
   PacketPtr packet = std::make_shared<sf::Packet>();
-  (*packet) << static_cast<sf::Uint16>( SERVER_SET_ID ) << agent->GetId();
+  (*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_SET_ID ) << agent->GetId();
   SendPacket( packet );
 }
 
@@ -181,4 +181,28 @@ void Player::SetName( std::string name ) {
 
 InventoryWeakPtr Player::GetInventory() const {
 	return InventoryWeakPtr( m_inventory );
+}
+
+void Player::LoadResource( sf::Uint32 id ) {
+	if( !id || IsResourceLoaded( id ) ) {
+		return;
+	}
+
+	PacketPtr packet( std::make_shared<sf::Packet>() );
+
+	(*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_RESOURCE );
+
+	Game::GetGame()->GetResourceManager()->FillResourcePacket( id, packet );
+
+	SendPacket( packet );
+
+	m_loaded_resources.insert( id );
+}
+
+bool Player::IsResourceLoaded( sf::Uint32 id ) const {
+	if( m_loaded_resources.find( id ) == m_loaded_resources.end() ) {
+		return false;
+	}
+
+	return true;
 }

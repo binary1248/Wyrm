@@ -11,7 +11,7 @@
 
 class Object {
   public:
-    Object( sf::Uint16 type, sf::String name, sf::Vector2f position,
+    Object( sf::Uint16 type, sf::String name, sf::Vector2f size, sf::Vector2f position,
 						sf::Vector2f velocity, float rotation, float rotational_velocity );
     virtual ~Object();
 
@@ -41,6 +41,10 @@ class Object {
     void Delete();
     bool IsDeleted() const;
 
+		// Attribute Handlers
+		const sf::Vector2f& GetSize() const;
+    void SetSize( const sf::Vector2f& size );
+
     const sf::Vector2f& GetPosition() const;
     void SetPosition( const sf::Vector2f& position );
 
@@ -53,10 +57,18 @@ class Object {
 		float GetRotationalVelocity() const;
 		void SetRotationalVelocity( float rotational_velocity );
 
+		// Resource Handlers
+		void SetResourceId( sf::Uint32 id );
+    sf::Uint32 GetResourceId() const;
+
   private:
     sf::Uint16 m_id;
     sf::Uint16 m_type;
     sf::String m_name;
+
+    sf::Uint32 m_resource_id;
+
+		sf::Vector2f m_size;
 
     sf::Vector2f m_position;
     sf::Vector2f m_velocity;
@@ -69,7 +81,7 @@ class Object {
     bool m_fresh;
 };
 
-enum packet_server_object{
+enum ServerToClientObject {
   OBJECT_UPDATE = 0,
   OBJECT_STATE,
   OBJECT_REMOVE

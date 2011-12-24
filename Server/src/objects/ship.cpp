@@ -10,11 +10,11 @@
 #include <objects/objects.hpp>
 #include <objects/ship.hpp>
 
-REGISTER_FACTORY( SHIP, Ship );
+REGISTER_FACTORY( ObjectType::SHIP, Ship );
 
-Ship::Ship( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+Ship::Ship( sf::String name, const sf::Vector2f& size, const sf::Vector2f& position, const sf::Vector2f& velocity,
 	          float rotation, float rotational_velocity ) :
-	Object( SHIP, name, position, velocity, rotation, rotational_velocity ),
+	Object( ObjectType::SHIP, name, size, position, velocity, rotation, rotational_velocity ),
   m_is_player( false ),
   m_acceleration( sf::Vector2f( 0, 0 ) ),
   m_thrust( 0 ) {
@@ -48,7 +48,7 @@ void Ship::HandlePacket( const PacketPtr& packet ) {
   ( *packet ) >> type1;
 
   switch( type1 ) {
-    case COMMAND_CONTROL: {
+    case ClientToServerCommand::COMMAND_CONTROL: {
       sf::Uint16 code = 1337;
       (*packet) >> code;
 

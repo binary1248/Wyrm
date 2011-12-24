@@ -6,11 +6,11 @@
 #include <objects/objects.hpp>
 #include <objects/star.hpp>
 
-REGISTER_FACTORY( STAR, Star );
+REGISTER_FACTORY( ObjectType::STAR, Star );
 
-Star::Star( sf::String name, const sf::Vector2f& position, const sf::Vector2f& velocity,
+Star::Star( sf::String name, const sf::Vector2f& size, const sf::Vector2f& position, const sf::Vector2f& velocity,
 	          float rotation, float rotational_velocity ) :
-	Object( STAR, name, position, velocity, rotation, rotational_velocity ),
+	Object( ObjectType::STAR, name, size, position, velocity, rotation, rotational_velocity ),
   m_angle( 0 )  {
 }
 

@@ -32,7 +32,7 @@ if( SFGUI_STATIC )
 endif()
 
 if( SFML_STATIC )
-	add_definitions( -D SFML_STATIC )
+	add_definitions( -D SFML_STATIC -D GLEW_STATIC )
 endif()
 
 if( COMPILER_GCC )
@@ -49,8 +49,6 @@ endif()
 
 set(
 	SOURCES
-	${SRC_DIR}/backdrop.cpp
-	${SRC_DIR}/backdrop.hpp
 	${SRC_DIR}/config.hpp
 	${SRC_DIR}/events.cpp
 	${SRC_DIR}/events.hpp
@@ -69,6 +67,8 @@ set(
 	${SRC_DIR}/objectmanager.hpp
 	${SRC_DIR}/player.cpp
 	${SRC_DIR}/player.hpp
+	${SRC_DIR}/system.cpp
+	${SRC_DIR}/system.hpp
 	${SRC_DIR}/utility.cpp
 	${SRC_DIR}/utility.hpp
 	${SRC_DIR}/utility.inl
@@ -85,16 +85,13 @@ set(
 	${SRC_DIR}/objects/star.hpp
 	${SRC_DIR}/items/item.cpp
 	${SRC_DIR}/items/item.hpp
-	${SRC_DIR}/particlesystem/particle.cpp
-	${SRC_DIR}/particlesystem/particle.hpp
-	${SRC_DIR}/particlesystem/particleemitter.cpp
-	${SRC_DIR}/particlesystem/particleemitter.hpp
-	${SRC_DIR}/particlesystem/particlesystem.cpp
-	${SRC_DIR}/particlesystem/particlesystem.hpp
+	${SRC_DIR}/particlesystem.cpp
+	${SRC_DIR}/particlesystem.hpp
 )
 
 include_directories( ${SRC_DIR} )
 include_directories( ${SFML_INCLUDE_DIR} )
+include_directories( ${SFGUI_INCLUDE_DIR} )
 include_directories( "extlibs/noise/src" )
 
 add_subdirectory( "extlibs/noise" )
@@ -113,22 +110,22 @@ else()
 		openal
 		Xrandr
 		GL
+		GLEW
 	)
 endif()
 
 set(
 	LIBRARIES
+	${SFGUI_LIBRARY}
+	${SFML_GRAPHICS_LIBRARY}
+	${SFML_AUDIO_LIBRARY}
+	${SFML_WINDOW_LIBRARY}
+	${SFML_NETWORK_LIBRARY}
+	${SFML_SYSTEM_LIBRARY}
 	${LIBRARIES}
 	pthread
 	jpeg
 	freetype
-	GLEW
-	${SFML_SYSTEM_LIBRARY}
-	${SFML_GRAPHICS_LIBRARY}
-	${SFML_WINDOW_LIBRARY}
-	${SFML_NETWORK_LIBRARY}
-	${SFML_AUDIO_LIBRARY}
-	${SFGUI_LIBRARY}
 )
 
 target_link_libraries( "wyrm-client" ${LIBRARIES} noise )

@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 
 #include <inventory.hpp>
+#include <objects/object.hpp>
 
 class Player{
   public:
@@ -12,12 +13,16 @@ class Player{
 
     void Tick( float time );
 
-    void SetShip( sf::Uint16 id );
+    void SetAgent( sf::Uint16 id );
 
     const InventoryPtr& GetInventory() const;
 
+    const ObjectPtr GetAgent() const;
+
   private:
     InventoryPtr m_inventory;
+
+    ObjectWeakPtr m_agent;
 
     sf::String m_name;
     sf::Uint16 m_id;
@@ -25,7 +30,7 @@ class Player{
     sf::Uint16 m_tentative_agent_id;
 };
 
-enum packet_client_command {
+enum ClientToServerCommand {
   COMMAND_CONTROL = 0
 };
 

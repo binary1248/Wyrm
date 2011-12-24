@@ -1,13 +1,13 @@
 #ifndef SHIP_HPP_INCLUDED
 #define SHIP_HPP_INCLUDED
 
+#include <GL/gl.h>
+
+#include <resourcemanager.hpp>
 #include <objects/object.hpp>
 
 class Ship : public Object {
   public:
-    Ship( sf::Uint16 id, sf::String name, sf::Vector2f position,
-		      sf::Vector2f velocity, float rotation, float rotational_velocity );
-
     Ship( sf::Uint16 id, sf::Packet& packet );
 
     virtual ~Ship();
@@ -31,6 +31,9 @@ class Ship : public Object {
     sf::Text m_text;
 
     float m_image_height;
+
+		MeshPtr m_mesh;
+    GLuint m_vertex_vbo;
 
     bool m_is_player;
 };

@@ -35,7 +35,10 @@ void PlayerManager::Tick( float /*time*/ ) {
 }
 
 const PlayerPtr PlayerManager::CreatePlayer() {
-  ObjectPtr agent = Game::GetGame()->GetObjectManager()->CreateObject( SHIP );
+  ObjectPtr agent = Game::GetGame()->GetObjectManager()->CreateObject( ObjectType::SHIP );
+
+  agent->SetResourceId( 5 ); // Ship Mesh
+  agent->SetSize( sf::Vector2f( 20.0f, 20.0f ) );
 
   if( !agent ) {
     return PlayerPtr();

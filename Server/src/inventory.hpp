@@ -38,7 +38,7 @@ class Inventory {
 typedef std::shared_ptr<Inventory> InventoryPtr;
 typedef std::weak_ptr<Inventory> InventoryWeakPtr;
 
-enum packet_server_inventory {
+enum ServetToClientInventory {
   INVENTORY_ADD = 0,
   INVENTORY_REMOVE,
   INVENTORY_CHANGE

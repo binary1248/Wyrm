@@ -4,7 +4,7 @@
 #include <objects/ship.hpp>
 #include <objects/planet.hpp>
 
-enum object_t {
+enum ObjectType {
   SHIP = 0,
   PLANET = 1,
   STAR = 2

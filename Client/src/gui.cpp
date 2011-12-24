@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <config.hpp>
+#include <utility.hpp>
 #include <guievents.hpp>
 #include <network.hpp>
 #include <game.hpp>
@@ -32,7 +33,7 @@ sfg::Widget::Ptr GUI::FindWidget( const std::string& id ) {
     }
   }
 
-  std::cout << "Couldn't find widget: " << id << "\n";
+  LogConsole( "Couldn't find widget: " + string_cast( id ) );
 
   return sfg::Widget::Ptr();
 }

@@ -5,11 +5,13 @@
 #include <game.hpp>
 #include <objects/object.hpp>
 
-Object::Object( sf::Uint16 type, sf::String name, sf::Vector2f position,
+Object::Object( sf::Uint16 type, sf::String name, sf::Vector2f size, sf::Vector2f position,
 								sf::Vector2f velocity, float rotation, float rotational_velecity ) :
   m_id( Game::GetGame()->GetObjectManager()->NewID() ),
   m_type( type ),
   m_name( name ),
+  m_resource_id( 0 ),
+  m_size( size ),
   m_position( position ),
   m_velocity( velocity ),
   m_rotation( rotation ),
@@ -34,15 +36,17 @@ void Object::Update( float time ) {
 }
 
 void Object::FillPartialPacket( const PacketPtr& packet ) {
-  (*packet) << static_cast<sf::Uint16>( SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( OBJECT_UPDATE )
+  (*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_UPDATE )
 						<< GetPosition().x << GetPosition().y
 						<< GetVelocity().x << GetVelocity().y
 	          << GetRotation() << GetRotationalVelocity();
 }
 
 void Object::FillFullPacket( const PacketPtr& packet ) {
-  (*packet) << static_cast<sf::Uint16>( SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( OBJECT_STATE )
+  (*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_STATE )
 						<< GetType()       << GetName()
+						<< GetResourceId()
+						<< GetSize().x     << GetSize().y
 						<< GetPosition().x << GetPosition().y
 						<< GetVelocity().x << GetVelocity().y
 						<< GetRotation()   << GetRotationalVelocity();
@@ -96,6 +100,14 @@ bool Object::IsDeleted() const {
 	return m_delete_me;
 }
 
+const sf::Vector2f& Object::GetSize() const {
+	return m_size;
+}
+
+void Object::SetSize( const sf::Vector2f& size ) {
+	m_size = size;
+}
+
 const sf::Vector2f& Object::GetPosition() const {
 	return m_position;
 }
@@ -126,4 +138,12 @@ float Object::GetRotationalVelocity() const {
 
 void Object::SetRotationalVelocity( float rotational_velocity ) {
 	m_rotational_velocity = rotational_velocity;
+}
+
+void Object::SetResourceId( sf::Uint32 id ) {
+	m_resource_id = id;
+}
+
+sf::Uint32 Object::GetResourceId() const {
+	return m_resource_id;
 }

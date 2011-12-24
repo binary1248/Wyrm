@@ -10,19 +10,12 @@
 #include <utility.hpp>
 #include <objects/planet.hpp>
 
-REGISTER_FACTORY( PLANET, Planet );
-
-Planet::Planet( sf::Uint16 id, sf::String name, sf::Vector2f position,
-                sf::Vector2f velocity, float rotation, float rotational_velocity ) :
-	Object( PLANET, id, name, position, velocity, rotation, rotational_velocity ),
-	m_angle( 0.0f ),
-	m_sphere( 0 ),
-	m_sphere_list_id( 0 ) {
-  Init();
-}
+REGISTER_FACTORY( ObjectType::PLANET, Planet );
 
 Planet::Planet( sf::Uint16 id, sf::Packet& packet ) :
-	Object( PLANET, id, packet ) {
+	Object( ObjectType::PLANET, id, packet ),
+	m_sphere( 0 ),
+	m_sphere_list_id( 0 ) {
   packet >> m_angle >> m_anchor.x >> m_anchor.y;
 
   Init();
@@ -37,25 +30,7 @@ Planet::~Planet() {
 }
 
 void Planet::Init() {
-  GradientPoint points[8] = {
-		{ -1.0000f,   0,   0, 128, 255 }, // deeps
-		{ -0.2500f,   0,   0, 255, 255 }, // shallow
-		{  0.0000f,   0, 128, 255, 255 }, // shore
-		{  0.0625f, 240, 240,  64, 255 }, // sand
-		{  0.1250f,  32, 160,   0, 255 }, // grass
-		{  0.3750f, 224, 224,   0, 255 }, // dirt
-		{  0.7500f, 128, 128, 128, 255 }, // rock
-		{  1.0000f, 255, 255, 255, 255 }  // snow
-  };
-
-  m_texture = Game::GetGame()->GetResourceManager()->GetPlanet( 256,
-                                                                8,
-                                                                1.0f,
-                                                                0.5f,
-                                                                1.0f,
-                                                                1.0f,
-                                                                points,
-                                                                8 );
+  m_texture = Game::GetGame()->GetResourceManager()->GetTexture( GetResourceId() );
 
 	m_sphere = gluNewQuadric();
 	gluQuadricTexture( m_sphere, GL_TRUE );
@@ -65,7 +40,7 @@ void Planet::Init() {
 	glNewList( m_sphere_list_id, GL_COMPILE );
 
 	glColor4f( 1.f, 1.f, 1.f, 1.f );
-	gluSphere( m_sphere, 100.0, 64, 64 );
+	gluSphere( m_sphere, std::max( GetSize().x, GetSize().y ), 128, 128 );
 
 	glEndList();
 }
@@ -92,31 +67,23 @@ void Planet::Update( float time ) {
 }
 
 void Planet::Draw( sf::RenderWindow& target ) {
-	glMatrixMode( GL_PROJECTION );
 	glPushMatrix();
-	glLoadIdentity();
 
-	glViewport( 0, 0, target.GetWidth(), target.GetHeight() );
-	glOrtho( 0.0f, target.GetWidth(), target.GetHeight(), 0.0f, -1000.0f, 1000.0f );
-
-	glMatrixMode( GL_MODELVIEW );
-	glPushMatrix();
-	glLoadIdentity();
+	glEnable( GL_LIGHTING );
 
 	m_texture->Bind();
 
-	glTranslatef( ( GetPosition().x + static_cast<float>( target.GetWidth() ) / 2 - target.GetView().GetCenter().x ),
-								( GetPosition().y + static_cast<float>( target.GetHeight() ) / 2 - target.GetView().GetCenter().y ), 0.0f );
+	glTranslatef( ( GetPosition().x ),
+	              ( GetPosition().y ),
+	              0.0f );
 
 	glRotatef( GetRotation(), 0.0f, 0.0f, 1.0f );
 
 	glCallList( m_sphere_list_id );
 
-	glPopMatrix();
+	glDisable( GL_LIGHTING );
 
-	glMatrixMode( GL_PROJECTION );
 	glPopMatrix();
-	glMatrixMode( GL_MODELVIEW );
 }
 
 void Planet::HandlePacket( sf::Packet& packet ) {
@@ -124,22 +91,26 @@ void Planet::HandlePacket( sf::Packet& packet ) {
   packet >> type1;
 
   switch(type1) {
-    case OBJECT_UPDATE: {
+    case ServerToClientObject::OBJECT_UPDATE: {
       Object::HandlePacket( packet );
       packet >> m_angle;
       break;
     }
-    case OBJECT_STATE: {
+    case ServerToClientObject::OBJECT_STATE: {
       sf::Uint16 type;
       sf::String name;
-      packet >> type >> name;
+      sf::Uint32 resource_id;
+      sf::Vector2f size;
+      packet >> type >> name >> resource_id >> size.x >> size.y;
       assert( type == GetType() );
       SetName( name );
+      SetResourceId( resource_id );
+      SetSize( size );
       Object::HandlePacket( packet );
       packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_REMOVE: {
+    case ServerToClientObject::OBJECT_REMOVE: {
       Delete();
       break;
     }

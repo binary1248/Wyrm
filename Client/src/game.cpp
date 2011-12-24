@@ -4,7 +4,7 @@
 
 #include <SFML/Window.hpp>
 
-#include <backdrop.hpp>
+#include <system.hpp>
 #include <events.hpp>
 #include <utility.hpp>
 #include <game.hpp>
@@ -19,11 +19,19 @@ Game::Game() {
   m_window = std::make_shared<sf::RenderWindow>( sf::VideoMode(DEFAULT_WIDTH, DEFAULT_HEIGHT, 32),
 	                                               "WYRM",
 	                                               sf::Style::Titlebar | sf::Style::Close,
-	                                               sf::ContextSettings(24,    // Depth buffer
-	                                                                    8,    // Stencil buffer
-	                                                                    8) ); // AA level
+	                                               sf::ContextSettings( 0,    // Depth buffer
+	                                                                    0,    // Stencil buffer
+	                                                                    0,    // AA level
+	                                                                    2,    // OpenGL Major Version
+	                                                                    1 ) );// OpenGL Minor Version
 
-	//m_window->EnableVerticalSync( true );
+	glShadeModel( GL_SMOOTH );
+
+	glDisable( GL_DEPTH_TEST );
+
+	glPointSize( 1.0f );
+
+	m_window->EnableVerticalSync( false );
 
   LoadKeymap();
 
@@ -66,7 +74,7 @@ void Game::Run() {
       counter = 0;
     }
 
-    m_window->SetFramerateLimit(200);
+    //m_window->SetFramerateLimit(200);
   }
 }
 
@@ -102,8 +110,12 @@ const ResourceManagerPtr& Game::GetResourceManager() const {
   return m_resourcemanager;
 }
 
-const BackdropPtr& Game::GetBackdrop() const {
-  return m_backdrop;
+const SystemPtr& Game::GetSystem() const {
+  return m_system;
+}
+
+void Game::SetSystem( const SystemPtr& system ) {
+	m_system = system;
 }
 
 void Game::Resize( float width, float height ) {
@@ -111,13 +123,21 @@ void Game::Resize( float width, float height ) {
   m_window->SetView( view );
 }
 
-const sf::Vector2f Game::GetDefaultResolution() {
+const sf::Vector2f Game::GetDefaultResolution() const {
   return sf::Vector2f( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 }
 
-const sf::Vector2f Game::GetCurrentResolution() {
+const sf::Vector2f Game::GetCurrentResolution() const {
   sf::View view = m_window->GetView();
   return view.GetSize();
+}
+
+const sf::View& Game::GetCurrentView() const {
+  return m_window->GetView();
+}
+
+const std::shared_ptr<sf::RenderWindow>& Game::GetWindow() const {
+	return m_window;
 }
 
 void Game::Tick( float time ) {
@@ -127,26 +147,44 @@ void Game::Tick( float time ) {
 
   m_networkhandler->Tick();
 
-  // Clear the screen (fill it with black color)
-  m_window->Clear( sf::Color( 0, 0, 0, 255 ) );
+	glMatrixMode( GL_PROJECTION );
+	glPushMatrix();
+	glLoadIdentity();
 
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glOrtho( 0.0f, m_window->GetWidth(), m_window->GetHeight(), 0.0f, -512.0f, 512.0f );
+
+	PlayerPtr player = GetPlayer();
+
+	if( player && player->GetAgent() ) {
+		glTranslatef( static_cast<float>( m_window->GetWidth() ) / 2.0f - player->GetAgent()->GetPosition().x,
+		              static_cast<float>( m_window->GetHeight() ) / 2.0f - player->GetAgent()->GetPosition().y,
+		              0.0f );
+	}
+
+	glMatrixMode( GL_MODELVIEW );
 
   if( m_networkhandler->IsAuthenticated() ) {
-    if( !m_backdrop ) {
-      m_backdrop = std::make_shared<Backdrop>( m_window );
-    }
-
     m_objectmanager->Tick( time );
 
     if( m_player ) {
       m_player->Tick( time );
     }
 
-    m_backdrop->Draw( *m_window, time );
+		if( m_system ) {
+      m_system->Draw( *m_window, time );
+    } else {
+			m_window->Clear( sf::Color( 0, 0, 0, 255 ) );
+    }
 
     m_objectmanager->DrawAll( *m_window );
-  }
+  } else {
+		m_window->Clear( sf::Color( 0, 0, 0, 255 ) );
+	}
+
+	glMatrixMode( GL_PROJECTION );
+	glPopMatrix();
+
+	glMatrixMode( GL_MODELVIEW );
 
   m_gui->Draw( *m_window );
 

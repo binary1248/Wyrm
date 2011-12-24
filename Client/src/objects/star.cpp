@@ -4,49 +4,42 @@
 #include <game.hpp>
 #include <network.hpp>
 #include <objectmanager.hpp>
-#include <particlesystem/particlesystem.hpp>
+#include <particlesystem.hpp>
 #include <objects/objects.hpp>
 #include <utility.hpp>
 #include <objects/star.hpp>
 
-REGISTER_FACTORY( STAR, Star );
-
-Star::Star( sf::Uint16 id, sf::String name, sf::Vector2f position,
-            sf::Vector2f velocity, float rotation, float rotational_velocity ) :
-	Object( STAR, id, name, position, velocity, rotation, rotational_velocity ),
-	m_angle( 0.0f ) {
-  CreateParticleSystem();
-}
+REGISTER_FACTORY( ObjectType::STAR, Star );
 
 Star::Star( sf::Uint16 id, sf::Packet& packet ) :
-	Object( STAR, id, packet ) {
+	Object( ObjectType::STAR, id, packet ) {
   packet >> m_angle >> m_anchor.x >> m_anchor.y;
 
   CreateParticleSystem();
+
+  glEnable( GL_LIGHTING );
+
+	glEnable( GL_LIGHT0 );
+
+	GLfloat light_ambient[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	GLfloat light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glLightfv( GL_LIGHT0, GL_AMBIENT, light_ambient );
+	glLightfv( GL_LIGHT0, GL_DIFFUSE, light_diffuse );
+
+	GLfloat light_position[] = { GetPosition().x, GetPosition().y, 0.0f, 1.0f };
+
+	glLightfv( GL_LIGHT0, GL_POSITION, light_position );
+
+	glDisable( GL_LIGHTING );
 }
 
 Star::~Star() {
 }
 
 void Star::CreateParticleSystem() {
-  m_particle_system = std::make_shared<ParticleSystem>();
-
-  ParticlePtr particle = std::make_shared<Particle>( Game::GetGame()->GetResourceManager()->GetParticle( 64, 255.0f, 1.8f ) );
-  particle->SetVelocity( sf::Vector2f( 8.0f, 0.0f ) );
-  particle->SetColorStart( sf::Color( 255, 255, 220, 255 ) );
-  particle->SetColorEnd( sf::Color( 255, 200, 0, 0 ) );
-  particle->SetLifetime( 10.0f );
-  particle->SetSizeStart( sf::Vector2f( 200.0f, 200.0f ) );
-  particle->SetSizeEnd( sf::Vector2f( 200.0f, 200.0f ) );
-
-  ParticleEmitterPtr emitter = std::make_shared<ParticleEmitter>();
-  emitter->SetPrototype( particle );
-  emitter->SetRate( 5.0f );
-  emitter->SetSpread( 180.0f );
-
-  m_particle_system->SetPosition( GetPosition() );
-  m_particle_system->AddEmitter( emitter );
-  m_particle_system->Start( 12.0f );
+	m_particle_system = Game::GetGame()->GetResourceManager()->GetParticleSystem( GetResourceId() );
+	m_particle_system->SetPosition( GetPosition() );
+  m_particle_system->Start( 100.0f );
 }
 
 void Star::Update( float time ) {
@@ -67,6 +60,13 @@ void Star::Update( float time ) {
   position.y = static_cast<float>( sin( clean_angle( m_angle ) ) ) * GetVelocity().y;
 
   position += m_anchor;
+
+  if( GetPosition() != position ) {
+		GLfloat light_position[] = { position.x, position.y, 0.0f, 1.0f };
+
+		glLightfv( GL_LIGHT0, GL_POSITION, light_position );
+  }
+
   SetPosition( position );
 
   m_particle_system->SetPosition( position );
@@ -83,22 +83,26 @@ void Star::HandlePacket( sf::Packet& packet ) {
   packet >> type1;
 
   switch(type1) {
-    case OBJECT_UPDATE: {
+    case ServerToClientObject::OBJECT_UPDATE: {
       Object::HandlePacket( packet );
       packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_STATE: {
+    case ServerToClientObject::OBJECT_STATE: {
       sf::Uint16 type;
       sf::String name;
-      packet >> type >> name;
+      sf::Uint32 resource_id;
+      sf::Vector2f size;
+      packet >> type >> name >> resource_id >> size.x >> size.y;
       assert( type == GetType() );
       SetName( name );
+      SetResourceId( resource_id );
+      SetSize( size );
       Object::HandlePacket( packet );
 			packet >> m_angle >> m_anchor.x >> m_anchor.y;
       break;
     }
-    case OBJECT_REMOVE: {
+    case ServerToClientObject::OBJECT_REMOVE: {
       Delete();
       break;
     }

@@ -1,8 +1,9 @@
 #ifndef PLAYER_HPP_INCLUDED
 #define PLAYER_HPP_INCLUDED
 
-#include <queue>
+#include <vector>
 #include <memory>
+#include <set>
 
 #include <SFML/Network.hpp>
 
@@ -31,6 +32,9 @@ class Player : public std::enable_shared_from_this<Player> {
     void SetName( std::string name );
 
     InventoryWeakPtr GetInventory() const;
+
+    void LoadResource( sf::Uint32 id );
+    bool IsResourceLoaded( sf::Uint32 id ) const;
   private:
     void Send( PacketPtr p );
     void HandleSocketData();
@@ -49,18 +53,21 @@ class Player : public std::enable_shared_from_this<Player> {
     bool m_delete_me;
     bool m_half_open;
 
-    std::queue<PacketPtr> m_send_buffer;
-    std::queue<PacketPtr> m_recv_buffer;
+    std::deque<PacketPtr> m_send_buffer;
+    std::deque<PacketPtr> m_recv_buffer;
 
     // Character vars
     ObjectWeakPtr m_agent;
     InventoryPtr m_inventory;
+
+    // Resource control vars
+    std::set<sf::Uint32> m_loaded_resources;
 };
 
 typedef std::shared_ptr<Player> PlayerPtr;
 typedef std::weak_ptr<Player> PlayerWeakPtr;
 
-enum packet_client_command {
+enum ClientToServerCommand {
   COMMAND_CONTROL = 0
 };
 

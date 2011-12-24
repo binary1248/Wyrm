@@ -10,7 +10,7 @@ class NetworkHandler {
     NetworkHandler();
     ~NetworkHandler();
 
-    int Connect( sf::String username, sf::String password );
+    int Connect( sf::String username, sf::String password, sf::String address );
     void Disconnect();
 
     void Send( sf::Packet packet );
@@ -32,15 +32,17 @@ class NetworkHandler {
 typedef std::shared_ptr<NetworkHandler> NetworkHandlerPtr;
 
 #define PROTOCOL_VER_MAJOR 0.1f
-#define PROTOCOL_VER_MINOR 0.8f
+#define PROTOCOL_VER_MINOR 0.9f
 
-enum packet_server {
+enum ServerToClient {
   SERVER_OBJECT = 0,
   SERVER_SET_ID,
-  SERVER_INVENTORY
+  SERVER_INVENTORY,
+  SERVER_RESOURCE,
+  SERVER_SYSTEM
 };
 
-enum packet_client {
+enum ClientToServer {
   CLIENT_COMMAND = 0
 };
 

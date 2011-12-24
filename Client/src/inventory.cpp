@@ -4,6 +4,7 @@
 //#include <SFGUI/ListBox.hpp>
 
 #include <items/item.hpp>
+#include <utility.hpp>
 #include <game.hpp>
 #include <inventory.hpp>
 
@@ -41,14 +42,14 @@ void Inventory::HandlePacket( sf::Packet& packet ) {
   ItemPtr item;
 
   switch( code ) {
-    case INVENTORY_ADD:
+    case ServerToClientInventory::INVENTORY_ADD:
       packet >> type;
       packet >> name;
       packet >> amount;
       item = std::make_shared<Item>( name.ToAnsiString(), type.ToAnsiString() );
       //AddItem( item, amount );
       break;
-    case INVENTORY_CHANGE:
+    case ServerToClientInventory::INVENTORY_CHANGE:
       packet >> type;
       packet >> name;
       packet >> amount;
@@ -82,7 +83,7 @@ void Inventory::HandlePacket( sf::Packet& packet ) {
       }
 */
       break;
-    case INVENTORY_REMOVE:
+    case ServerToClientInventory::INVENTORY_REMOVE:
       packet >> type;
       packet >> name;
 /*
@@ -112,7 +113,7 @@ void Inventory::HandlePacket( sf::Packet& packet ) {
 */
       break;
     default:
-      // std::cout << "Unknown inventory action.\n";
+      // LogConsole( "Unknown inventory action." );
       break;
   }
 }
@@ -157,7 +158,7 @@ void Inventory::RemoveItem(ItemPtr item, size_t amount) {
       }
 
       if( amount > i->second ) {
-        //std::cout << "Tried to remove more items than in inventory.\n";
+        //LogConsole( "Tried to remove more items than in inventory." );
       } else {
         i->second -= amount;
       }

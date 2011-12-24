@@ -7,7 +7,7 @@
 
 class Star : public Object {
   public:
-    Star( sf::String name = "",
+    Star( sf::String name = "", const sf::Vector2f& size = sf::Vector2f( 1.0f, 1.0f ),
 					const sf::Vector2f& position = sf::Vector2f( 0, 0 ),
 					const sf::Vector2f& velocity = sf::Vector2f( 0, 0 ),
 					float rotation = 0, float rotational_velocity = 0 );

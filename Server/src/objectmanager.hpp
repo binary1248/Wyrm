@@ -52,7 +52,7 @@ class ObjectManager {
     sf::Uint16 NewID();
 
   private:
-		void CreateSystem( std::string name );
+		void CreateSystem( std::string name, sf::Uint32 background_resource_id );
 
 		void LoadObjects();
 

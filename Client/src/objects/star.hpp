@@ -2,13 +2,10 @@
 #define STAR_HPP_INCLUDED
 
 #include <objects/object.hpp>
-#include <particlesystem/particlesystem.hpp>
+#include <particlesystem.hpp>
 
 class Star : public Object {
   public:
-    Star( sf::Uint16 id, sf::String name, sf::Vector2f position,
-		      sf::Vector2f velocity, float rotation, float rotational_velocity );
-
     Star( sf::Uint16 id, sf::Packet& packet );
 
     virtual ~Star();

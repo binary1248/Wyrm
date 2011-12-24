@@ -6,7 +6,7 @@
 #include <gui.hpp>
 #include <network.hpp>
 #include <player.hpp>
-#include <backdrop.hpp>
+#include <system.hpp>
 
 class Game {
   public:
@@ -24,12 +24,15 @@ class Game {
     const NetworkHandlerPtr& GetNetworkHandler() const;
     const ObjectManagerPtr& GetObjectManager() const;
     const ResourceManagerPtr& GetResourceManager() const;
-    const BackdropPtr& GetBackdrop() const;
+    const SystemPtr& GetSystem() const;
+    void SetSystem( const SystemPtr& system );
 
     void Resize( float width, float height );
 
-    const sf::Vector2f GetDefaultResolution();
-    const sf::Vector2f GetCurrentResolution();
+    const sf::Vector2f GetDefaultResolution() const;
+    const sf::Vector2f GetCurrentResolution() const;
+    const sf::View& GetCurrentView() const;
+    const std::shared_ptr<sf::RenderWindow>& GetWindow() const;
 
   private:
     Game();
@@ -43,7 +46,7 @@ class Game {
     NetworkHandlerPtr m_networkhandler;
     ObjectManagerPtr m_objectmanager;
     ResourceManagerPtr m_resourcemanager;
-    BackdropPtr m_backdrop;
+    SystemPtr m_system;
     GUIPtr m_gui;
 
     PlayerPtr m_player;

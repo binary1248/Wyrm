@@ -1,6 +1,6 @@
 Wyrm
 ====
-Copyright 2007-2011 binary1248 ( binary1248@hotmail.com )
+Copyright 2007-2012 binary1248 ( binary1248@hotmail.com )
 
 License
 -------
@@ -48,6 +48,4 @@ Credits
 -------
 - [SFML](http://www.sfml-dev.org/) ( Awesome 2D Graphics, Sound, Network etc. library )
 - [SFGUI](https://github.com/TankOs/SFGUI) ( Just as awesome GUI library for SFML )
-- [boost](http://www.boost.org/) ( I don't use boost directly anymore, but their features made it into C++11 )
 - [libnoise](http://libnoise.sourceforge.net/) ( Neat noise generation library for procedural generation )
-- and all the other libraries I used but forgot to mention here...
