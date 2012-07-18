@@ -5,11 +5,11 @@
 
 void handle_interrupt( int /*param*/ ) {
 	std::cout << std::endl << "Caught SIGINT, stopping..." << std::endl;
-  Game::GetGame()->Stop();
+	Game::GetGame()->Stop();
 }
 
 int main( int /*argc*/, char** /*argv*/ ) {
-  signal( SIGINT, handle_interrupt );
+	signal( SIGINT, handle_interrupt );
 
-  return Game::GetGame()->Run();
+	return Game::GetGame()->Run();
 }

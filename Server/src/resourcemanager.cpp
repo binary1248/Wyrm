@@ -17,8 +17,8 @@ ResourceManager::~ResourceManager() {
 
 void ResourceManager::Tick( float /*time*/ ) {
 	if( !m_resources_loaded ) {
-    LoadResources();
-  }
+		LoadResources();
+	}
 
 
 }
@@ -30,12 +30,12 @@ void ResourceManager::FillResourcePacket( sf::Uint32 id, PacketPtr packet ) cons
 		Die( "Could not find resource with ID: " + string_cast( id ) + "\n" );
 	}
 
-	packet->Append( iter->second->GetData(), iter->second->GetDataSize() );
+	packet->append( iter->second->getData(), iter->second->getDataSize() );
 }
 
 void ResourceManager::AddPlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
-		                                   float contrast, float brightness,
-		                                   GradientPoint* gradient, std::size_t num_gradient_points ) {
+                                       float contrast, float brightness,
+                                       GradientPoint* gradient, std::size_t num_gradient_points ) {
 	if( m_resources.find( id ) != m_resources.end() ) {
 		Die( "Resource " + string_cast( id ) + " already exists.\n" );
 	}
@@ -52,14 +52,14 @@ void ResourceManager::AddPlaneTexture( sf::Uint32 id, int width, int height, int
 		(*packet) << gradient[ index ].g;
 		(*packet) << gradient[ index ].b;
 		(*packet) << gradient[ index ].a;
-  }
+	}
 
 	m_resources.insert( std::pair<sf::Uint32, const PacketPtr>( id, packet ) );
 }
 
 void ResourceManager::AddSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
-		                                    float contrast, float brightness,
-		                                    GradientPoint* gradient, std::size_t num_gradient_points ) {
+                                        float contrast, float brightness,
+                                        GradientPoint* gradient, std::size_t num_gradient_points ) {
 	if( m_resources.find( id ) != m_resources.end() ) {
 		Die( "Resource " + string_cast( id ) + " already exists.\n" );
 	}
@@ -76,7 +76,7 @@ void ResourceManager::AddSphereTexture( sf::Uint32 id, int size, int octaves, fl
 		(*packet) << gradient[ index ].g;
 		(*packet) << gradient[ index ].b;
 		(*packet) << gradient[ index ].a;
-  }
+	}
 
 	m_resources.insert( std::pair<sf::Uint32, const PacketPtr>( id, packet ) );
 }

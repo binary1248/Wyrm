@@ -47,7 +47,7 @@ struct ParticleSystem {
 };
 
 class ResourceManager {
-  public:
+	public:
 		enum ResourceType {
 			PLANE = 0,
 			SPHERE = 1,
@@ -55,18 +55,18 @@ class ResourceManager {
 			PARTICLESYSTEM = 3
 		};
 
-    ResourceManager();
-    ~ResourceManager();
+		ResourceManager();
+		~ResourceManager();
 
-    void Tick( float time );
+		void Tick( float time );
 
 		void FillResourcePacket( sf::Uint32 id, PacketPtr packet ) const;
 
-    void AddPlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
+		void AddPlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
 		                      float contrast, float brightness,
 		                      GradientPoint* gradient, std::size_t num_gradient_points );
 
-    void AddSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
+		void AddSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
 		                       float contrast, float brightness,
 		                       GradientPoint* gradient, std::size_t num_gradient_points );
 
@@ -74,12 +74,12 @@ class ResourceManager {
 
 		void AddMesh( sf::Uint32 id, std::string mesh_file );
 
-  private:
+	private:
 		void LoadResources();
 
-    std::map<sf::Uint32, const PacketPtr> m_resources;
+		std::map<sf::Uint32, const PacketPtr> m_resources;
 
-    bool m_resources_loaded;
+		bool m_resources_loaded;
 };
 
 typedef std::shared_ptr<ResourceManager> ResourceManagerPtr;

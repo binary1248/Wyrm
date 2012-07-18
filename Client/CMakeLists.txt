@@ -126,6 +126,7 @@ set(
 	pthread
 	jpeg
 	freetype
+	noise
 )
 
-target_link_libraries( "wyrm-client" ${LIBRARIES} noise )
+target_link_libraries( "wyrm-client" ${LIBRARIES} )

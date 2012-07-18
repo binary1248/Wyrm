@@ -10,35 +10,34 @@
 #define NUM_BACKDROP_PARTICLES 300
 
 class System {
-  public:
-    System( std::shared_ptr<sf::RenderWindow> window, sf::Packet& packet,
+	public:
+		System( std::shared_ptr<sf::RenderWindow> window, sf::Packet& packet,
 							std::size_t num_particles = NUM_BACKDROP_PARTICLES );
-    ~System();
+		~System();
 
-    void Draw( sf::RenderWindow& target, float time );
+		void Draw( sf::RenderWindow& target, float time );
 
-  private:
+	private:
 		sf::Uint16 m_id;
 		sf::String m_name;
 
 		sf::Uint32 m_background_resource_id;
 
-    sf::Vector2f m_backdrop_velocity;
-    sf::Clock m_last_draw;
+		sf::Vector2f m_backdrop_velocity;
 
-    TexturePtr m_texture;
+		TexturePtr m_texture;
 
-    sf::Vector2f* m_particle_positions;
-    GLfloat* m_particle_vertices;
-    float* m_particle_velocities;
+		sf::Vector2f* m_particle_positions;
+		GLfloat* m_particle_vertices;
+		float* m_particle_velocities;
 
-    std::size_t m_num_particles;
+		std::size_t m_num_particles;
 
-    GLuint m_particle_vbo;
-    GLuint m_background_vbo;
+		GLuint m_particle_vbo;
+		GLuint m_background_vbo;
 
-    int m_width;
-    int m_height;
+		int m_width;
+		int m_height;
 };
 
 typedef std::shared_ptr<System> SystemPtr;

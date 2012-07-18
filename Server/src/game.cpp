@@ -5,11 +5,11 @@
 GamePtr Game::m_instance;
 
 GamePtr Game::GetGame() {
-  if( !Game::m_instance ) {
-    m_instance.reset( new Game() );
-  }
+	if( !Game::m_instance ) {
+		m_instance.reset( new Game() );
+	}
 
-  return m_instance;
+	return m_instance;
 }
 
 Game::Game() :
@@ -18,36 +18,40 @@ Game::Game() :
 	m_networkmanager( std::make_shared<NetworkManager>() ),
 	m_resourcemanager( std::make_shared<ResourceManager>() ),
 	m_running( false ) {
+	m_last_frame = std::chrono::high_resolution_clock::now();
 }
 
 Game::~Game() {
 }
 
 int Game::Run() {
-  m_running = true;
+	m_running = true;
 
-  sf::Clock clock;
+	if( !m_networkmanager->IsListening() ) {
+		return EXIT_FAILURE;
+	}
 
-  if( !m_networkmanager->IsListening() ) {
-    return EXIT_FAILURE;
-  }
+	LogConsole( "Running..." );
 
-  LogConsole( "Running..." );
+	while ( m_running ) {
+		auto current_frame = std::chrono::high_resolution_clock::now();
+		auto micro_secs = std::chrono::duration_cast<std::chrono::microseconds>( current_frame - m_last_frame ).count();
+		m_last_frame = current_frame;
 
-  while ( m_running ) {
-    float ElapsedTime = static_cast<float>( clock.GetElapsedTime() ) / 1000.0f;
-    clock.Reset();
+		float ElapsedTime = static_cast<float>( micro_secs ) / 1000000.0f;
 
-    Tick( ElapsedTime );
+		Tick( ElapsedTime );
 
-    int sleepTime = 10 - clock.GetElapsedTime();
-    sleepTime = ( sleepTime > 0 ) ? sleepTime : 0;
-    sf::Sleep( sleepTime ); // Limit 100 FPS
-  }
+		current_frame = std::chrono::high_resolution_clock::now();
+		auto milli_secs = std::chrono::duration_cast<std::chrono::milliseconds>( current_frame - m_last_frame ).count();
+		int sleepTime = 10 - static_cast<int>( milli_secs );
+		sleepTime = ( sleepTime > 0 ) ? sleepTime : 0;
+		sf::sleep( sf::milliseconds( sleepTime ) ); // Limit 100 FPS
+	}
 
-  LogConsole( "Shutting down..." );;
+	LogConsole( "Shutting down..." );;
 
-  return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
 
 void Game::Stop() {
@@ -55,10 +59,10 @@ void Game::Stop() {
 }
 
 void Game::Tick( float time ) {
-  m_networkmanager->Tick( time );
-  m_resourcemanager->Tick( time );
-  m_objectmanager->Tick( time );
-  m_playermanager->Tick( time );
+	m_networkmanager->Tick( time );
+	m_resourcemanager->Tick( time );
+	m_objectmanager->Tick( time );
+	m_playermanager->Tick( time );
 }
 
 const PlayerManagerPtr& Game::GetPlayerManager() const {

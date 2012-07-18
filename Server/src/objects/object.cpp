@@ -7,49 +7,49 @@
 
 Object::Object( sf::Uint16 type, sf::String name, sf::Vector2f size, sf::Vector2f position,
 								sf::Vector2f velocity, float rotation, float rotational_velecity ) :
-  m_id( Game::GetGame()->GetObjectManager()->NewID() ),
-  m_type( type ),
-  m_name( name ),
-  m_resource_id( 0 ),
-  m_size( size ),
-  m_position( position ),
-  m_velocity( velocity ),
-  m_rotation( rotation ),
-  m_rotational_velocity( rotational_velecity ),
-  m_delete_me( false ),
-  m_dirty( true ),
-  m_fresh( true ) {
-  LogConsole( "Created object " + string_cast( m_id ) + " of type " + string_cast( m_type ) );
+	m_id( Game::GetGame()->GetObjectManager()->NewID() ),
+	m_type( type ),
+	m_name( name ),
+	m_resource_id( 0 ),
+	m_size( size ),
+	m_position( position ),
+	m_velocity( velocity ),
+	m_rotation( rotation ),
+	m_rotational_velocity( rotational_velecity ),
+	m_delete_me( false ),
+	m_dirty( true ),
+	m_fresh( true ) {
+	LogConsole( "Created object " + string_cast( m_id ) + " of type " + string_cast( m_type ) );
 }
 
 Object::~Object() {
-  LogConsole( "Destroyed object " + string_cast( m_id ) + " of type " + string_cast( m_type ) );
+	LogConsole( "Destroyed object " + string_cast( m_id ) + " of type " + string_cast( m_type ) );
 }
 
 void Object::Update( float time ) {
-  if( IsDeleted() ) {
-    return;
-  }
+	if( IsDeleted() ) {
+		return;
+	}
 
-  m_rotation += ( m_rotational_velocity * time );
-  m_position += ( m_velocity * time );
+	m_rotation += ( m_rotational_velocity * time );
+	m_position += ( m_velocity * time );
 }
 
 void Object::FillPartialPacket( const PacketPtr& packet ) {
-  (*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_UPDATE )
-						<< GetPosition().x << GetPosition().y
-						<< GetVelocity().x << GetVelocity().y
+	(*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_UPDATE )
+	          << GetPosition().x << GetPosition().y
+	          << GetVelocity().x << GetVelocity().y
 	          << GetRotation() << GetRotationalVelocity();
 }
 
 void Object::FillFullPacket( const PacketPtr& packet ) {
-  (*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_STATE )
-						<< GetType()       << GetName()
-						<< GetResourceId()
-						<< GetSize().x     << GetSize().y
-						<< GetPosition().x << GetPosition().y
-						<< GetVelocity().x << GetVelocity().y
-						<< GetRotation()   << GetRotationalVelocity();
+	(*packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_OBJECT ) << GetId() << static_cast<sf::Uint16>( ServerToClientObject::OBJECT_STATE )
+	          << GetType() << GetName()
+	          << GetResourceId()
+	          << GetSize().x << GetSize().y
+	          << GetPosition().x << GetPosition().y
+	          << GetVelocity().x << GetVelocity().y
+	          << GetRotation() << GetRotationalVelocity();
 }
 
 sf::Uint16 Object::GetId() const {

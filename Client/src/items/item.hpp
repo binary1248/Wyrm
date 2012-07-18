@@ -5,18 +5,18 @@
 #include <memory>
 
 class Item {
-  public:
-    Item( std::string name, std::string type );
-    ~Item();
+	public:
+		Item( std::string name, std::string type );
+		~Item();
 
-    const std::string& GetName() const;
-    const std::string& GetType() const;
+		const std::string& GetName() const;
+		const std::string& GetType() const;
 
-  private:
-    std::string m_name;
-    std::string m_type;
+	private:
+		std::string m_name;
+		std::string m_type;
 
-    bool m_equipable;
+		bool m_equipable;
 };
 
 typedef std::shared_ptr<Item> ItemPtr;

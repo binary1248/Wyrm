@@ -2,6 +2,7 @@
 #define GAME_HPP_INCLUDED
 
 #include <memory>
+#include <chrono>
 
 #include <objectmanager.hpp>
 #include <playermanager.hpp>
@@ -9,32 +10,34 @@
 #include <resourcemanager.hpp>
 
 class Game {
-  public:
-    ~Game();
+	public:
+		~Game();
 
-    static std::shared_ptr<Game> GetGame();
+		static std::shared_ptr<Game> GetGame();
 
-    int Run();
-    void Stop();
+		int Run();
+		void Stop();
 
-    const PlayerManagerPtr& GetPlayerManager() const;
-    const ObjectManagerPtr& GetObjectManager() const;
-    const NetworkManagerPtr& GetNetworkManager() const;
-    const ResourceManagerPtr& GetResourceManager() const;
+		const PlayerManagerPtr& GetPlayerManager() const;
+		const ObjectManagerPtr& GetObjectManager() const;
+		const NetworkManagerPtr& GetNetworkManager() const;
+		const ResourceManagerPtr& GetResourceManager() const;
 
-  private:
-    Game();
+	private:
+		Game();
 
-    void Tick( float time );
+		void Tick( float time );
 
-    static std::shared_ptr<Game> m_instance;
+		static std::shared_ptr<Game> m_instance;
 
-    ObjectManagerPtr m_objectmanager;
-    PlayerManagerPtr m_playermanager;
-    NetworkManagerPtr m_networkmanager;
-    ResourceManagerPtr m_resourcemanager;
+		std::chrono::time_point<std::chrono::high_resolution_clock> m_last_frame;
 
-    bool m_running;
+		ObjectManagerPtr m_objectmanager;
+		PlayerManagerPtr m_playermanager;
+		NetworkManagerPtr m_networkmanager;
+		ResourceManagerPtr m_resourcemanager;
+
+		bool m_running;
 };
 
 typedef std::shared_ptr<Game> GamePtr;

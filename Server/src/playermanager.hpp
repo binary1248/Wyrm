@@ -12,19 +12,19 @@ class Game;
 class Object;
 
 class PlayerManager {
-  public:
-    PlayerManager();
-    ~PlayerManager();
+	public:
+		PlayerManager();
+		~PlayerManager();
 
-    void Tick( float time );
+		void Tick( float time );
 
-    const PlayerPtr CreatePlayer();
+		const PlayerPtr CreatePlayer();
 
-    sf::Uint16 NewID();
+		sf::Uint16 NewID();
 
-  private:
-    std::list<PlayerPtr> m_players;
-    sf::Uint16 m_lastId;
+	private:
+		std::list<PlayerPtr> m_players;
+		sf::Uint16 m_lastId;
 };
 
 typedef std::shared_ptr<PlayerManager> PlayerManagerPtr;

@@ -11,7 +11,7 @@
 typedef std::shared_ptr<sf::Texture> TexturePtr;
 
 class ParticleSystem {
-  public:
+	public:
 		struct Particle {
 			struct Color {
 				float r, g, b, a;
@@ -44,28 +44,28 @@ class ParticleSystem {
 			float queue;
 		};
 
-    ParticleSystem();
-    ~ParticleSystem();
+		ParticleSystem();
+		~ParticleSystem();
 
-    ParticleSystem( const ParticleSystem& particle_system );
+		ParticleSystem( const ParticleSystem& particle_system );
 
-    void Draw( sf::RenderTarget& target );
+		void Draw( sf::RenderTarget& target );
 
-    void Tick( float time );
-    void Start( float time = 0.0f );
-    void Stop();
-    void StartEmitting();
-    void StopEmitting();
+		void Tick( float time );
+		void Start( float time = 0.0f );
+		void Stop();
+		void StartEmitting();
+		void StopEmitting();
 
-    void AddEmitter( ParticleEmitter emitter );
-    const std::vector<ParticleEmitter>& GetEmitters() const;
+		void AddEmitter( ParticleEmitter emitter );
+		const std::vector<ParticleEmitter>& GetEmitters() const;
 
-    const sf::Vector2f& GetPosition() const;
-    void SetPosition( const sf::Vector2f& position );
+		const sf::Vector2f& GetPosition() const;
+		void SetPosition( const sf::Vector2f& position );
 
-    void SetTextureParameters( int size, float sigma2, float exp );
+		void SetTextureParameters( int size, float sigma2, float exp );
 
-  private:
+	private:
 		struct ParticleVBOData {
 			GLfloat r0, g0, b0, a0, u0, v0, x0, y0;
 			GLfloat r1, g1, b1, a1, u1, v1, x1, y1;
@@ -73,21 +73,21 @@ class ParticleSystem {
 			GLfloat r3, g3, b3, a3, u3, v3, x3, y3;
 		};
 
-    sf::Vector2f m_position;
+		sf::Vector2f m_position;
 
-    std::vector<ParticleEmitter> m_emitters;
-    std::vector<Particle> m_particles;
+		std::vector<ParticleEmitter> m_emitters;
+		std::vector<Particle> m_particles;
 
-    std::vector<ParticleVBOData> m_particle_vbo_data;
+		std::vector<ParticleVBOData> m_particle_vbo_data;
 
-    GLuint m_particles_vbo;
+		GLuint m_particles_vbo;
 
 		TexturePtr m_texture;
 
-    static std::mt19937 rng;
+		static std::mt19937 rng;
 
-    bool m_running;
-    bool m_emitting;
+		bool m_running;
+		bool m_emitting;
 };
 
 typedef std::shared_ptr<ParticleSystem> ParticleSystemPtr;

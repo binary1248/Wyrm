@@ -10,7 +10,7 @@
 #include <objectmanager.hpp>
 
 int main( int /*argc*/, char** /*argv*/ ) {
-  Game::GetGame()->Run();
+	Game::GetGame()->Run();
 
-  return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }

@@ -12,34 +12,34 @@
 
 System::System( std::shared_ptr<sf::RenderWindow> window, sf::Packet& packet, std::size_t num_particles ) :
 	m_num_particles( num_particles ),
-	m_width( window->GetWidth() ),
-	m_height( window->GetHeight() ) {
-  m_backdrop_velocity = sf::Vector2f( 0.0f, 0.0f );
+	m_width( window->getSize().x ),
+	m_height( window->getSize().y ) {
+	m_backdrop_velocity = sf::Vector2f( 0.0f, 0.0f );
 
 	packet >> m_id;
 	packet >> m_name;
 	packet >> m_background_resource_id;
 
-  m_texture = Game::GetGame()->GetResourceManager()->GetTexture( 1 );
+	m_texture = Game::GetGame()->GetResourceManager()->GetTexture( 1 );
 
-  std::mt19937 rng;
-  std::uniform_real_distribution<float> position_x_distribution( 0.0f, static_cast<float>( window->GetWidth() ) - 1.0f );
-  std::uniform_real_distribution<float> position_y_distribution( 0.0f, static_cast<float>( window->GetHeight() ) - 1.0f );
-  std::uniform_real_distribution<float> velocity_distribution( 0.0f, 0.8f );
+	std::mt19937 rng;
+	std::uniform_real_distribution<float> position_x_distribution( 0.0f, static_cast<float>( window->getSize().x ) - 1.0f );
+	std::uniform_real_distribution<float> position_y_distribution( 0.0f, static_cast<float>( window->getSize().y ) - 1.0f );
+	std::uniform_real_distribution<float> velocity_distribution( 0.0f, 0.8f );
 
 	m_particle_positions = new sf::Vector2f[ m_num_particles ];
 	m_particle_vertices = new GLfloat[ m_num_particles * 2 ];
 	m_particle_velocities = new float[ m_num_particles ];
 
-  for( std::size_t index = 0; index < m_num_particles; ++index ) {
+	for( std::size_t index = 0; index < m_num_particles; ++index ) {
 		m_particle_positions[ index ].x = position_x_distribution( rng );
 		m_particle_positions[ index ].y = position_y_distribution( rng );
 
 		m_particle_velocities[ index ] = velocity_distribution( rng );
-  }
+	}
 
-  glGenBuffers( 1, &m_particle_vbo );
-  glGenBuffers( 1, &m_background_vbo );
+	glGenBuffers( 1, &m_particle_vbo );
+	glGenBuffers( 1, &m_background_vbo );
 }
 
 System::~System() {
@@ -52,19 +52,19 @@ System::~System() {
 }
 
 void System::Draw( sf::RenderWindow& target, float time ) {
-  float width = static_cast<float>( target.GetWidth() );
-  float height = static_cast<float>( target.GetHeight() );
+	float width = static_cast<float>( target.getSize().x );
+	float height = static_cast<float>( target.getSize().y );
 
-  glColor3f( 1.0f, 1.0f, 1.0f );
+	glColor3f( 1.0f, 1.0f, 1.0f );
 
-  ObjectPtr agent = Game::GetGame()->GetPlayer()->GetAgent();
+	ObjectPtr agent = Game::GetGame()->GetPlayer()->GetAgent();
 
-  if( !agent ) {
+	if( !agent ) {
 		return;
-  }
+	}
 
 	if( m_texture ) {
-		m_texture->Bind();
+		m_texture->bind();
 
 		glShadeModel( GL_FLAT );
 		glDisable( GL_BLEND );
@@ -72,17 +72,17 @@ void System::Draw( sf::RenderWindow& target, float time ) {
 
 		GLfloat background_buffer_data[] = {
 			0.0f, 0.0f,
-			agent->GetPosition().x - static_cast<float>( target.GetWidth() ) / 2.0f,
-			agent->GetPosition().y - static_cast<float>( target.GetHeight() ) / 2.0f,
+			agent->GetPosition().x - static_cast<float>( target.getSize().x ) / 2.0f,
+			agent->GetPosition().y - static_cast<float>( target.getSize().y ) / 2.0f,
 			0.0f, 1.0f,
-			agent->GetPosition().x - static_cast<float>( target.GetWidth() ) / 2.0f,
-			static_cast<float>( target.GetHeight() ) / 2.0f + agent->GetPosition().y,
+			agent->GetPosition().x - static_cast<float>( target.getSize().x ) / 2.0f,
+			agent->GetPosition().y + static_cast<float>( target.getSize().y ) / 2.0f,
 			1.0f, 1.0f,
-			static_cast<float>( target.GetWidth() ) / 2.0f + agent->GetPosition().x,
-			static_cast<float>( target.GetHeight() ) / 2.0f + agent->GetPosition().y,
+			agent->GetPosition().x + static_cast<float>( target.getSize().x ) / 2.0f,
+			agent->GetPosition().y + static_cast<float>( target.getSize().y ) / 2.0f,
 			1.0f, 0.0f,
-			static_cast<float>( target.GetWidth() ) / 2.0f + agent->GetPosition().x,
-			agent->GetPosition().y - static_cast<float>( target.GetHeight() ) / 2.0f
+			agent->GetPosition().x + static_cast<float>( target.getSize().x ) / 2.0f,
+			agent->GetPosition().y - static_cast<float>( target.getSize().y ) / 2.0f
 		};
 
 		glBindBuffer( GL_ARRAY_BUFFER, m_background_vbo );
@@ -104,50 +104,48 @@ void System::Draw( sf::RenderWindow& target, float time ) {
 		glShadeModel( GL_SMOOTH );
 	}
 
-  glColor4f( 1.0f, 1.0f, 1.0f, 0.4f );
+	glColor4f( 1.0f, 1.0f, 1.0f, 0.4f );
 
-  glDisable( GL_TEXTURE_2D );
+	glDisable( GL_TEXTURE_2D );
 
-  for( std::size_t index = 0; index < m_num_particles; ++index ) {
-  	m_particle_positions[ index ] += ( -agent->GetVelocity() ) * m_particle_velocities[ index ] * time;
+	for( std::size_t index = 0; index < m_num_particles; ++index ) {
+		m_particle_positions[ index ] += ( -agent->GetVelocity() ) * m_particle_velocities[ index ] * time;
 
 		while( m_particle_positions[ index ].x < 0.0f ) {
-      m_particle_positions[ index ].x += width;
-    }
+			m_particle_positions[ index ].x += width;
+		}
 
-    while( m_particle_positions[ index ].x >= width ) {
-      m_particle_positions[ index ].x -= width;
-    }
+		while( m_particle_positions[ index ].x >= width ) {
+			m_particle_positions[ index ].x -= width;
+		}
 
-    while( m_particle_positions[ index ].y < 0.0f ) {
-      m_particle_positions[ index ].y += height;
-    }
+		while( m_particle_positions[ index ].y < 0.0f ) {
+			m_particle_positions[ index ].y += height;
+		}
 
-    while( m_particle_positions[ index ].y >= height ) {
-      m_particle_positions[ index ].y -= height;
-    }
+		while( m_particle_positions[ index ].y >= height ) {
+			m_particle_positions[ index ].y -= height;
+		}
 
-    m_particle_vertices[ index * 2 + 0 ] = std::floor( m_particle_positions[ index ].x +
+		m_particle_vertices[ index * 2 + 0 ] = std::floor( m_particle_positions[ index ].x +
 		                                       agent->GetPosition().x -
-		                                       static_cast<float>( target.GetWidth() ) / 2.0f ) + 0.5f;
-    m_particle_vertices[ index * 2 + 1 ] = std::floor( m_particle_positions[ index ].y +
-                                           agent->GetPosition().y -
-		                                       static_cast<float>( target.GetHeight() ) / 2.0f ) + 0.5f;
-  }
+		                                       static_cast<float>( target.getSize().x ) / 2.0f ) + 0.5f;
+		m_particle_vertices[ index * 2 + 1 ] = std::floor( m_particle_positions[ index ].y +
+		                                       agent->GetPosition().y -
+		                                       static_cast<float>( target.getSize().y ) / 2.0f ) + 0.5f;
+	}
 
-  glBindBuffer( GL_ARRAY_BUFFER, m_particle_vbo );
-  glBufferData( GL_ARRAY_BUFFER, 0, 0, GL_STREAM_DRAW );
-  glBufferData( GL_ARRAY_BUFFER, m_num_particles * 2 * sizeof( GLfloat ), m_particle_vertices, GL_STREAM_DRAW );
+	glBindBuffer( GL_ARRAY_BUFFER, m_particle_vbo );
+	glBufferData( GL_ARRAY_BUFFER, 0, 0, GL_STREAM_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, m_num_particles * 2 * sizeof( GLfloat ), m_particle_vertices, GL_STREAM_DRAW );
 
-  glVertexPointer( 2, GL_FLOAT, 0, 0 );
+	glVertexPointer( 2, GL_FLOAT, 0, 0 );
 
-  glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_VERTEX_ARRAY );
 
-  glDrawArrays( GL_POINTS, 0, m_num_particles );
+	glDrawArrays( GL_POINTS, 0, m_num_particles );
 
-  glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_VERTEX_ARRAY );
 
-  glEnable( GL_TEXTURE_2D );
-
-  m_last_draw.Reset();
+	glEnable( GL_TEXTURE_2D );
 }

@@ -17,32 +17,32 @@ typedef std::weak_ptr<sf::TcpSocket> SocketWeakPtr;
 typedef std::shared_ptr<sf::Packet> PacketPtr;
 
 class NetworkManager {
-  public:
-    NetworkManager();
-    ~NetworkManager();
+	public:
+		NetworkManager();
+		~NetworkManager();
 
-    void Tick( float time );
+		void Tick( float time );
 
-    void SendData( PlayerPtr, PacketPtr );
+		void SendData( PlayerPtr, PacketPtr );
 
-    bool IsListening() const;
+		bool IsListening() const;
 
-  private:
+	private:
 		typedef std::map<PlayerWeakPtr, SocketPtr, std::owner_less<PlayerWeakPtr> > PlayerMap;
 
 		std::string ErrCode( sf::Socket::Status status );
 
 		void ReceiveData( PlayerPtr, SocketPtr );
-    void HandlePacket( sf::Packet player, sf::Uint16 id );
-    void AcceptSocket();
-    void AddPlayer( PlayerPtr player, SocketPtr socket );
+		void HandlePacket( sf::Packet player, sf::Uint16 id );
+		void AcceptSocket();
+		void AddPlayer( PlayerPtr player, SocketPtr socket );
 
-    bool m_listening;
+		bool m_listening;
 
-    sf::TcpListener m_sock_listener;
-    sf::SocketSelector m_selector;
+		sf::TcpListener m_sock_listener;
+		sf::SocketSelector m_selector;
 
-    PlayerMap m_players;
+		PlayerMap m_players;
 };
 
 typedef std::shared_ptr<NetworkManager> NetworkManagerPtr;
@@ -51,15 +51,15 @@ typedef std::shared_ptr<NetworkManager> NetworkManagerPtr;
 #define PROTOCOL_VER_MINOR 0.9f
 
 enum ServerToClient {
-  SERVER_OBJECT = 0,
-  SERVER_SET_ID,
-  SERVER_INVENTORY,
-  SERVER_RESOURCE,
-  SERVER_SYSTEM
+	SERVER_OBJECT = 0,
+	SERVER_SET_ID,
+	SERVER_INVENTORY,
+	SERVER_RESOURCE,
+	SERVER_SYSTEM
 };
 
 enum ClientToServer {
-  CLIENT_COMMAND = 0
+	CLIENT_COMMAND = 0
 };
 
 #endif // NETWORK_HPP_INCLUDED

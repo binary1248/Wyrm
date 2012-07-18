@@ -22,108 +22,108 @@ ObjectPtr ObjectManager::GetObjectById( sf::Uint16 id ) {
 	std::list<ObjectPtr>::iterator iter( m_objects.begin() );
 	std::list<ObjectPtr>::iterator end( m_objects.end() );
 
-  for( ; iter != end; ++iter ) {
-    if( ( *iter )->GetID() == id ) {
-      return ( *iter );
-    }
-  }
+	for( ; iter != end; ++iter ) {
+		if( ( *iter )->GetID() == id ) {
+			return ( *iter );
+		}
+	}
 
-  return ObjectPtr();
+	return ObjectPtr();
 }
 
 void ObjectManager::CreateObject( sf::Packet packet, sf::Uint16 id ) {
-  sf::Uint16 type;
-  packet >> type;
+	sf::Uint16 type;
+	packet >> type;
 
-  ObjectPtr object;
+	ObjectPtr object;
 
-  if( GetObjectById( id ) ) {
-    return;
-  }
+	if( GetObjectById( id ) ) {
+		return;
+	}
 
-  if( !m_factories ) {
-    LogConsole( "No factories" );
-    return;
-  }
+	if( !m_factories ) {
+		LogConsole( "No factories" );
+		return;
+	}
 
-  std::map<sf::Uint16, ObjectFactory>::iterator i = m_factories->find( type );
+	std::map<sf::Uint16, ObjectFactory>::iterator i = m_factories->find( type );
 
-  if( i == m_factories->end() ) {
-    LogConsole( "Invalid object type." );
-    return;
-  } else {
-    object = ( i->second )( id, packet );
-  }
+	if( i == m_factories->end() ) {
+		LogConsole( "Invalid object type." );
+		return;
+	} else {
+		object = ( i->second )( id, packet );
+	}
 
-  m_objects.push_back( object );
+	m_objects.push_back( object );
 }
 
 void ObjectManager::DispatchPacket( sf::Packet packet ) {
-  sf::Uint16 id;
-  packet >> id;
+	sf::Uint16 id;
+	packet >> id;
 
-  std::list<ObjectPtr>::iterator iter( m_objects.begin() );
+	std::list<ObjectPtr>::iterator iter( m_objects.begin() );
 	std::list<ObjectPtr>::iterator end( m_objects.end() );
 
-  for( ; iter != end; ++iter ) {
-    if( ( *iter )->GetID() == id ) {
-      ( *iter )->HandlePacket( packet );
-      return;
-    }
-  }
+	for( ; iter != end; ++iter ) {
+		if( ( *iter )->GetID() == id ) {
+			( *iter )->HandlePacket( packet );
+			return;
+		}
+	}
 
-  sf::Uint16 type1;
-  packet >> type1;
+	sf::Uint16 type1;
+	packet >> type1;
 
-  if( type1 != ServerToClientObject::OBJECT_STATE ) {
-    LogConsole( "Can't update non-existant object: " + string_cast( id ) );
-    return;
-  }
+	if( type1 != ServerToClientObject::OBJECT_STATE ) {
+		LogConsole( "Can't update non-existant object: " + string_cast( id ) );
+		return;
+	}
 
-  CreateObject( packet, id );
+	CreateObject( packet, id );
 }
 
 void ObjectManager::Tick( float time ) {
 	std::list<ObjectPtr>::iterator iter( m_objects.begin() );
 	std::list<ObjectPtr>::iterator end( m_objects.end() );
 
-  while( iter != end ) {
-    if( ( *iter )->IsDeleted() ) {
-      iter = m_objects.erase( iter );
-      continue;
-    }
+	while( iter != end ) {
+		if( ( *iter )->IsDeleted() ) {
+			iter = m_objects.erase( iter );
+			continue;
+		}
 
-    ( *iter )->Update( time );
-    ++iter;
-  }
+		( *iter )->Update( time );
+		++iter;
+	}
 }
 
 void ObjectManager::DrawAll( sf::RenderWindow& target ) {
-  ObjectPtr agent;
+	ObjectPtr agent;
 
-  std::list<ObjectPtr>::iterator iter( m_objects.begin() );
+	std::list<ObjectPtr>::iterator iter( m_objects.begin() );
 	std::list<ObjectPtr>::iterator end( m_objects.end() );
 
-  for( ; iter != end; ++iter ) {
-    if( ( *iter )->GetType() == ObjectType::SHIP && std::static_pointer_cast<Ship>( ( *iter ) )->IsPlayer() ) {
-      agent = ( *iter );
-      continue;
-    }
-    ( *iter )->Draw( target );
-  }
+	for( ; iter != end; ++iter ) {
+		if( ( *iter )->GetType() == ObjectType::SHIP && std::static_pointer_cast<Ship>( ( *iter ) )->IsPlayer() ) {
+			agent = ( *iter );
+			continue;
+		}
+		( *iter )->Draw( target );
+	}
 
 	// Make sure player agent is drawn on top of everything else
-  if( agent ) {
-    agent->Draw( target );
-  }
+	if( agent ) {
+		agent->Draw( target );
+	}
 }
 
 void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
-  if( !m_factories ) {
-    m_factories = new FactoryMap;
-  }
+	if( !m_factories ) {
+		m_factories = new FactoryMap;
+	}
 
-  ObjectManager::m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
+	ObjectManager::m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
 
-  LogStartup( "Registered object factory type " + string_cast( type ) );
+	LogStartup( "Registered object factory type " + string_cast( type ) );
 }

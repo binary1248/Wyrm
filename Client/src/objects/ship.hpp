@@ -7,35 +7,35 @@
 #include <objects/object.hpp>
 
 class Ship : public Object {
-  public:
-    Ship( sf::Uint16 id, sf::Packet& packet );
+	public:
+		Ship( sf::Uint16 id, sf::Packet& packet );
 
-    virtual ~Ship();
+		virtual ~Ship();
 
-    virtual void Update( float time );
+		virtual void Update( float time );
 
-    virtual void Draw( sf::RenderWindow& target );
+		virtual void Draw( sf::RenderWindow& target );
 
-    virtual void HandlePacket( sf::Packet& packet );
+		virtual void HandlePacket( sf::Packet& packet );
 
-    void SetPlayer( bool is_player );
-    bool IsPlayer() const;
+		void SetPlayer( bool is_player );
+		bool IsPlayer() const;
 
-  private:
-    void Init();
+	private:
+		void Init();
 
-    sf::Vector2f m_acceleration;
-    float m_thrust;
+		sf::Vector2f m_acceleration;
+		float m_thrust;
 
-    sf::Sprite m_sprite;
-    sf::Text m_text;
+		sf::Sprite m_sprite;
+		sf::Text m_text;
 
-    float m_image_height;
+		float m_image_height;
 
 		MeshPtr m_mesh;
-    GLuint m_vertex_vbo;
+		GLuint m_vertex_vbo;
 
-    bool m_is_player;
+		bool m_is_player;
 };
 
 typedef std::shared_ptr<Ship> ShipPtr;

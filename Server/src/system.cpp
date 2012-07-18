@@ -19,34 +19,34 @@ void System::AddPlayer( PlayerPtr player ) {
 	std::list<PlayerWeakPtr>::const_iterator player_iter( m_players.begin() );
 	std::list<PlayerWeakPtr>::const_iterator player_end( m_players.end() );
 
-  for( ; player_iter != player_end; ++player_iter ) {
+	for( ; player_iter != player_end; ++player_iter ) {
 		if( player_iter->lock() == player ) {
 			return;
 		}
-  }
+	}
 
-  m_players.push_back( PlayerWeakPtr( player ) );
+	m_players.push_back( PlayerWeakPtr( player ) );
 
-  player->LoadResource( m_background_resource_id );
+	player->LoadResource( m_background_resource_id );
 
-  PacketPtr system_packet = std::make_shared<sf::Packet>();
-  (*system_packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_SYSTEM )
-                   << GetId() << GetName() << m_background_resource_id;
-  player->SendPacket( system_packet );
+	PacketPtr system_packet = std::make_shared<sf::Packet>();
+	(*system_packet) << static_cast<sf::Uint16>( ServerToClient::SERVER_SYSTEM )
+	                 << GetId() << GetName() << m_background_resource_id;
+	player->SendPacket( system_packet );
 
-  std::list<ObjectWeakPtr>::const_iterator object_iter( m_objects.begin() );
+	std::list<ObjectWeakPtr>::const_iterator object_iter( m_objects.begin() );
 	std::list<ObjectWeakPtr>::const_iterator object_end( m_objects.end() );
 
 	for( ; object_iter != object_end; ++object_iter ) {
 		ObjectPtr shared_object( object_iter->lock() );
 
 		if( shared_object && !( shared_object->IsDeleted() ) ) {
-      PacketPtr packet = std::make_shared<sf::Packet>();
-      sf::Uint32 resource_id = shared_object->GetResourceId();
-      shared_object->FillFullPacket( packet );
-      player->LoadResource( resource_id );
-      player->SendPacket( packet );
-    }
+			PacketPtr packet = std::make_shared<sf::Packet>();
+			sf::Uint32 resource_id = shared_object->GetResourceId();
+			shared_object->FillFullPacket( packet );
+			player->LoadResource( resource_id );
+			player->SendPacket( packet );
+		}
 	}
 }
 
@@ -54,22 +54,22 @@ void System::AddObject( ObjectPtr object ) {
 	std::list<ObjectWeakPtr>::const_iterator iter( m_objects.begin() );
 	std::list<ObjectWeakPtr>::const_iterator end( m_objects.end() );
 
-  for( ; iter != end; ++iter ) {
-  	if( iter->lock() == object ) {
-      return;
-    }
-  }
+	for( ; iter != end; ++iter ) {
+		if( iter->lock() == object ) {
+			return;
+		}
+	}
 
-  m_objects.push_back( ObjectWeakPtr( object ) );
+	m_objects.push_back( ObjectWeakPtr( object ) );
 }
 
 void System::Tick( float /*time*/ ) {
 	std::list<ObjectWeakPtr>::iterator object_iter( m_objects.begin() );
 	std::list<ObjectWeakPtr>::iterator object_end( m_objects.end() );
 
-  while( object_iter != object_end ) {
-  	ObjectPtr shared_object( object_iter->lock() );
-  	if( shared_object ) {
+	while( object_iter != object_end ) {
+		ObjectPtr shared_object( object_iter->lock() );
+		if( shared_object ) {
 			char state = ObjectState::CLEAN;
 
 			if( shared_object->IsDeleted() ) {
@@ -124,12 +124,12 @@ void System::Tick( float /*time*/ ) {
 				object_iter = m_objects.erase( object_iter );
 				continue;
 			}
-  	} else {
+		} else {
 			object_iter = m_objects.erase( object_iter );
 			continue;
-  	}
+		}
 
-  	++object_iter;
+		++object_iter;
 	}
 }
 

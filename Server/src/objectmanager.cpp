@@ -26,31 +26,31 @@ const ObjectPtr ObjectManager::GetObjectById( sf::Uint16 id ) const {
 
 	for( ; iter != end; ++iter ) {
 		if( (*iter)->GetId() == id ) {
-      return (*iter);
-    }
+			return (*iter);
+		}
 	}
 
-  LogConsole( "Couldn't find object with id " + string_cast( id ) );
+	LogConsole( "Couldn't find object with id " + string_cast( id ) );
 
-  return ObjectPtr();
+	return ObjectPtr();
 }
 
 const ObjectPtr ObjectManager::CreateObject( sf::Uint16 type ) {
-  if( !m_factories ) {
-    Die( "Tried to create object without factories." );
-  }
+	if( !m_factories ) {
+		Die( "Tried to create object without factories." );
+	}
 
-  std::map<sf::Uint16, ObjectFactory>::iterator iter = m_factories->find( type );
+	std::map<sf::Uint16, ObjectFactory>::iterator iter = m_factories->find( type );
 
-  if( iter == m_factories->end() ) {
-    LogConsole( "Invalid object type." );
-    return ObjectPtr();
-  } else {
-    ObjectPtr object = ( iter->second )();
-    m_objects.push_back( object );
+	if( iter == m_factories->end() ) {
+		LogConsole( "Invalid object type." );
+		return ObjectPtr();
+	} else {
+		ObjectPtr object = ( iter->second )();
+		m_objects.push_back( object );
 		GetSystemById( 1 )->AddObject( object );
-    return object;
-  }
+		return object;
+	}
 }
 
 const SystemPtr ObjectManager::GetSystemById( sf::Uint16 id ) const {
@@ -59,48 +59,48 @@ const SystemPtr ObjectManager::GetSystemById( sf::Uint16 id ) const {
 
 	for( ; iter != end; ++iter ) {
 		if( (*iter)->GetId() == id ) {
-      return (*iter);
-    }
+			return (*iter);
+		}
 	}
 
-  LogConsole( "Couldn't find system with id " + string_cast( id ) );
+	LogConsole( "Couldn't find system with id " + string_cast( id ) );
 
-  return SystemPtr();
+	return SystemPtr();
 }
 
 void ObjectManager::CreateSystem( std::string name, sf::Uint32 background_resource_id ) {
-  SystemPtr system = std::make_shared<System>( ++m_lastSystemId, name, background_resource_id );
+	SystemPtr system = std::make_shared<System>( ++m_lastSystemId, name, background_resource_id );
 
-  LogConsole( "Created new system: " + system->GetName() + " (id: " + string_cast( system->GetId() ) + ")" );
+	LogConsole( "Created new system: " + system->GetName() + " (id: " + string_cast( system->GetId() ) + ")" );
 
-  m_systems.push_back( system );
+	m_systems.push_back( system );
 }
 
 void ObjectManager::Tick( float time ) {
-  if( !m_objects_loaded ) {
-    LoadObjects();
-  }
+	if( !m_objects_loaded ) {
+		LoadObjects();
+	}
 
-  std::list<SystemPtr>::const_iterator system_iter( m_systems.begin() );
+	std::list<SystemPtr>::const_iterator system_iter( m_systems.begin() );
 	std::list<SystemPtr>::const_iterator system_end( m_systems.end() );
 
-  for( ; system_iter != system_end; ++system_iter ) {
+	for( ; system_iter != system_end; ++system_iter ) {
 		(*system_iter)->Tick( time );
-  }
+	}
 
-  std::list<ObjectPtr>::iterator object_iter( m_objects.begin() );
-  std::list<ObjectPtr>::iterator object_end( m_objects.end() );
+	std::list<ObjectPtr>::iterator object_iter( m_objects.begin() );
+	std::list<ObjectPtr>::iterator object_end( m_objects.end() );
 
-  while( object_iter != object_end ) {
-    if( (*object_iter)->IsDeleted() ) {
-      object_iter = m_objects.erase( object_iter );
-      continue;
-    }
+	while( object_iter != object_end ) {
+		if( (*object_iter)->IsDeleted() ) {
+			object_iter = m_objects.erase( object_iter );
+			continue;
+		}
 
-    (*object_iter)->Update( time );
+		(*object_iter)->Update( time );
 
-    ++object_iter;
-  }
+		++object_iter;
+	}
 }
 
 sf::Uint16 ObjectManager::NewID() {
@@ -112,32 +112,32 @@ void ObjectManager::AddFactory( sf::Uint16 type, ObjectFactory factory ) {
 		m_factories = new FactoryMap;
 	}
 
-  m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
+	m_factories->insert( std::pair<sf::Uint16, ObjectFactory>( type, factory ) );
 
-  LogStartup( "Registered object factory type " + string_cast( type ) );
+	LogStartup( "Registered object factory type " + string_cast( type ) );
 }
 
 void ObjectManager::LoadObjects() {
 	LogConsole( "Loading objects..." );
 
-  CreateSystem( "System 1", 1 );
+	CreateSystem( "System 1", 1 );
 
-  PlanetPtr p( std::static_pointer_cast<Planet, Object>( CreateObject( ObjectType::PLANET ) ) );
-  p->SetSize( sf::Vector2f( 80.0f, 80.0f ) );
-  p->SetOrbit( 2, 400 );
-  p->SetRotationalVelocity( 2 );
-  p->SetAnchor( 0, 0 );
-  p->SetName( "Planet 1" );
-  p->SetResourceId( 2 );
+	PlanetPtr p( std::static_pointer_cast<Planet, Object>( CreateObject( ObjectType::PLANET ) ) );
+	p->SetSize( sf::Vector2f( 80.0f, 80.0f ) );
+	p->SetOrbit( 2, 400 );
+	p->SetRotationalVelocity( -4 );
+	p->SetAnchor( 0, 0 );
+	p->SetName( "Planet 1" );
+	p->SetResourceId( 2 );
 
-  StarPtr s( std::static_pointer_cast<Star, Object>( CreateObject( ObjectType::STAR ) ) );
-  s->SetOrbit( 0, 0 );
-  s->SetRotationalVelocity( 0 );
-  s->SetAnchor( 0, 0 );
-  s->SetName( "Star 1" );
-  s->SetResourceId( 4 );
+	StarPtr s( std::static_pointer_cast<Star, Object>( CreateObject( ObjectType::STAR ) ) );
+	s->SetOrbit( 0, 0 );
+	s->SetRotationalVelocity( 0 );
+	s->SetAnchor( 0, 0 );
+	s->SetName( "Star 1" );
+	s->SetResourceId( 4 );
 
-  m_objects_loaded = true;
+	m_objects_loaded = true;
 
-  LogConsole( "Objects loaded" );
+	LogConsole( "Objects loaded" );
 }

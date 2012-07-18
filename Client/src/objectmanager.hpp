@@ -21,33 +21,33 @@ ObjectPtr Create( sf::Uint16 id, sf::Packet& packet ) {
 // A macro to register new object factories
 #define REGISTER_FACTORY(Type,Class) \
 class add_factory_##Class { \
-  public: \
-    add_factory_##Class() { \
-      ObjectManager::AddFactory(Type, Create<Class>); \
-    } \
+	public: \
+		add_factory_##Class() { \
+			ObjectManager::AddFactory(Type, Create<Class>); \
+		} \
 }; \
 add_factory_##Class _##Class
 
 class ObjectManager {
-  public:
-    ObjectManager();
-    ~ObjectManager();
+	public:
+		ObjectManager();
+		~ObjectManager();
 
-    ObjectPtr GetObjectById( sf::Uint16 id );
-    void CreateObject( sf::Packet packet, sf::Uint16 id );
+		ObjectPtr GetObjectById( sf::Uint16 id );
+		void CreateObject( sf::Packet packet, sf::Uint16 id );
 
-    void DispatchPacket( sf::Packet packet );
+		void DispatchPacket( sf::Packet packet );
 
-    void Tick( float time );
+		void Tick( float time );
 
-    void DrawAll( sf::RenderWindow& target );
+		void DrawAll( sf::RenderWindow& target );
 
-    static void AddFactory( sf::Uint16, ObjectFactory );
-  private:
-    std::list<ObjectPtr> m_objects;
+		static void AddFactory( sf::Uint16, ObjectFactory );
+	private:
+		std::list<ObjectPtr> m_objects;
 
-    static FactoryMap* m_factories;
-    std::unique_ptr<FactoryMap> m_factories_auto_delete;
+		static FactoryMap* m_factories;
+		std::unique_ptr<FactoryMap> m_factories_auto_delete;
 };
 
 typedef std::shared_ptr<ObjectManager> ObjectManagerPtr;

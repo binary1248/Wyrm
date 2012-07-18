@@ -7,21 +7,21 @@
 #include <SFML/Network.hpp>
 
 class Object {
-  public:
+	public:
 		Object( sf::Uint16 type, sf::Uint16 id, sf::Packet& packet );
 
-    virtual ~Object();
+		virtual ~Object();
 
-    virtual void Update( float time ) = 0;
+		virtual void Update( float time ) = 0;
 
-    virtual void Draw( sf::RenderWindow& target );
+		virtual void Draw( sf::RenderWindow& target );
 
-    virtual void HandlePacket( sf::Packet& packet ) = 0;
+		virtual void HandlePacket( sf::Packet& packet ) = 0;
 
-    bool IsDeleted() const;
-    void Delete();
+		bool IsDeleted() const;
+		void Delete();
 
-    sf::Uint16 GetType() const ;
+		sf::Uint16 GetType() const ;
 		void SetType( sf::Uint16 type );
 
 		// ID Handlers
@@ -33,7 +33,7 @@ class Object {
 
 		// Attribute Handlers
 		const sf::Vector2f& GetSize() const;
-    void SetSize( const sf::Vector2f& size );
+		void SetSize( const sf::Vector2f& size );
 
 		const sf::Vector2f& GetPosition() const;
 		void SetPosition( const sf::Vector2f& position );
@@ -49,31 +49,31 @@ class Object {
 
 		// Resource Handlers
 		void SetResourceId( sf::Uint32 id );
-    sf::Uint32 GetResourceId() const;
+		sf::Uint32 GetResourceId() const;
 
-  private:
+	private:
 		sf::Uint16 m_type;
 
-    sf::Uint16 m_id;
-    sf::String m_name;
+		sf::Uint16 m_id;
+		sf::String m_name;
 
-    sf::Uint32 m_resource_id;
+		sf::Uint32 m_resource_id;
 
-    sf::Vector2f m_size;
+		sf::Vector2f m_size;
 
-    sf::Vector2f m_position;
-    sf::Vector2f m_velocity;
+		sf::Vector2f m_position;
+		sf::Vector2f m_velocity;
 
-    float m_rotation;
-    float m_rotational_velocity;
+		float m_rotation;
+		float m_rotational_velocity;
 
-    bool m_delete_me;
+		bool m_delete_me;
 };
 
 enum ServerToClientObject {
-  OBJECT_UPDATE = 0,
-  OBJECT_STATE,
-  OBJECT_REMOVE
+	OBJECT_UPDATE = 0,
+	OBJECT_STATE,
+	OBJECT_REMOVE
 };
 
 typedef std::shared_ptr<Object> ObjectPtr;

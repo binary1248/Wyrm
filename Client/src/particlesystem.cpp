@@ -10,13 +10,13 @@ std::mt19937 ParticleSystem::rng;
 ParticleSystem::ParticleSystem() :
 	m_running( false ),
 	m_emitting( false ) {
-  glGenBuffers( 1, &m_particles_vbo );
+	glGenBuffers( 1, &m_particles_vbo );
 }
 
 ParticleSystem::~ParticleSystem() {
 	glDeleteBuffers( 1, &m_particles_vbo );
 
-  Stop();
+	Stop();
 }
 
 ParticleSystem::ParticleSystem( const ParticleSystem& particle_system ) {
@@ -36,7 +36,7 @@ ParticleSystem::ParticleSystem( const ParticleSystem& particle_system ) {
 	glGenBuffers( 1, &m_particles_vbo );
 }
 
-void ParticleSystem::Draw( sf::RenderTarget& target ) {
+void ParticleSystem::Draw( sf::RenderTarget& /*target*/ ) {
 	std::size_t particles_size = m_particles.size();
 
 	if( !particles_size || m_emitters.empty() ) {
@@ -47,7 +47,7 @@ void ParticleSystem::Draw( sf::RenderTarget& target ) {
 	sf::Vector2f size;
 	Particle::Color color;
 
-	sf::Vector2f view_position = target.GetView().GetCenter() - target.GetView().GetSize() / 2.f;
+	// sf::Vector2f view_position = target.getView().getCenter() - target.getView().getSize() / 2.f;
 
 	m_particle_vbo_data.reserve( particles_size );
 
@@ -90,50 +90,50 @@ void ParticleSystem::Draw( sf::RenderTarget& target ) {
 		m_particle_vbo_data.push_back( particle );
 	}
 
-	m_texture->Bind();
+	m_texture->bind( sf::Texture::Normalized );
 
 	glBindBuffer( GL_ARRAY_BUFFER, m_particles_vbo );
-  glBufferData( GL_ARRAY_BUFFER, 0, 0, GL_STREAM_DRAW );
-  glBufferData( GL_ARRAY_BUFFER, particles_size * 4 * 8 * sizeof( GLfloat ), &m_particle_vbo_data[0], GL_STREAM_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, 0, 0, GL_STREAM_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, particles_size * 4 * 8 * sizeof( GLfloat ), &m_particle_vbo_data[0], GL_STREAM_DRAW );
 
-  glColorPointer( 4, GL_FLOAT, 8 * sizeof( GLfloat ), 0 );
-  glTexCoordPointer( 2, GL_FLOAT, 8 * sizeof( GLfloat ), reinterpret_cast<GLvoid*>( 4 * sizeof( GLfloat ) ) );
-  glVertexPointer( 2, GL_FLOAT, 8 * sizeof( GLfloat ), reinterpret_cast<GLvoid*>( 6 * sizeof( GLfloat ) ) );
+	glColorPointer( 4, GL_FLOAT, 8 * sizeof( GLfloat ), 0 );
+	glTexCoordPointer( 2, GL_FLOAT, 8 * sizeof( GLfloat ), reinterpret_cast<GLvoid*>( 4 * sizeof( GLfloat ) ) );
+	glVertexPointer( 2, GL_FLOAT, 8 * sizeof( GLfloat ), reinterpret_cast<GLvoid*>( 6 * sizeof( GLfloat ) ) );
 
 	glEnableClientState( GL_COLOR_ARRAY );
 	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 	glEnableClientState( GL_VERTEX_ARRAY );
 
-  glDrawArrays( GL_QUADS, 0, particles_size * 4 );
+	glDrawArrays( GL_QUADS, 0, particles_size * 4 );
 
-  glDisableClientState( GL_VERTEX_ARRAY );
-  glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-  glDisableClientState( GL_COLOR_ARRAY );
+	glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_COLOR_ARRAY );
 
 	m_particle_vbo_data.clear();
 }
 
 void ParticleSystem::Tick( float time ) {
-  if( !m_running ) {
-    return;
-  }
+	if( !m_running ) {
+		return;
+	}
 
-  std::size_t particles_size = m_particles.size();
+	std::size_t particles_size = m_particles.size();
 
-  for( std::size_t index = 0; index < particles_size; ) {
-  	m_particles[ index ].life += time;
+	for( std::size_t index = 0; index < particles_size; ) {
+		m_particles[ index ].life += time;
 
-    if( m_particles[ index ].life >= m_particles[ index ].lifetime ) {
+		if( m_particles[ index ].life >= m_particles[ index ].lifetime ) {
 			m_particles.erase( m_particles.begin() );
 			particles_size--;
 			continue;
-    }
+		}
 
-    m_particles[ index ].velocity += ( m_particles[ index ].acceleration * time );
+		m_particles[ index ].velocity += ( m_particles[ index ].acceleration * time );
 		m_particles[ index ].position += ( m_particles[ index ].velocity * time );
 
 		++index;
-  }
+	}
 
 	if( !m_emitting ) {
 		return;
@@ -141,7 +141,7 @@ void ParticleSystem::Tick( float time ) {
 
 	std::size_t emitters_size = m_emitters.size();
 
-  for( std::size_t index = 0; index < emitters_size; ++index ) {
+	for( std::size_t index = 0; index < emitters_size; ++index ) {
 		m_emitters[ index ].queue += m_emitters[ index ].rate * time;
 
 		while( m_emitters[ index ].queue >= 1.0f ) {
@@ -201,23 +201,23 @@ void ParticleSystem::Tick( float time ) {
 }
 
 void ParticleSystem::Start( float time ) {
-  m_running = true;
-  m_emitting = true;
+	m_running = true;
+	m_emitting = true;
 
-  if( time <= 0.0f ) {
-    return;
-  }
+	if( time <= 0.0f ) {
+		return;
+	}
 
-  for( float f = 0.0f; f < time; f += 0.1f ) {
-    Tick( 0.1f );
-  }
+	for( float f = 0.0f; f < time; f += 0.1f ) {
+		Tick( 0.1f );
+	}
 }
 
 void ParticleSystem::Stop() {
-  m_running = false;
-  m_emitting = false;
+	m_running = false;
+	m_emitting = false;
 
-  m_particles.clear();
+	m_particles.clear();
 }
 
 void ParticleSystem::StartEmitting() {
@@ -247,6 +247,8 @@ void ParticleSystem::SetPosition( const sf::Vector2f& position ) {
 
 void ParticleSystem::SetTextureParameters( int size, float sigma2, float exp ) {
 	m_texture = Game::GetGame()->GetResourceManager()->GetParticle( size, sigma2, exp );
+
+	m_texture->copyToImage().saveToFile("bla.png");
 }
 
 ParticleSystem::Particle::Particle() :

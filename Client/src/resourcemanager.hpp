@@ -12,9 +12,9 @@
 #include <particlesystem.hpp>
 
 struct particle_id {
-  int size;
-  float max;
-  float exp;
+	int size;
+	float max;
+	float exp;
 };
 
 struct GradientPoint {
@@ -40,7 +40,7 @@ typedef std::shared_ptr<Mesh> MeshPtr;
 typedef std::pair<particle_id, TexturePtr> ParticleTexturePair;
 
 class ResourceManager {
-  public:
+	public:
 		enum ResourceType {
 			PLANE = 0,
 			SPHERE = 1,
@@ -48,12 +48,12 @@ class ResourceManager {
 			PARTICLESYSTEM = 3
 		};
 
-    ResourceManager();
-    ~ResourceManager();
+		ResourceManager();
+		~ResourceManager();
 
-    const TexturePtr OpenImage( std::string filename );
+		const TexturePtr OpenImage( std::string filename );
 
-    const TexturePtr GetParticle( int size, float sigma2, float exp );
+		const TexturePtr GetParticle( int size, float sigma2, float exp );
 
 		const TexturePtr GetTexture( sf::Uint32 id ) const;
 
@@ -65,13 +65,13 @@ class ResourceManager {
 
 		void GeneratePlaneTexture( sf::Packet& packet );
 
-    void GeneratePlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
+		void GeneratePlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
 		                           float contrast, float brightness,
 		                           GradientPoint* gradient, std::size_t num_gradient_points );
 
 		void GenerateSphereTexture( sf::Packet& packet );
 
-    void GenerateSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
+		void GenerateSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
 		                            float contrast, float brightness,
 		                            GradientPoint* gradient, std::size_t num_gradient_points );
 
@@ -79,12 +79,12 @@ class ResourceManager {
 
 		void GenerateMesh( sf::Packet& packet );
 
-  private:
-    std::map<sf::Uint32, TexturePtr> m_textures;
-    std::map<sf::Uint32, SoundBufferPtr> m_sounds;
-    std::vector<ParticleTexturePair> m_particles;
-    std::map<sf::Uint32, ParticleSystemPtr> m_particle_systems;
-    std::map<sf::Uint32, MeshPtr> m_meshes;
+	private:
+		std::map<sf::Uint32, TexturePtr> m_textures;
+		std::map<sf::Uint32, SoundBufferPtr> m_sounds;
+		std::vector<ParticleTexturePair> m_particles;
+		std::map<sf::Uint32, ParticleSystemPtr> m_particle_systems;
+		std::map<sf::Uint32, MeshPtr> m_meshes;
 };
 
 typedef std::shared_ptr<ResourceManager> ResourceManagerPtr;

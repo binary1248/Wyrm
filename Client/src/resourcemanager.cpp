@@ -32,69 +32,69 @@ ResourceManager::~ResourceManager() {
 }
 
 const TexturePtr ResourceManager::OpenImage( std::string filename ) {
-  //std::map<std::string, TexturePtr>::iterator i = m_textures.find( filename );
+	//std::map<std::string, TexturePtr>::iterator i = m_textures.find( filename );
 
-  //if( i != m_textures.end() ) {
-  //  return i->second;
-  //}
+	//if( i != m_textures.end() ) {
+	//	return i->second;
+	//}
 
-  sf::Image image;
-  image.LoadFromFile( filename );
+	sf::Image image;
+	image.loadFromFile( filename );
 
-  TexturePtr texture = std::make_shared<sf::Texture>();
-  texture->LoadFromImage( image );
+	TexturePtr texture = std::make_shared<sf::Texture>();
+	texture->loadFromImage( image );
 
-  //m_textures.insert( std::pair<sf::Uint32, TexturePtr>( 0, texture ) );
+	//m_textures.insert( std::pair<sf::Uint32, TexturePtr>( 0, texture ) );
 
-  return texture;
+	return texture;
 }
 
 const TexturePtr ResourceManager::GetParticle(int size, float max, float exp) {
 	std::vector<ParticleTexturePair>::const_iterator particle_texture_pair( m_particles.begin() );
 	std::vector<ParticleTexturePair>::const_iterator end( m_particles.end() );
 
-  for( ; particle_texture_pair != end; ++particle_texture_pair ) {
+	for( ; particle_texture_pair != end; ++particle_texture_pair ) {
 		if( particle_texture_pair->first.size == size &&
 				particle_texture_pair->first.max == max &&
 				particle_texture_pair->first.exp == exp ) {
-      return particle_texture_pair->second;
-    }
-  }
+			return particle_texture_pair->second;
+		}
+	}
 
-  sf::Uint8* pixels = new sf::Uint8[size*size*4];
+	sf::Uint8* pixels = new sf::Uint8[size*size*4];
 
 	for( int i = 0; i < size; i++ ) {
-    for( int j = 0; j < size; j++ ) {
-      float val = static_cast<float>( size ) / 2.f -
-                  std::sqrt( std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( i ) ), 2.f ) +
-			                       std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( j ) ), 2.f ) );
+		for( int j = 0; j < size; j++ ) {
+			float val = static_cast<float>( size ) / 2.f -
+			            std::sqrt( std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( i ) ), 2.f ) +
+			            std::pow( ( static_cast<float>( size ) / 2.f - static_cast<float>( j ) ), 2.f ) );
 
 			// Clamp value
 			val = std::max( 0.f, val - 1 );
 			val = std::pow( val, exp );
 			val = std::min( max, val );
 
-      pixels[ (i*size+j)*4+0 ] = 255;
-      pixels[ (i*size+j)*4+1 ] = 255;
-      pixels[ (i*size+j)*4+2 ] = 255;
-      pixels[ (i*size+j)*4+3 ] = static_cast<sf::Uint8>( val );
-    }
-  }
+			pixels[ (i*size+j)*4+0 ] = 255;
+			pixels[ (i*size+j)*4+1 ] = 255;
+			pixels[ (i*size+j)*4+2 ] = 255;
+			pixels[ (i*size+j)*4+3 ] = static_cast<sf::Uint8>( val );
+		}
+	}
 
-  TexturePtr texture = std::make_shared<sf::Texture>();
-  texture->Create( size, size );
-  texture->Update( pixels );
+	TexturePtr texture = std::make_shared<sf::Texture>();
+	texture->create( size, size );
+	texture->update( pixels );
 
-  delete[] pixels;
+	delete[] pixels;
 
-  struct particle_id id;
-  id.size = size;
-  id.max = max;
-  id.exp = exp;
+	struct particle_id id;
+	id.size = size;
+	id.max = max;
+	id.exp = exp;
 
-  m_particles.push_back( std::pair<struct particle_id, TexturePtr>(id, texture) );
+	m_particles.push_back( std::pair<struct particle_id, TexturePtr>(id, texture) );
 
-  return texture;
+	return texture;
 }
 
 const TexturePtr ResourceManager::GetTexture( sf::Uint32 id ) const {
@@ -161,81 +161,81 @@ void ResourceManager::GeneratePlaneTexture( sf::Packet& packet ) {
 	int octaves;
 	float frequency;
 	float persistence;
-  float contrast;
-  float brightness;
-  std::size_t num_gradient_points;
-  GradientPoint* gradient;
+	float contrast;
+	float brightness;
+	std::size_t num_gradient_points;
+	GradientPoint* gradient;
 
-  packet >> id;
-  packet >> width;
-  packet >> height;
-  packet >> octaves;
-  packet >> frequency;
-  packet >> persistence;
-  packet >> contrast;
-  packet >> brightness;
-  packet >> num_gradient_points;
+	packet >> id;
+	packet >> width;
+	packet >> height;
+	packet >> octaves;
+	packet >> frequency;
+	packet >> persistence;
+	packet >> contrast;
+	packet >> brightness;
+	packet >> num_gradient_points;
 
-  gradient = new GradientPoint[ num_gradient_points ];
+	gradient = new GradientPoint[ num_gradient_points ];
 
-  for( std::size_t index = 0; index < num_gradient_points; ++index ) {
+	for( std::size_t index = 0; index < num_gradient_points; ++index ) {
 		packet >> gradient[ index ].position;
 		packet >> gradient[ index ].r;
 		packet >> gradient[ index ].g;
 		packet >> gradient[ index ].b;
 		packet >> gradient[ index ].a;
-  }
+	}
 
-  if( !width || !height ) {
+	if( !width || !height ) {
 		width = static_cast<int>( Game::GetGame()->GetCurrentResolution().x / 4.0f );
 		height = static_cast<int>( Game::GetGame()->GetCurrentResolution().y / 4.0f );
-  }
+	}
 
-  GeneratePlaneTexture( id, width, height, octaves, frequency, persistence, contrast, brightness, gradient, num_gradient_points );
+	GeneratePlaneTexture( id, width, height, octaves, frequency, persistence, contrast, brightness, gradient, num_gradient_points );
 }
 
 void ResourceManager::GeneratePlaneTexture( sf::Uint32 id, int width, int height, int octaves, float frequency, float persistence,
                                             float contrast, float brightness,
                                             GradientPoint* gradient, std::size_t num_gradient_points ) {
-  sf::Uint8* pixels = new sf::Uint8[height*width*4];
+	sf::Uint8* pixels = new sf::Uint8[height*width*4];
 
 	noise::module::Perlin noise_module;
 	noise_module.SetSeed( 37 );
 	noise_module.SetOctaveCount( octaves );
-  noise_module.SetFrequency( frequency );
-  noise_module.SetPersistence( persistence );
-  noise_module.SetNoiseQuality( noise::NoiseQuality::QUALITY_FAST );
+	noise_module.SetFrequency( frequency );
+	noise_module.SetPersistence( persistence );
+	noise_module.SetNoiseQuality( noise::NoiseQuality::QUALITY_FAST );
 
-  noise::utils::NoiseMap noise_map;
+	noise::utils::NoiseMap noise_map;
 
 	noise::utils::NoiseMapBuilderPlane plane_builder;
 
 	plane_builder.SetSourceModule( noise_module );
-  plane_builder.SetDestNoiseMap( noise_map );
-  plane_builder.SetDestSize( width, height );
-  plane_builder.SetBounds( 0.0f, 4.0f, 0.0f, 4.0f * static_cast<float>( height ) / static_cast<float>( width ) );
-  plane_builder.Build();
+	plane_builder.SetDestNoiseMap( noise_map );
+	plane_builder.SetDestSize( width, height );
+	plane_builder.SetBounds( 0.0f, 4.0f, 0.0f, 4.0f * static_cast<float>( height ) / static_cast<float>( width ) );
+	plane_builder.Build();
 
-  noise::utils::RendererImage renderer;
-  noise::utils::Image image;
-  renderer.SetSourceNoiseMap( noise_map );
-  renderer.SetDestImage( image );
-  renderer.ClearGradient();
+	noise::utils::RendererImage renderer;
+	noise::utils::Image image;
+	renderer.SetSourceNoiseMap( noise_map );
+	renderer.SetDestImage( image );
+	renderer.ClearGradient();
 
-  for( std::size_t point_index = 0; point_index < num_gradient_points; ++point_index ) {
+	for( std::size_t point_index = 0; point_index < num_gradient_points; ++point_index ) {
 		renderer.AddGradientPoint( gradient[ point_index ].position,
 		                           noise::utils::Color( gradient[ point_index ].r,
 		                                                gradient[ point_index ].g,
 		                                                gradient[ point_index ].b,
 		                                                gradient[ point_index ].a ) );
-  }
+	}
 
-  renderer.EnableLight();
-  renderer.SetLightContrast( contrast );
-  renderer.SetLightBrightness( brightness );
-  renderer.Render();
+	renderer.EnableLight();
+	renderer.SetLightContrast( contrast );
+	renderer.SetLightBrightness( brightness );
+	renderer.Render();
 
-  for( int index_h = 0; index_h < height; ++index_h ) {
+	for( int index_h = 0; index_h < height; ++index_h ) {
 		for( int index_w = 0; index_w < width; ++index_w ) {
 			pixels[ ( index_h * width + index_w ) * 4 + 0 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).red );
 			pixels[ ( index_h * width + index_w ) * 4 + 1 ] = static_cast<sf::Uint8>( image.GetValue( index_w, index_h ).green );
@@ -244,15 +244,15 @@ void ResourceManager::GeneratePlaneTexture( sf::Uint32 id, int width, int height
 		}
 	}
 
-  TexturePtr texture = std::make_shared<sf::Texture>();
-  texture->Create( static_cast<unsigned int>( width ), static_cast<unsigned int>( height ) );
-  texture->Update( pixels );
+	TexturePtr texture = std::make_shared<sf::Texture>();
+	texture->create( static_cast<unsigned int>( width ), static_cast<unsigned int>( height ) );
+	texture->update( pixels );
 
-  delete[] pixels;
+	delete[] pixels;
 
-  m_textures.insert( std::pair<sf::Uint32, TexturePtr>( id, texture ) );
+	m_textures.insert( std::pair<sf::Uint32, TexturePtr>( id, texture ) );
 
-  LogConsole( "Generated plane texture: " + string_cast( id ) );
+	LogConsole( "Generated plane texture: " + string_cast( id ) );
 }
 
 void ResourceManager::GenerateSphereTexture( sf::Packet& packet ) {
@@ -261,72 +261,72 @@ void ResourceManager::GenerateSphereTexture( sf::Packet& packet ) {
 	int octaves;
 	float frequency;
 	float persistence;
-  float contrast;
-  float brightness;
-  std::size_t num_gradient_points;
-  GradientPoint* gradient;
+	float contrast;
+	float brightness;
+	std::size_t num_gradient_points;
+	GradientPoint* gradient;
 
-  packet >> id;
-  packet >> size;
-  packet >> octaves;
-  packet >> frequency;
-  packet >> persistence;
-  packet >> contrast;
-  packet >> brightness;
-  packet >> num_gradient_points;
+	packet >> id;
+	packet >> size;
+	packet >> octaves;
+	packet >> frequency;
+	packet >> persistence;
+	packet >> contrast;
+	packet >> brightness;
+	packet >> num_gradient_points;
 
-  gradient = new GradientPoint[ num_gradient_points ];
+	gradient = new GradientPoint[ num_gradient_points ];
 
-  for( std::size_t index = 0; index < num_gradient_points; ++index ) {
+	for( std::size_t index = 0; index < num_gradient_points; ++index ) {
 		packet >> gradient[ index ].position;
 		packet >> gradient[ index ].r;
 		packet >> gradient[ index ].g;
 		packet >> gradient[ index ].b;
 		packet >> gradient[ index ].a;
-  }
+	}
 
-  GenerateSphereTexture( id, size, octaves, frequency, persistence, contrast, brightness, gradient, num_gradient_points );
+	GenerateSphereTexture( id, size, octaves, frequency, persistence, contrast, brightness, gradient, num_gradient_points );
 }
 
 void ResourceManager::GenerateSphereTexture( sf::Uint32 id, int size, int octaves, float frequency, float persistence,
                                              float contrast, float brightness,
                                              GradientPoint* gradient, std::size_t num_gradient_points ) {
-  sf::Uint8* pixels = new sf::Uint8[ size * size * 2 ];
+	sf::Uint8* pixels = new sf::Uint8[ size * size * 2 ];
 
 	noise::module::Perlin noise_module;
 	noise_module.SetOctaveCount( static_cast<int>( octaves ) );
-  noise_module.SetFrequency( frequency );
-  noise_module.SetPersistence( persistence );
-  noise_module.SetNoiseQuality( noise::NoiseQuality::QUALITY_FAST );
+	noise_module.SetFrequency( frequency );
+	noise_module.SetPersistence( persistence );
+	noise_module.SetNoiseQuality( noise::NoiseQuality::QUALITY_FAST );
 
 	noise::utils::NoiseMap noise_map;
 
 	noise::utils::NoiseMapBuilderSphere sphere_builder;
 
-  sphere_builder.SetSourceModule( noise_module );
-  sphere_builder.SetDestNoiseMap( noise_map );
-  sphere_builder.SetDestSize( static_cast<int>( size ), static_cast<int>( size ) / 2 );
-  sphere_builder.SetBounds( -90.0f, 90.0f, -180.0f, 180.0f );
-  sphere_builder.Build();
+	sphere_builder.SetSourceModule( noise_module );
+	sphere_builder.SetDestNoiseMap( noise_map );
+	sphere_builder.SetDestSize( static_cast<int>( size ), static_cast<int>( size ) / 2 );
+	sphere_builder.SetBounds( -90.0f, 90.0f, -180.0f, 180.0f );
+	sphere_builder.Build();
 
 	noise::utils::RendererImage renderer;
-  noise::utils::Image image;
-  renderer.SetSourceNoiseMap( noise_map );
-  renderer.SetDestImage( image );
-  renderer.ClearGradient();
+	noise::utils::Image image;
+	renderer.SetSourceNoiseMap( noise_map );
+	renderer.SetDestImage( image );
+	renderer.ClearGradient();
 
-  for( std::size_t point_index = 0; point_index < num_gradient_points; ++point_index ) {
+	for( std::size_t point_index = 0; point_index < num_gradient_points; ++point_index ) {
 		renderer.AddGradientPoint( gradient[ point_index ].position,
 		                           noise::utils::Color( gradient[ point_index ].r,
 		                                                gradient[ point_index ].g,
 		                                                gradient[ point_index ].b,
 		                                                gradient[ point_index ].a ) );
-  }
+	}
 
-  //renderer.EnableLight();
-  renderer.SetLightContrast( contrast );
-  renderer.SetLightBrightness( brightness );
-  renderer.Render();
+	//renderer.EnableLight();
+	renderer.SetLightContrast( contrast );
+	renderer.SetLightBrightness( brightness );
+	renderer.Render();
 
 	for( int index_h = 0; index_h < static_cast<int>( size / 2 ); ++index_h ) {
 		for( int index_w = 0; index_w < static_cast<int>( size ); ++index_w ) {
@@ -337,15 +337,15 @@ void ResourceManager::GenerateSphereTexture( sf::Uint32 id, int size, int octave
 		}
 	}
 
-  TexturePtr texture = std::make_shared<sf::Texture>();
-  texture->Create( static_cast<unsigned int>( size ), static_cast<unsigned int>( size ) / 2 );
-  texture->Update( pixels );
+	TexturePtr texture = std::make_shared<sf::Texture>();
+	texture->create( static_cast<unsigned int>( size ), static_cast<unsigned int>( size ) / 2 );
+	texture->update( pixels );
 
-  delete[] pixels;
+	delete[] pixels;
 
-  m_textures.insert( std::pair<sf::Uint32, TexturePtr>( id, texture ) );
+	m_textures.insert( std::pair<sf::Uint32, TexturePtr>( id, texture ) );
 
-  LogConsole( "Generated sphere texture: " + string_cast( id ) );
+	LogConsole( "Generated sphere texture: " + string_cast( id ) );
 }
 
 void ResourceManager::GenerateParticleSystem( sf::Packet& packet ) {

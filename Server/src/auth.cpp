@@ -3,5 +3,5 @@
 #include <auth.hpp>
 
 bool CheckAuth( PacketPtr /*packet*/ ) {
-  return true;
+	return true;
 }

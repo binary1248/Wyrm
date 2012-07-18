@@ -7,9 +7,9 @@ Object::Object( sf::Uint16 type, sf::Uint16 id, sf::Packet& packet ) :
 	m_delete_me( false ) {
 	packet >> m_name >> m_resource_id;
 	packet >> m_size.x >> m_size.y;
-  packet >> m_position.x >> m_position.y;
-  packet >> m_velocity.x >> m_velocity.y;
-  packet >> m_rotation >> m_rotational_velocity;
+	packet >> m_position.x >> m_position.y;
+	packet >> m_velocity.x >> m_velocity.y;
+	packet >> m_rotation >> m_rotational_velocity;
 }
 
 Object::~Object() {
@@ -26,9 +26,9 @@ void Object::Draw( sf::RenderWindow& /*target*/ ) {
 }
 
 void Object::HandlePacket( sf::Packet& packet ) {
-  packet >> m_position.x >> m_position.y;
-  packet >> m_velocity.x >> m_velocity.y;
-  packet >> m_rotation >> m_rotational_velocity;
+	packet >> m_position.x >> m_position.y;
+	packet >> m_velocity.x >> m_velocity.y;
+	packet >> m_rotation >> m_rotational_velocity;
 }
 
 bool Object::IsDeleted() const {

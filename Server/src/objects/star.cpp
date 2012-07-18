@@ -9,45 +9,46 @@
 REGISTER_FACTORY( ObjectType::STAR, Star );
 
 Star::Star( sf::String name, const sf::Vector2f& size, const sf::Vector2f& position, const sf::Vector2f& velocity,
-	          float rotation, float rotational_velocity ) :
+            float rotation, float rotational_velocity ) :
 	Object( ObjectType::STAR, name, size, position, velocity, rotation, rotational_velocity ),
-  m_angle( 0 )  {
+	m_angle( 0 ) {
 }
 
 Star::~Star() {
 }
 
 void Star::Update( float time ) {
-  m_angle += GetVelocity().x * time;
+	m_angle += GetVelocity().x * time;
 
-  while( m_angle > 360 ) {
-    m_angle -= 360;
-  }
-  while( m_angle < (-360) ) {
-    m_angle += 360;
-  }
+	while( m_angle > 360 ) {
+		m_angle -= 360;
+	}
+	while( m_angle < (-360) ) {
+		m_angle += 360;
+	}
 
-  SetPosition( sf::Vector2f( static_cast<float>( cos( clean_angle(m_angle) ) ) * GetVelocity().y,
-														 static_cast<float>( sin( clean_angle(m_angle) ) ) * GetVelocity().y ) );
+	SetPosition( sf::Vector2f( static_cast<float>( cos( clean_angle(m_angle) ) ) * GetVelocity().y,
+	             static_cast<float>( sin( clean_angle(m_angle) ) ) * GetVelocity().y ) );
 
-  SetPosition( GetPosition() + m_anchor );
+	SetPosition( GetPosition() + m_anchor );
 
-  SetRotation( GetRotation() + GetRotationalVelocity() * time );
+	SetRotation( GetRotation() + GetRotationalVelocity() * time );
 
-  if( m_update_timer.GetElapsedTime() > 10000 ) {
-    SetDirty();
-    m_update_timer.Reset();
-  }
+	m_update_timer += time;
+	if( m_update_timer > 10.0f ) {
+		SetDirty();
+		m_update_timer = 0.0f;
+	}
 }
 
 void Star::FillPartialPacket( const PacketPtr& packet ) {
-  Object::FillPartialPacket( packet );
-  (*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation();
+	Object::FillPartialPacket( packet );
+	(*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation();
 }
 
 void Star::FillFullPacket( const PacketPtr& packet ) {
-  Object::FillFullPacket( packet );
-  (*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation() << m_anchor.x << m_anchor.y;
+	Object::FillFullPacket( packet );
+	(*packet) << m_angle << GetPosition().x << GetPosition().y << GetRotation() << m_anchor.x << m_anchor.y;
 }
 
 void Star::HandlePacket( const PacketPtr& /*packet*/ ) {

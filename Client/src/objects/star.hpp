@@ -5,22 +5,22 @@
 #include <particlesystem.hpp>
 
 class Star : public Object {
-  public:
-    Star( sf::Uint16 id, sf::Packet& packet );
+	public:
+		Star( sf::Uint16 id, sf::Packet& packet );
 
-    virtual ~Star();
+		virtual ~Star();
 
-    virtual void Update( float time );
-    virtual void Draw( sf::RenderWindow& target );
+		virtual void Update( float time );
+		virtual void Draw( sf::RenderWindow& target );
 
-    virtual void HandlePacket( sf::Packet& packet );
-  private:
-    void CreateParticleSystem();
+		virtual void HandlePacket( sf::Packet& packet );
+	private:
+		void CreateParticleSystem();
 
 		ParticleSystemPtr m_particle_system;
 
 		sf::Vector2f m_anchor;
-    float m_angle;
+		float m_angle;
 };
 
 typedef std::shared_ptr<Star> StarPtr;

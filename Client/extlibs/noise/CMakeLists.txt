@@ -8,11 +8,11 @@ set(
 	${NOISE_SRC_DIR}/noise/latlon.cpp
 	${NOISE_SRC_DIR}/noise/noisegen.cpp
 	${NOISE_SRC_DIR}/noise/noiseutils.cpp
-  ${NOISE_SRC_DIR}/noise/model/cylinder.cpp
+	${NOISE_SRC_DIR}/noise/model/cylinder.cpp
 	${NOISE_SRC_DIR}/noise/model/line.cpp
 	${NOISE_SRC_DIR}/noise/model/plane.cpp
 	${NOISE_SRC_DIR}/noise/model/sphere.cpp
-  ${NOISE_SRC_DIR}/noise/module/abs.cpp
+	${NOISE_SRC_DIR}/noise/module/abs.cpp
 	${NOISE_SRC_DIR}/noise/module/add.cpp
 	${NOISE_SRC_DIR}/noise/module/billow.cpp
 	${NOISE_SRC_DIR}/noise/module/blend.cpp
@@ -51,12 +51,12 @@ set(
 	${NOISE_INC_DIR}/noise/noise.h
 	${NOISE_INC_DIR}/noise/vectortable.h
 	${NOISE_INC_DIR}/noise/noiseutils.h
-  ${NOISE_INC_DIR}/noise/model/cylinder.h
+	${NOISE_INC_DIR}/noise/model/cylinder.h
 	${NOISE_INC_DIR}/noise/model/model.h
 	${NOISE_INC_DIR}/noise/model/sphere.h
 	${NOISE_INC_DIR}/noise/model/line.h
 	${NOISE_INC_DIR}/noise/model/plane.h
-  ${NOISE_INC_DIR}/noise/module/abs.h
+	${NOISE_INC_DIR}/noise/module/abs.h
 	${NOISE_INC_DIR}/noise/module/add.h
 	${NOISE_INC_DIR}/noise/module/billow.h
 	${NOISE_INC_DIR}/noise/module/blend.h

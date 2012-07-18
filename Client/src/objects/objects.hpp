@@ -5,9 +5,9 @@
 #include <objects/planet.hpp>
 
 enum ObjectType {
-  SHIP = 0,
-  PLANET = 1,
-  STAR = 2
+	SHIP = 0,
+	PLANET = 1,
+	STAR = 2
 };
 
 #endif // OBJECTS_HPP_INCLUDED

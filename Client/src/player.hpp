@@ -7,31 +7,31 @@
 #include <objects/object.hpp>
 
 class Player{
-  public:
-    Player( sf::Uint16 id, sf::String name );
-    ~Player();
+	public:
+		Player( sf::Uint16 id, sf::String name );
+		~Player();
 
-    void Tick( float time );
+		void Tick( float time );
 
-    void SetAgent( sf::Uint16 id );
+		void SetAgent( sf::Uint16 id );
 
-    const InventoryPtr& GetInventory() const;
+		const InventoryPtr& GetInventory() const;
 
-    const ObjectPtr GetAgent() const;
+		const ObjectPtr GetAgent() const;
 
-  private:
-    InventoryPtr m_inventory;
+	private:
+		InventoryPtr m_inventory;
 
-    ObjectWeakPtr m_agent;
+		ObjectWeakPtr m_agent;
 
-    sf::String m_name;
-    sf::Uint16 m_id;
+		sf::String m_name;
+		sf::Uint16 m_id;
 
-    sf::Uint16 m_tentative_agent_id;
+		sf::Uint16 m_tentative_agent_id;
 };
 
 enum ClientToServerCommand {
-  COMMAND_CONTROL = 0
+	COMMAND_CONTROL = 0
 };
 
 typedef std::shared_ptr<Player> PlayerPtr;
