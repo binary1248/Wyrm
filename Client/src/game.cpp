@@ -24,6 +24,7 @@ Game::Game() {
 	                                               0, // AA level
 	                                               2, // OpenGL Major Version
 	                                               1 ) );// OpenGL Minor Version
+	m_window->resetGLStates();
 
 	glShadeModel( GL_SMOOTH );
 
@@ -186,11 +187,15 @@ void Game::Tick( float time ) {
 		m_window->clear( sf::Color( 0, 0, 0, 255 ) );
 	}
 
-	m_window->pushGLStates();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	m_gui->Draw( *m_window );
 
-	m_window->popGLStates();
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_COLOR_ARRAY );
+	glDisableClientState( GL_VERTEX_ARRAY );
 
 	glMatrixMode( GL_PROJECTION );
 	glPopMatrix();
